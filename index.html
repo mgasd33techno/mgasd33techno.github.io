@@ -1,0 +1,775 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+  />
+
+
+  <style>
+    * { box-sizing: border-box; }
+ 
+    html, body {
+      width: 100%;
+      max-width: 100%;
+      margin: 0;
+      padding: 0;
+      overflow-x: hidden;
+      -webkit-text-size-adjust: 100%;
+    }
+ 
+    body {
+      font-family: Arial, sans-serif;
+      background: linear-gradient(135deg, #0a0a0a 0%, #1a1410 50%, #0f0f0f 100%);
+      background-attachment: fixed;
+      color: #f5d27a;
+      padding: 16px;
+      position: relative;
+      min-height: 100vh;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: 
+        radial-gradient(circle at 20% 50%, rgba(212,175,55,0.05) 0%, transparent 50%),
+        radial-gradient(circle at 80% 80%, rgba(212,175,55,0.03) 0%, transparent 50%);
+      pointer-events: none;
+      z-index: -1;
+    }
+ 
+    .container {
+      width: 100%;
+      max-width: 420px;
+      margin: 0 auto;
+    }
+ 
+    .card {
+      background: #111;
+      padding: 20px;
+      border-radius: 18px;
+      margin-bottom: 20px;
+      box-shadow: 0 0 20px rgba(212,175,55,0.15);
+    }
+ 
+    .center { text-align: center; }
+ 
+    h1 {
+      color: #d4af37;
+      margin-bottom: 8px;
+      font-size: 32px;
+      text-align: center;
+      font-weight: 900;
+      letter-spacing: 4px;
+      text-shadow: 0 2px 10px rgba(212,175,55,0.5),
+                   0 4px 20px rgba(212,175,55,0.3),
+                   2px 2px 5px rgba(0,0,0,0.8);
+      font-family: 'Arial Black', 'Helvetica Bold', sans-serif;
+    }
+
+    .social-icons {
+      margin-top: 10px;
+      display: flex;
+      justify-content: center;
+      gap: 30px;                /* space between icons */
+    }
+
+    .social-icons i {
+      font-size: 30px;          /* bigger than before */
+      color: #d4af37;           /* gold */
+    }
+    
+    .social-icons a {
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .subtitle-text {
+      color: #d4af37;
+      font-size: 14px;
+      margin-top: -12px;
+      margin-bottom: 12px;
+      letter-spacing: 2px;
+      font-weight: bold;
+      text-shadow: 0 2px 8px rgba(212,175,55,0.4);
+    }
+
+    h2 {
+      color: #d4af37;
+      margin-bottom: 12px;
+      font-size: 22px;
+    }
+ 
+    h3 {
+      color: #d4af37;
+      margin-bottom: 12px;
+      font-size: 20px;
+    }
+
+    .location-text {
+      position: relative;
+      letter-spacing: 10px;
+    }
+
+    .location-text::before,
+    .location-text::after {
+      content: "";
+      display: inline-block;
+      width: 40px;
+      height: 1px;
+      background: rgba(212,175,55,0.6);
+      vertical-align: middle;
+      margin: 0 12px;
+    }
+ 
+    .prudential { color: #c8102e; font-weight: bold; }
+    .bsn { color: #00b3a4; font-weight: bold; }
+
+    .agents-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+
+    .agent-box {
+      background: #1a1a1a;
+      padding: 16px;
+      border-radius: 14px;
+      border: 2px solid #d4af37;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .agent-box:hover {
+      background: #2a2a2a;
+      box-shadow: 0 0 15px rgba(212,175,55,0.3);
+    }
+
+    .agent-box img {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      object-fit: cover;
+      margin-bottom: 10px;
+      border: 2px solid #d4af37;
+    }
+
+    .agent-name {
+      color: #d4af37;
+      font-weight: 900;
+      font-size: 15px;
+      margin-bottom: 6px;
+      letter-spacing: 1px;
+      text-shadow: 0 1px 4px rgba(212,175,55,0.4);
+      font-family: 'Arial Black', 'Helvetica Bold', sans-serif;
+    }
+
+    .agent-title {
+      color: #f5d27a;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      text-shadow: 0 1px 3px rgba(212,175,55,0.3);
+      font-style: italic;
+    }
+    
+    .form-title {
+      text-align: center;
+    }
+    
+    .form-subtitle {
+      text-align: center;
+      font-size: 12px;   /* smaller */
+      margin-top: -6px;
+      margin-bottom: 20px;
+      line-height: 1.3;
+
+      color: #dcdcdc;    /* soft silver */
+      opacity: 0.7;      /* subtle */
+    }
+
+    .subtitle {
+      text-align: center;
+      color: #f5d27a;
+      font-size: 18px;
+      margin-bottom: 20px;
+      font-weight: bold;
+    }
+ 
+    .profile-img {
+      width: 96px;
+      height: 96px;
+      border-radius: 50%;
+      border: 3px solid #d4af37;
+      object-fit: cover;
+      margin: 14px auto;
+      display: block;
+    }
+ 
+    label {
+      font-weight: bold;
+      margin-bottom: 6px;
+      display: block;
+      font-size: 15px;
+    }
+ 
+    .input-box {
+      width: 100%;
+      padding: 14px;
+      margin-bottom: 16px;
+      font-size: 16px;
+      border-radius: 10px;
+      border: 1px solid #333;
+      background: #1a1a1a;
+      color: #ffffff;
+    }
+    
+    textarea.input-box {
+      font-family: Arial, sans-serif;
+      font-size: 16px;
+      line-height: 1.4;
+      resize: none;
+    }
+
+    .input-box::placeholder { color: #aaaaaa; }
+ 
+    input[type="date"] {
+      color: #aaaaaa;
+      color-scheme: dark;
+    }
+
+    input[type="date"]:valid {
+      color: #ffffff;
+    }
+ 
+    .phone-wrapper {
+      display: flex;
+      align-items: center;
+      background: #1a1a1a;
+      border: 1px solid #333;
+      border-radius: 10px;
+      margin-bottom: 16px;
+    }
+    
+    
+    .country-code {
+      padding: 14px 12px;
+      background: #111;
+      color: #ffffff;
+      font-weight: bold;
+      border-right: 1px solid #333;
+    }
+ 
+    .phone-wrapper input {
+      flex: 1;
+      padding: 14px;
+      font-size: 16px;
+      border: none;
+      background: transparent;
+      color: #ffffff;
+    }
+ 
+    .btn-group {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+ 
+    .btn-option {
+      flex: 1;
+      padding: 14px;
+      border-radius: 12px;
+      border: 1px solid #d4af37;
+      text-align: center;
+      cursor: pointer;
+      color: #d4af37;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .btn-option i {
+      font-size: 22px;
+      color: #d4af37;
+      transition: color 0.3s ease;
+    }
+        
+    .btn-option.active i {
+      color: #000;
+    }
+
+    .btn-option img {
+      height: 24px;
+      width: 24px;
+      filter: 
+        invert(72%)
+        sepia(68%)
+        saturate(540%)
+        hue-rotate(6deg)
+        brightness(95%)
+        contrast(92%);
+      transition: filter 0.3s ease;
+    }
+
+
+
+    .btn-option.active {
+      background: #d4af37;
+      color: #000;
+      font-weight: bold;
+    }
+
+    .btn-option.active img {
+      filter: brightness(0.3);
+    }
+
+    .btn-back {
+      background: transparent;
+      color: #666;
+      margin-bottom: 12px;
+      width: auto;
+      padding: 8px 12px;
+      font-size: 12px;
+      display: inline-block;
+      border: 1px solid #444;
+      border-radius: 6px;
+      transition: all 0.3s ease;
+    }
+
+    .btn-back:hover {
+      color: #888;
+      border-color: #555;
+    }
+
+    button {
+      width: 100%;
+      padding: 16px;
+      border-radius: 14px;
+      border: 2px solid #d4af37;
+      background: transparent;
+      color: #d4af37;
+      font-size: 17px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+    }
+
+    button:hover {
+      background: #d4af37;
+      color: #000;
+      box-shadow: 0 0 20px rgba(212,175,55,0.4);
+    }
+ 
+    #status {
+      margin-top: 16px;
+      text-align: center;
+      font-weight: bold;
+      min-height: 20px;
+      font-size: 15px;
+    }
+
+    .screen {
+      display: none;
+    }
+
+    .screen.active {
+      display: block;
+    }
+
+    .mg-logo {
+      width: 140px;
+      height: 140px;
+      border-radius: 50%;
+      object-fit: cover;
+      margin: 16px auto;
+      display: block;
+      border: 3px solid #d4af37;
+      box-shadow: 0 0 30px rgba(212,175,55,0.6),
+                  0 0 60px rgba(212,175,55,0.4),
+                  inset 0 0 20px rgba(212,175,55,0.2);
+      animation: glow 2s ease-in-out infinite;
+    }
+
+    @keyframes glow {
+      0%, 100% {
+        box-shadow: 0 0 30px rgba(212,175,55,0.6),
+                    0 0 60px rgba(212,175,55,0.4),
+                    inset 0 0 20px rgba(212,175,55,0.2);
+      }
+      50% {
+        box-shadow: 0 0 40px rgba(212,175,55,0.8),
+                    0 0 80px rgba(212,175,55,0.6),
+                    inset 0 0 30px rgba(212,175,55,0.3);
+      }
+    }
+</style>
+</head>
+ 
+<body>
+<!-- Background Music -->
+<audio id="bgMusic" loop muted>
+  <source src="./Audio/background.mp3" type="audio/mpeg">
+</audio>
+
+<div class="container">
+ 
+  <!-- MAIN LANDING PAGE -->
+  <div class="screen active" id="mainScreen">
+    <div class="card center">
+      <h1>MUQMEEN GROUP</h1>
+      <p class="subtitle-text location-text">ALOR SETAR</p>
+      <img class="mg-logo" src="./Picture/MGlogo.jpg" alt="MG Logo">
+    </div>
+
+    <div class="card">
+      <p class="subtitle">Choose Your Takaful Hero</p>
+      <div class="agents-grid" id="agentsContainer"></div>
+    </div>
+  </div>
+
+  <!-- PROFILE -->
+  <div class="screen" id="profileScreen">
+    <button class="btn-back" onclick="goBack()">← Back to Agents</button>
+    <div class="card center">
+      <h2 id="agentDisplayName">MUQMEEN GROUP</h2>
+      <img class="profile-img" id="agentDisplayImage" src="" alt="Agent Profile">
+      <p id="agentDisplayTitle" style="margin: 0;"></p>
+      <p style="margin-top: 4px;">
+        <span class="prudential">Prudential</span>
+        <span class="bsn">BSN</span>
+        Takaful Advisor
+      </p>
+      <div class="social-icons">
+        <a id="igLink" target="_blank" aria-label="Instagram">
+          <i class="fa-brands fa-instagram"></i>
+        </a>
+
+        <a id="fbLink" target="_blank" aria-label="Facebook">
+          <i class="fa-brands fa-facebook"></i>
+        </a>
+
+        <a id="waLink" target="_blank" aria-label="WhatsApp">
+          <i class="fa-brands fa-whatsapp"></i>
+        </a>
+
+        <a id="ttLink" target="_blank" aria-label="TikTok">
+          <i class="fa-brands fa-tiktok"></i>
+        </a>
+      </div>
+    </div>
+ 
+    <!-- FORM -->
+    <div class="card" id="formScreen">
+      <h3 class="form-title">Request Custom Quotation</h3>
+      <p class="form-subtitle">
+        Get your personalised takaful quotation from your Takaful Hero
+        tailored to your needs and lifestyle.
+      </p>
+
+      <form id="quotationForm">
+ 
+        <label>Plan</label>
+        <div class="btn-group">
+          <div class="btn-option" onclick="pick(this,'Medical','Plan')">
+            <i class="fa-solid fa-heart-pulse"></i>
+            Medical
+          </div>
+
+          <div class="btn-option" onclick="pick(this,'Hibah','Plan')">
+            <i class="fa-solid fa-people-roof"></i>
+            Hibah
+          </div>
+        </div>
+ 
+        <label>Full Name</label>
+        <input name="Name" class="input-box" placeholder="As per IC" required>
+ 
+        <label>Birth Date</label>
+        <input name="DOB" type="date" class="input-box" required>
+ 
+        <label>Phone Number</label>
+        <div class="phone-wrapper">
+          <div class="country-code">+60</div>
+          <input id="phone" class="input-box" style="margin:0" placeholder="123456789" required>
+        </div>
+        <input type="hidden" name="Phone Number">
+ 
+        <label>Occupation</label>
+        <input name="Occupation" class="input-box" placeholder="e.g. Teacher" required>
+ 
+        <label>Gender</label>
+        <div class="btn-group">
+          <div class="btn-option" onclick="pick(this,'Male','Sex')">
+            <i class="fa-solid fa-person"></i>
+            Male
+          </div>
+          <div class="btn-option" onclick="pick(this,'Female','Sex')">
+            <i class="fa-solid fa-person-dress"></i>
+            Female
+          </div>
+        </div>
+ 
+        <label>Smoking Status</label>
+        <div class="btn-group">
+          <div class="btn-option" onclick="pick(this,'No','Smoker')"><img src="./Icon/no-smoking.png" alt="Non-Smoker"> Non-Smoker</div>
+          <div class="btn-option" onclick="pick(this,'Yes','Smoker')"><img src="./Icon/smoking.png" alt="Smoker"> Smoker</div>
+        </div>
+        
+        
+        <label>Remarks to Agent (Optional)</label>
+        <textarea 
+          name="Remarks" 
+          class="input-box" 
+          placeholder="Any medical condition, budget range, or special concern?"
+          rows="3"
+        ></textarea>
+
+        <input type="hidden" name="Plan">
+        <input type="hidden" name="Sex">
+        <input type="hidden" name="Smoker">
+        <input type="hidden" name="Agent Code" id="agentCodeField">
+ 
+        <button type="submit">SUBMIT</button>
+        <p id="status"></p>
+      </form>
+    </div>
+ 
+    <!-- SUCCESS -->
+    <div class="card center" id="successScreen" style="display:none;">
+      <h2>✅ Submission Successful</h2>
+      <p>Thank You! Your enquiry on takaful quotation has been received.</p>
+      <button onclick="resetForm()">Submit Another Request</button>
+    </div>
+  </div>
+ 
+</div>
+ 
+<script>
+  // Google Apps Script URL (shared for all agents)
+  const GOOGLE_SHEET_URL = 'https://script.google.com/macros/s/AKfycbyyQBPv7kb-3xjtFi1oNOrnWKE-5re3WaP98eDUpK21LzH-0Epg17eFp9tx59IOC9xs/exec';
+
+  // Background Music - Auto-start on user interaction
+  const bgMusic = document.getElementById('bgMusic');
+  bgMusic.volume = 0.5; // Set volume to 50%
+
+  function startMusic() {
+    bgMusic.muted = false;
+    bgMusic.play().catch(err => console.log('Music play error:', err));
+    console.log('Music started');
+    // Remove listener after first interaction
+    document.removeEventListener('click', startMusic);
+    document.removeEventListener('scroll', startMusic);
+    document.removeEventListener('touchstart', startMusic);
+  }
+
+  // Start music on first user interaction
+  document.addEventListener('click', startMusic);
+  document.addEventListener('scroll', startMusic);
+  document.addEventListener('touchstart', startMusic);
+
+  // Ensure music continues playing on all screens
+  setInterval(() => {
+    if (bgMusic.paused) {
+      bgMusic.play().catch(err => console.log('Music auto-restart error:', err));
+    }
+  }, 2000);
+
+  // AGENTS DATA - loaded from agents.json
+  let agents = [];
+
+  let currentAgent = null;
+  let isDirectLink = false;
+
+  // Load agents from JSON file
+  async function loadAgents() {
+    try {
+      const response = await fetch('./agents.json');
+      const data = await response.json();
+      // Add scriptURL to each agent
+      agents = data.map(agent => ({
+        ...agent,
+        scriptURL: GOOGLE_SHEET_URL
+      }));
+      initAgents();
+      
+      // Check if agent code is in URL hash
+      const agentCode = window.location.hash.substring(1);
+      
+      if (agentCode) {
+        const agent = agents.find(a => a.code === agentCode);
+        if (agent) {
+          isDirectLink = true;
+          selectAgent(agent);
+        }
+      }
+    } catch (error) {
+      console.error('Error loading agents:', error);
+    }
+  }
+
+  // Initialize agents grid on page load
+  function initAgents() {
+    const container = document.getElementById('agentsContainer');
+    container.innerHTML = '';
+    
+    agents.forEach(agent => {
+      const box = document.createElement('div');
+      box.className = 'agent-box';
+      box.innerHTML = `
+        <img src="${agent.image}" alt="${agent.name}">
+        <div class="agent-name">${agent.name}</div>
+        <div class="agent-title">${agent.title}</div>
+      `;
+      box.onclick = () => selectAgent(agent);
+      container.appendChild(box);
+    });
+  }
+
+  function selectAgent(agent) {
+    currentAgent = agent;
+    document.getElementById('agentDisplayName').textContent = agent.name;
+    document.getElementById('agentDisplayImage').src = agent.image;
+    document.getElementById('agentDisplayTitle').textContent = agent.title;
+    document.getElementById('agentCodeField').value = agent.code;
+    
+  // ✅ SOCIAL LINKS (PUT HERE)
+    setSocialLink("igLink", agent.instagram, "https://instagram.com/");
+    setSocialLink("fbLink", agent.facebook, "https://facebook.com/");
+    setSocialLink("waLink", agent.whatsapp, "https://wa.me/");
+    setSocialLink("ttLink", agent.tiktok, "https://www.tiktok.com/@");
+
+    // Update URL hash with agent code
+    if (!isDirectLink) {
+      window.location.hash = agent.code;
+    }
+    
+    // Show or hide back button based on whether this is a direct link
+    const backBtn = document.querySelector('.btn-back');
+    backBtn.style.display = isDirectLink ? 'none' : 'inline-block';
+    
+    showScreen('profileScreen');
+  }
+
+  function setSocialLink(elementId, value, baseUrl) {
+  const el = document.getElementById(elementId);
+
+  if (value) {
+    el.href = baseUrl + value;
+    el.style.display = "inline-flex";
+  } else {
+    el.style.display = "none";
+  }
+}
+
+  function goBack() {
+    window.location.hash = '';
+    showScreen('mainScreen');
+    resetForm();
+  }
+
+  function showScreen(screenId) {
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    document.getElementById(screenId).classList.add('active');
+  }
+
+  function pick(el, value, name) {
+    [...el.parentElement.children].forEach(b => b.classList.remove("active"));
+    el.classList.add("active");
+    document.querySelector(`input[name="${name}"]`).value = value;
+  }
+ 
+  function showError(msg) {
+    document.getElementById("status").innerText = "❌ " + msg;
+  }
+ 
+  function resetForm() {
+    document.getElementById("formScreen").style.display = "block";
+    document.getElementById("successScreen").style.display = "none";
+    document.getElementById("status").innerText = "";
+    document.getElementById("quotationForm").reset();
+    document.querySelectorAll(".btn-option").forEach(b => b.classList.remove("active"));
+  }
+ 
+  document.getElementById("quotationForm").addEventListener("submit", e => {
+    e.preventDefault();
+ 
+    if (!currentAgent) {
+      showError("Please select an agent first.");
+      return;
+    }
+
+    const dobInput = document.getElementById("quotationForm")["DOB"];
+    const name = document.getElementById("quotationForm")["Name"].value.trim();
+    const dob = dobInput.value;
+    const job = document.getElementById("quotationForm")["Occupation"].value.trim();
+    const plan = document.getElementById("quotationForm")["Plan"].value;
+    const sex = document.getElementById("quotationForm")["Sex"].value;
+    const smoker = document.getElementById("quotationForm")["Smoker"].value;
+ 
+    const phoneRaw = document.getElementById("phone").value.replace(/\s+/g,"").replace(/^0+/,"");
+ 
+    if (!plan) return showError("Sila pilih pelan.");
+    if (!name) return showError("Sila isi nama penuh.");
+    if (!dob) return showError("Sila pilih tarikh lahir.");
+    if (!phoneRaw) return showError("Sila isi nombor telefon.");
+    if (!job) return showError("Sila isi pekerjaan.");
+    if (!sex) return showError("Sila pilih jantina.");
+    if (!smoker) return showError("Sila pilih status merokok.");
+ 
+    document.getElementById("quotationForm")["Phone Number"].value = "+60" + phoneRaw;
+    document.getElementById("status").innerText = "⏳ Submitting...";
+ 
+    fetch(currentAgent.scriptURL, { method:"POST", body: new FormData(document.getElementById("quotationForm")) })
+    .then(() => {
+      document.getElementById("formScreen").style.display = "none";
+      document.getElementById("successScreen").style.display = "block";
+ 
+      const remarks = document.getElementById("quotationForm")["Remarks"].value.trim();
+
+      
+      const msg =
+        `Hi ${currentAgent.name},%0A%0A` +
+        `Saya telah menghantar permohonan *Custom Quotation Takaful*.%0A` +
+        `Butiran adalah seperti berikut:%0A%0A` +
+        `👤 Nama: ${name}%0A` +
+        `📋 Pelan: ${plan}%0A` +
+        `🎂 Tarikh Lahir: ${dob}%0A` +
+        `🚬 Status Merokok: ${smoker}%0A` +
+        (remarks ? `%0A📝 Additional Remarks:%0A${remarks}` : ``);
+
+ 
+      setTimeout(() => {
+        window.open(`https://wa.me/${currentAgent.whatsapp}?text=${msg}`, "_blank");
+      }, 800);
+    })
+    .catch(() => showError("Submission failed. Sila cuba lagi."));
+  });
+
+  // Initialize on page load
+  window.addEventListener('load', () => {
+    loadAgents();
+    // Try to play music on page load
+    setTimeout(() => {
+      bgMusic.muted = false;
+      bgMusic.play().catch(err => console.log('Auto-start error:', err));
+      console.log('Page load: Music auto-start attempted');
+    }, 500);
+  });
+</script>
+ 
+</body>
+</html>
