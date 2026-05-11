@@ -525,10 +525,15 @@
  
         <label>Smoking Status</label>
         <div class="btn-group">
-          <div class="btn-option" onclick="pick(this,'No','Smoker')"><img src="./Icon/no-smoking.png" alt="Non-Smoker"> Non-Smoker</div>
-          <div class="btn-option" onclick="pick(this,'Yes','Smoker')"><img src="./Icon/smoking.png" alt="Smoker"> Smoker</div>
-        </div>
-        
+          <div class="btn-option" onclick="pick(this,'No','Smoker')">
+            <i class="fa-solid fa-ban-smoking"></i>
+            Non-Smoker
+          </div>
+          <div class="btn-option" onclick="pick(this,'Yes','Smoker')">
+            <i class="fa-solid fa-smoking"></i>
+            Smoker
+          </div>
+        </div>        
         
         <label>Remarks to Agent (Optional)</label>
         <textarea 
