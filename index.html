@@ -116,6 +116,7 @@
     }
 
     #agentDisplayName {
+      color: #f5d27a;
       background: linear-gradient(135deg, #d4af37 0%, #f5d27a 50%, #d4af37 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
@@ -125,10 +126,19 @@
       margin-bottom: 12px;
       letter-spacing: 2px;
       text-transform: uppercase;
-      filter: drop-shadow(0 2px 4px rgba(212,175,55,0.3));
+      text-shadow: 0 2px 4px rgba(212,175,55,0.3);
+      -webkit-text-stroke: 0.5px rgba(212,175,55,0.3);
+    }
+
+    @supports not (-webkit-text-fill-color: transparent) {
+      #agentDisplayName {
+        color: #f5d27a;
+        -webkit-text-fill-color: #f5d27a;
+      }
     }
 
     #agentDisplayTitle {
+      color: #ff8c00;
       background: linear-gradient(90deg, #ff6b6b 0%, #ff8c00 25%, #ffd700 50%, #ff8c00 75%, #ff6b6b 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
@@ -137,7 +147,15 @@
       font-weight: 700;
       letter-spacing: 1px;
       text-transform: capitalize;
-      filter: drop-shadow(0 1px 3px rgba(255,107,107,0.2));
+      text-shadow: 0 1px 2px rgba(255,107,107,0.2);
+      -webkit-text-stroke: 0.3px rgba(255,140,0,0.2);
+    }
+
+    @supports not (-webkit-text-fill-color: transparent) {
+      #agentDisplayTitle {
+        color: #ff8c00;
+        -webkit-text-fill-color: #ff8c00;
+      }
     }
 
     .location-text {
@@ -163,9 +181,8 @@
       letter-spacing: 1.5px;
       font-family: 'Georgia', 'Times New Roman', serif;
       text-transform: uppercase;
-      font-style: bold;
-      text-shadow: 0 1px 3px rgba(200,16,46,0.4);
-      filter: drop-shadow(0 1px 2px rgba(200,16,46,0.2));
+      font-style: italic;
+      text-shadow: 0 1px 2px rgba(200,16,46,0.3);
     }
     .bsn { 
       color: #00b3a4; 
@@ -174,9 +191,8 @@
       letter-spacing: 1.5px;
       font-family: 'Georgia', 'Times New Roman', serif;
       text-transform: uppercase;
-      font-style: bold;
-      text-shadow: 0 1px 3px rgba(0,179,164,0.4);
-      filter: drop-shadow(0 1px 2px rgba(0,179,164,0.2));
+      font-style: italic;
+      text-shadow: 0 1px 2px rgba(0,179,164,0.3);
     }
 
     .agents-grid {
@@ -358,7 +374,7 @@
       flex: 1;
       padding: 14px;
       border-radius: 12px;
-      border: 1px solid #d4af37;
+      border: 2px solid #d4af37;
       text-align: center;
       cursor: pointer;
       color: #d4af37;
@@ -366,6 +382,11 @@
       align-items: center;
       justify-content: center;
       gap: 8px;
+      transition: all 0.3s ease;
+      -webkit-user-select: none;
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
+      touch-action: manipulation;
     }
 
     .btn-option i {
@@ -397,6 +418,12 @@
       background: #d4af37;
       color: #000;
       font-weight: bold;
+      border-color: #d4af37;
+      box-shadow: 0 0 10px rgba(212,175,55,0.3);
+    }
+
+    .btn-option.active:active {
+      box-shadow: 0 0 15px rgba(212,175,55,0.5);
     }
 
     .btn-option.active img {
