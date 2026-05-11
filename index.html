@@ -115,6 +115,33 @@
       font-size: 20px;
     }
 
+    #agentDisplayName {
+      background: linear-gradient(135deg, #d4af37 0%, #f5d27a 50%, #d4af37 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      font-weight: 900;
+      font-size: 22px;
+      margin-bottom: 12px;
+      letter-spacing: 2px;
+      text-shadow: 0 2px 6px rgba(212,175,55,0.3);
+      text-transform: uppercase;
+      filter: drop-shadow(0 2px 4px rgba(212,175,55,0.3));
+    }
+
+    #agentDisplayTitle {
+      background: linear-gradient(90deg, #ff6b6b 0%, #ff8c00 25%, #ffd700 50%, #ff8c00 75%, #ff6b6b 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      font-size: 14px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-shadow: 0 2px 4px rgba(212,175,55,0.4);
+      text-transform: capitalize;
+      filter: drop-shadow(0 1px 3px rgba(255,107,107,0.2));
+    }
+
     .location-text {
       position: relative;
       letter-spacing: 10px;
@@ -131,8 +158,28 @@
       margin: 0 12px;
     }
  
-    .prudential { color: #c8102e; font-weight: bold; }
-    .bsn { color: #00b3a4; font-weight: bold; }
+    .prudential { 
+      color: #c8102e; 
+      font-weight: 900; 
+      font-size: 13px;
+      letter-spacing: 1.5px;
+      font-family: 'Georgia', 'Times New Roman', serif;
+      text-transform: uppercase;
+      font-style: bold;
+      text-shadow: 0 1px 3px rgba(200,16,46,0.4);
+      filter: drop-shadow(0 1px 2px rgba(200,16,46,0.2));
+    }
+    .bsn { 
+      color: #00b3a4; 
+      font-weight: 900; 
+      font-size: 13px;
+      letter-spacing: 1.5px;
+      font-family: 'Georgia', 'Times New Roman', serif;
+      text-transform: uppercase;
+      font-style: bold;
+      text-shadow: 0 1px 3px rgba(0,179,164,0.4);
+      filter: drop-shadow(0 1px 2px rgba(0,179,164,0.2));
+    }
 
     .agents-grid {
       display: grid;
@@ -166,22 +213,30 @@
     }
 
     .agent-name {
-      color: #d4af37;
+      background: linear-gradient(135deg, #d4af37 0%, #f5d27a 50%, #d4af37 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
       font-weight: 900;
-      font-size: 15px;
+      font-size: 13px;
       margin-bottom: 6px;
-      letter-spacing: 1px;
-      text-shadow: 0 1px 4px rgba(212,175,55,0.4);
-      font-family: 'Arial Black', 'Helvetica Bold', sans-serif;
+      letter-spacing: 2px;
+      text-shadow: 0 2px 6px rgba(212,175,55,0.3);
+      text-transform: uppercase;
+      filter: drop-shadow(0 2px 4px rgba(212,175,55,0.3));
     }
 
     .agent-title {
-      color: #f5d27a;
-      font-size: 12px;
-      font-weight: 600;
-      letter-spacing: 0.5px;
-      text-shadow: 0 1px 3px rgba(212,175,55,0.3);
-      font-style: italic;
+      background: linear-gradient(90deg, #ff6b6b 0%, #ff8c00 25%, #ffd700 50%, #ff8c00 75%, #ff6b6b 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-shadow: 0 2px 4px rgba(212,175,55,0.4);
+      text-transform: capitalize;
+      filter: drop-shadow(0 1px 3px rgba(255,107,107,0.2));
     }
     
     .form-title {
@@ -215,6 +270,23 @@
       object-fit: cover;
       margin: 14px auto;
       display: block;
+      box-shadow: 0 0 25px rgba(212,175,55,0.6),
+                  0 0 50px rgba(212,175,55,0.4),
+                  inset 0 0 15px rgba(212,175,55,0.2);
+      animation: profileGlow 2s ease-in-out infinite;
+    }
+
+    @keyframes profileGlow {
+      0%, 100% {
+        box-shadow: 0 0 25px rgba(212,175,55,0.6),
+                    0 0 50px rgba(212,175,55,0.4),
+                    inset 0 0 15px rgba(212,175,55,0.2);
+      }
+      50% {
+        box-shadow: 0 0 35px rgba(212,175,55,0.8),
+                    0 0 70px rgba(212,175,55,0.6),
+                    inset 0 0 20px rgba(212,175,55,0.3);
+      }
     }
  
     label {
@@ -451,7 +523,6 @@
       <p style="margin-top: 4px;">
         <span class="prudential">Prudential</span>
         <span class="bsn">BSN</span>
-        Takaful Advisor
       </p>
       <div class="social-icons">
         <a id="igLink" target="_blank" aria-label="Instagram">
@@ -499,7 +570,7 @@
         <input name="Name" class="input-box" placeholder="As per IC" required>
  
         <label>Birth Date</label>
-        <input name="DOB" type="date" class="input-box" required>
+        <input name="DOB" type="date" class="input-box" id="dobInput" required>
  
         <label>Phone Number</label>
         <div class="phone-wrapper">
@@ -764,9 +835,20 @@
     .catch(() => showError("Submission failed. Sila cuba lagi."));
   });
 
+  // Set max date to today (no future dates)
+  function setMaxDate() {
+    const dobInput = document.getElementById('dobInput');
+    const today = new Date();
+    const yyyy = today.getFullYear();
+    const mm = String(today.getMonth() + 1).padStart(2, '0');
+    const dd = String(today.getDate()).padStart(2, '0');
+    dobInput.max = `${yyyy}-${mm}-${dd}`;
+  }
+
   // Initialize on page load
   window.addEventListener('load', () => {
     loadAgents();
+    setMaxDate();
     // Try to play music on page load
     setTimeout(() => {
       bgMusic.muted = false;
