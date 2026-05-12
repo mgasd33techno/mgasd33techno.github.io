@@ -126,7 +126,6 @@
       margin-bottom: 12px;
       letter-spacing: 2px;
       text-transform: uppercase;
-      text-shadow: 0 2px 4px rgba(212,175,55,0.3);
       -webkit-text-stroke: 0.5px rgba(212,175,55,0.3);
     }
 
@@ -147,7 +146,6 @@
       font-weight: 700;
       letter-spacing: 1px;
       text-transform: capitalize;
-      text-shadow: 0 1px 2px rgba(255,107,107,0.2);
       -webkit-text-stroke: 0.3px rgba(255,140,0,0.2);
     }
 
@@ -206,6 +204,7 @@
       text-align: center;
       cursor: pointer;
       transition: all 0.3s ease;
+      position: relative;
     }
 
     .agent-box:hover {
@@ -260,6 +259,58 @@
 
       color: #dcdcdc;    /* soft silver */
       opacity: 0.7;      /* subtle */
+    }
+
+    .form-mode-tabs {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+      border-bottom: 2px solid #333;
+    }
+
+    .form-mode-tab {
+      flex: 1;
+      padding: 12px;
+      background: transparent;
+      border: none;
+      color: #999;
+      font-weight: bold;
+      cursor: pointer;
+      text-align: center;
+      border-bottom: 3px solid transparent;
+      transition: all 0.3s ease;
+      text-transform: uppercase;
+      font-size: 12px;
+      letter-spacing: 1px;
+    }
+
+    .form-mode-tab:hover {
+      color: #000;
+      background: #d4af37;
+    }
+
+    .form-mode-tab.active {
+      color: #d4af37;
+      border-bottom-color: #d4af37;
+    }
+
+    .form-mode-content {
+      display: none;
+    }
+
+    .form-mode-content.active {
+      display: block;
+    }
+
+    .disclaimer {
+      background: rgba(212,175,55,0.1);
+      border-left: 3px solid #d4af37;
+      padding: 8px;
+      margin-top: 12px;
+      border-radius: 6px;
+      font-size: 10px;
+      color: #dcdcdc;
+      line-height: 1.3;
     }
 
     .subtitle {
@@ -507,6 +558,53 @@
                     inset 0 0 30px rgba(212,175,55,0.3);
       }
     }
+
+    .unit-selector {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .unit-btn {
+      padding: 10px 16px;
+      border-radius: 10px;
+      border: 2px solid #d4af37;
+      background: transparent;
+      color: #d4af37;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      -webkit-user-select: none;
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
+      touch-action: manipulation;
+    }
+
+    .unit-btn:hover {
+      box-shadow: 0 0 10px rgba(212,175,55,0.3);
+    }
+
+    .unit-btn.active {
+      background: #d4af37;
+      color: #000;
+      box-shadow: 0 0 15px rgba(212,175,55,0.5);
+    }
+
+    .agent-box {
+      background: #1a1a1a;
+      padding: 16px;
+      border-radius: 14px;
+      border: 2px solid #d4af37;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      position: relative;
+    }
 </style>
 </head>
  
@@ -528,6 +626,7 @@
 
     <div class="card">
       <p class="subtitle">Choose Your Takaful Hero</p>
+      <div class="unit-selector" id="unitSelector"></div>
       <div class="agents-grid" id="agentsContainer"></div>
     </div>
   </div>
@@ -564,83 +663,167 @@
  
     <!-- FORM -->
     <div class="card" id="formScreen">
-      <h3 class="form-title">Request Custom Quotation</h3>
-      <p class="form-subtitle">
-        Get your personalised takaful quotation from your Takaful Hero
-        tailored to your needs and lifestyle.
-      </p>
+      <div class="form-mode-tabs">
+        <button class="form-mode-tab active" onclick="switchFormMode('request')">Custom Quotation</button>
+        <button class="form-mode-tab" onclick="switchFormMode('generate')">Quick Quotation</button>
+      </div>
 
-      <form id="quotationForm">
+      <!-- REQUEST CUSTOM QUOTATION MODE -->
+      <div class="form-mode-content active" id="requestMode">
+        <h3 class="form-title">Request Custom Quotation</h3>
+        <p class="form-subtitle">
+          Get your personalised takaful quotation from your Takaful Hero
+          tailored to your needs and lifestyle.
+        </p>
+
+        <form id="quotationForm">
+          <label>Plan</label>
+          <div class="btn-group">
+            <div class="btn-option" onclick="pick(this,'Medical','Plan')">
+              <i class="fa-solid fa-heart-pulse"></i>
+              Medical
+            </div>
+
+            <div class="btn-option" onclick="pick(this,'Hibah','Plan')">
+              <i class="fa-solid fa-people-roof"></i>
+              Hibah
+            </div>
+          </div>
+          
+          <label>Full Name</label>
+          <input name="Name" class="input-box" placeholder="As per IC" required>
+          
+          <label>Birth Date</label>
+          <input name="DOB" type="date" class="input-box" id="dobInput" required>
+          
+          <label>Phone Number</label>
+          <div class="phone-wrapper">
+            <div class="country-code">+60</div>
+            <input id="phone" class="input-box" style="margin:0" placeholder="123456789" required>
+          </div>
+          <input type="hidden" name="Phone Number">
+          
+          <label>Occupation</label>
+          <input name="Occupation" class="input-box" placeholder="e.g. Teacher" required>
+          
+          <label>Gender</label>
+          <div class="btn-group">
+            <div class="btn-option" onclick="pick(this,'Male','Sex')">
+              <i class="fa-solid fa-person"></i>
+              Male
+            </div>
+            <div class="btn-option" onclick="pick(this,'Female','Sex')">
+              <i class="fa-solid fa-person-dress"></i>
+              Female
+            </div>
+          </div>
+          
+          <label>Smoking Status</label>
+          <div class="btn-group">
+            <div class="btn-option" onclick="pick(this,'No','Smoker')">
+              <i class="fa-solid fa-ban-smoking"></i>
+              Non-Smoker
+            </div>
+            <div class="btn-option" onclick="pick(this,'Yes','Smoker')">
+              <i class="fa-solid fa-smoking"></i>
+              Smoker
+            </div>
+          </div>          
+          
+          <label>Remarks to Agent (Optional)</label>
+          <textarea 
+            name="Remarks" 
+            class="input-box" 
+            placeholder="Any medical condition, budget range, or special concern?"
+            rows="3"
+          ></textarea>
+
+          <input type="hidden" name="Plan">
+          <input type="hidden" name="Sex">
+          <input type="hidden" name="Smoker">
+          <input type="hidden" name="Agent Code" id="agentCodeField">
+          
+          <button type="submit" id="submitBtn">SUBMIT</button>
+          <p id="status"></p>
+        </form>
+      </div>
+
+      <!-- GENERATE QUOTATION MODE -->
+      <div class="form-mode-content" id="generateMode">
+        <h3 class="form-title">Generate Quick Quotation</h3>
+        <p class="form-subtitle">
+          Generate a quick quotation under one click - fast and easy
+        </p>
+
+        <form id="generateForm" onsubmit="handleGenerateSubmit(event)">
+          <label>Plan</label>
+          <div class="btn-group">
+            <div class="btn-option" onclick="pick(this,'Medical','Plan')">
+              <i class="fa-solid fa-heart-pulse"></i>
+              Medical
+            </div>
+
+            <div class="btn-option" onclick="pick(this,'Hibah','Plan')">
+              <i class="fa-solid fa-people-roof"></i>
+              Hibah
+            </div>
+          </div>
  
-        <label>Plan</label>
-        <div class="btn-group">
-          <div class="btn-option" onclick="pick(this,'Medical','Plan')">
-            <i class="fa-solid fa-heart-pulse"></i>
-            Medical
+          <label>Full Name</label>
+          <input name="Name" class="input-box" placeholder="As per IC" required>
+ 
+          <label>Birth Date</label>
+          <input name="DOB" type="date" class="input-box" id="genDobInput" required>
+ 
+          <label>Phone Number</label>
+          <div class="phone-wrapper">
+            <div class="country-code">+60</div>
+            <input id="genPhone" class="input-box" style="margin:0" placeholder="123456789" required>
+          </div>
+          <input type="hidden" name="Phone Number">
+ 
+          <label>Occupation</label>
+          <input name="Occupation" class="input-box" placeholder="e.g. Teacher" required>
+ 
+          <label>Gender</label>
+          <div class="btn-group">
+            <div class="btn-option" onclick="pick(this,'Male','Sex')">
+              <i class="fa-solid fa-person"></i>
+              Male
+            </div>
+            <div class="btn-option" onclick="pick(this,'Female','Sex')">
+              <i class="fa-solid fa-person-dress"></i>
+              Female
+            </div>
+          </div>
+ 
+          <label>Smoking Status</label>
+          <div class="btn-group">
+            <div class="btn-option" onclick="pick(this,'No','Smoker')">
+              <i class="fa-solid fa-ban-smoking"></i>
+              Non-Smoker
+            </div>
+            <div class="btn-option" onclick="pick(this,'Yes','Smoker')">
+              <i class="fa-solid fa-smoking"></i>
+              Smoker
+            </div>
           </div>
 
-          <div class="btn-option" onclick="pick(this,'Hibah','Plan')">
-            <i class="fa-solid fa-people-roof"></i>
-            Hibah
+          <input type="hidden" name="Plan">
+          <input type="hidden" name="Sex">
+          <input type="hidden" name="Smoker">
+          <input type="hidden" name="Agent Code" id="genAgentCodeField">
+          
+          <button type="submit" id="generateBtn">GENERATE</button>
+          <p id="generateStatus"></p>
+          <div class="disclaimer" style="display:none;" id="disclaimer">
+            <p style="font-size: 12px; text-align: center;">
+              <strong>*Disclaimer:</strong> Quotation generated is for Class 1/2 only.
+              For Class 3 and 4, please use Custom Quotation.
+            </p>
           </div>
-        </div>
- 
-        <label>Full Name</label>
-        <input name="Name" class="input-box" placeholder="As per IC" required>
- 
-        <label>Birth Date</label>
-        <input name="DOB" type="date" class="input-box" id="dobInput" required>
- 
-        <label>Phone Number</label>
-        <div class="phone-wrapper">
-          <div class="country-code">+60</div>
-          <input id="phone" class="input-box" style="margin:0" placeholder="123456789" required>
-        </div>
-        <input type="hidden" name="Phone Number">
- 
-        <label>Occupation</label>
-        <input name="Occupation" class="input-box" placeholder="e.g. Teacher" required>
- 
-        <label>Gender</label>
-        <div class="btn-group">
-          <div class="btn-option" onclick="pick(this,'Male','Sex')">
-            <i class="fa-solid fa-person"></i>
-            Male
-          </div>
-          <div class="btn-option" onclick="pick(this,'Female','Sex')">
-            <i class="fa-solid fa-person-dress"></i>
-            Female
-          </div>
-        </div>
- 
-        <label>Smoking Status</label>
-        <div class="btn-group">
-          <div class="btn-option" onclick="pick(this,'No','Smoker')">
-            <i class="fa-solid fa-ban-smoking"></i>
-            Non-Smoker
-          </div>
-          <div class="btn-option" onclick="pick(this,'Yes','Smoker')">
-            <i class="fa-solid fa-smoking"></i>
-            Smoker
-          </div>
-        </div>        
-        
-        <label>Remarks to Agent (Optional)</label>
-        <textarea 
-          name="Remarks" 
-          class="input-box" 
-          placeholder="Any medical condition, budget range, or special concern?"
-          rows="3"
-        ></textarea>
-
-        <input type="hidden" name="Plan">
-        <input type="hidden" name="Sex">
-        <input type="hidden" name="Smoker">
-        <input type="hidden" name="Agent Code" id="agentCodeField">
- 
-        <button type="submit">SUBMIT</button>
-        <p id="status"></p>
-      </form>
+        </form>
+      </div>
     </div>
  
     <!-- SUCCESS -->
@@ -717,11 +900,59 @@
   }
 
   // Initialize agents grid on page load
+  let currentUnit = null;
+
+  function getUnitFromCode(code) {
+    // Extract first 3 characters as unit code
+    return code.substring(0, 3);
+  }
+
   function initAgents() {
+    // Extract unique units and sort them
+    const units = [...new Set(agents.map(a => getUnitFromCode(a.code)))].sort();
+    
+    // Create unit selector buttons
+    const unitSelectorContainer = document.getElementById('unitSelector');
+    unitSelectorContainer.innerHTML = '';
+    
+    units.forEach(unit => {
+      const btn = document.createElement('button');
+      btn.className = 'unit-btn';
+      btn.textContent = unit;
+      btn.onclick = (e) => {
+        e.preventDefault();
+        filterByUnit(unit);
+        // Update active button
+        document.querySelectorAll('.unit-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+      };
+      unitSelectorContainer.appendChild(btn);
+    });
+
+    // Set first unit as default
+    if (units.length > 0) {
+      currentUnit = units[0];
+      document.querySelector('.unit-btn').classList.add('active');
+    }
+
+    // Display agents for default unit
+    displayAgentsByUnit(currentUnit);
+  }
+
+  function filterByUnit(unit) {
+    currentUnit = unit;
+    displayAgentsByUnit(unit);
+  }
+
+  function displayAgentsByUnit(unit) {
     const container = document.getElementById('agentsContainer');
     container.innerHTML = '';
     
-    agents.forEach(agent => {
+    // Filter agents by unit
+    const unitAgents = agents.filter(a => getUnitFromCode(a.code) === unit);
+
+    // Display agents
+    unitAgents.forEach((agent) => {
       const box = document.createElement('div');
       box.className = 'agent-box';
       box.innerHTML = `
@@ -784,7 +1015,17 @@
   function pick(el, value, name) {
     [...el.parentElement.children].forEach(b => b.classList.remove("active"));
     el.classList.add("active");
-    document.querySelector(`input[name="${name}"]`).value = value;
+    
+    // Find the correct form (Request or Generate) and update the matching hidden input
+    const requestForm = document.getElementById("quotationForm");
+    const generateForm = document.getElementById("generateForm");
+    
+    // Check which form contains this button
+    if (el.closest("#quotationForm")) {
+      requestForm.querySelector(`input[name="${name}"]`).value = value;
+    } else if (el.closest("#generateForm")) {
+      generateForm.querySelector(`input[name="${name}"]`).value = value;
+    }
   }
  
   function showError(msg) {
@@ -794,9 +1035,105 @@
   function resetForm() {
     document.getElementById("formScreen").style.display = "block";
     document.getElementById("successScreen").style.display = "none";
+    document.getElementById("requestMode").style.display = "block";
+    document.getElementById("generateMode").style.display = "none";
     document.getElementById("status").innerText = "";
+    document.getElementById("generateStatus").innerText = "";
     document.getElementById("quotationForm").reset();
+    document.getElementById("generateForm").reset();
     document.querySelectorAll(".btn-option").forEach(b => b.classList.remove("active"));
+    
+    // Reset tab to request mode
+    document.querySelectorAll(".form-mode-tab").forEach(tab => tab.classList.remove("active"));
+    document.querySelectorAll(".form-mode-tab")[0].classList.add("active");
+  }
+
+  function switchFormMode(mode) {
+    const requestMode = document.getElementById("requestMode");
+    const generateMode = document.getElementById("generateMode");
+    const tabs = document.querySelectorAll(".form-mode-tab");
+    const disclaimer = document.getElementById("disclaimer");
+
+    // Update tabs
+    tabs.forEach(tab => tab.classList.remove("active"));
+    if (mode === "request") {
+      tabs[0].classList.add("active");
+      requestMode.classList.add("active");
+      generateMode.classList.remove("active");
+      disclaimer.style.display = "none";
+    } else {
+      tabs[1].classList.add("active");
+      requestMode.classList.remove("active");
+      generateMode.classList.add("active");
+      disclaimer.style.display = "block";
+    }
+    
+    // Reset status messages
+    document.getElementById("status").innerText = "";
+    document.getElementById("generateStatus").innerText = "";
+  }
+
+  function handleGenerateSubmit(e) {
+    e.preventDefault();
+    document.getElementById("generateStatus").innerText = "";
+    
+    if (!currentAgent) {
+      document.getElementById("generateStatus").innerText = "❌ Please select an agent first.";
+      return;
+    }
+
+    const name = document.getElementById("generateForm")["Name"].value.trim();
+    const dob = document.getElementById("generateForm")["DOB"].value;
+    const job = document.getElementById("generateForm")["Occupation"].value.trim();
+    const plan = document.getElementById("generateForm")["Plan"].value;
+    const sex = document.getElementById("generateForm")["Sex"].value;
+    const smoker = document.getElementById("generateForm")["Smoker"].value;
+    const phoneRaw = document.getElementById("genPhone").value.replace(/\s+/g,"").replace(/^0+/,"");
+
+    if (!plan) {
+      document.getElementById("generateStatus").innerText = "❌ Sila pilih pelan.";
+      return;
+    }
+    if (!name) {
+      document.getElementById("generateStatus").innerText = "❌ Sila isi nama penuh.";
+      return;
+    }
+    if (!dob) {
+      document.getElementById("generateStatus").innerText = "❌ Sila pilih tarikh lahir.";
+      return;
+    }
+    if (!phoneRaw) {
+      document.getElementById("generateStatus").innerText = "❌ Sila isi nombor telefon.";
+      return;
+    }
+    if (!job) {
+      document.getElementById("generateStatus").innerText = "❌ Sila isi pekerjaan.";
+      return;
+    }
+    if (!sex) {
+      document.getElementById("generateStatus").innerText = "❌ Sila pilih jantina.";
+      return;
+    }
+    if (!smoker) {
+      document.getElementById("generateStatus").innerText = "❌ Sila pilih status merokok.";
+      return;
+    }
+
+    document.getElementById("generateForm")["Phone Number"].value = "+60" + phoneRaw;
+    document.getElementById("generateForm")["Agent Code"].value = currentAgent.code;
+    document.getElementById("generateStatus").innerText = "⏳ Generating...";
+
+    fetch(currentAgent.scriptURL, { method:"POST", body: new FormData(document.getElementById("generateForm")) })
+    .then(() => {
+      document.getElementById("generateStatus").innerHTML = "✅ <strong>Quotation generated successfully!</strong>";
+      setTimeout(() => {
+        document.getElementById("generateStatus").innerText = "";
+      }, 3000);
+    })
+    .catch((error) => {
+      console.error("Generation error:", error);
+      document.getElementById("generateStatus").innerText = "❌ Generation failed. Sila cuba lagi.";
+    });
   }
  
   document.getElementById("quotationForm").addEventListener("submit", e => {
@@ -857,11 +1194,14 @@
   // Set max date to today (no future dates)
   function setMaxDate() {
     const dobInput = document.getElementById('dobInput');
+    const genDobInput = document.getElementById('genDobInput');
     const today = new Date();
     const yyyy = today.getFullYear();
     const mm = String(today.getMonth() + 1).padStart(2, '0');
     const dd = String(today.getDate()).padStart(2, '0');
-    dobInput.max = `${yyyy}-${mm}-${dd}`;
+    const maxDate = `${yyyy}-${mm}-${dd}`;
+    dobInput.max = maxDate;
+    if (genDobInput) genDobInput.max = maxDate;
   }
 
   // Initialize on page load
