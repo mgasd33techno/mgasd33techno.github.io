@@ -664,8 +664,21 @@
     <!-- FORM -->
     <div class="card" id="formScreen">
       <div class="form-mode-tabs">
-        <button class="form-mode-tab active" onclick="switchFormMode('request')">Custom Quotation</button>
-        <button class="form-mode-tab" onclick="switchFormMode('generate')">Quick Quotation</button>
+        <button
+          type="button"
+          class="form-mode-tab active"
+          onclick="switchFormMode('request')"
+        >
+          Custom Quotation
+        </button>
+
+        <button
+          type="button"
+          class="form-mode-tab"
+          onclick="switchFormMode('generate')"
+        >
+          Quick Quotation
+        </button>
       </div>
 
       <!-- REQUEST CUSTOM QUOTATION MODE -->
@@ -1033,19 +1046,31 @@
   }
  
   function resetForm() {
+    // Show form, hide success
     document.getElementById("formScreen").style.display = "block";
     document.getElementById("successScreen").style.display = "none";
-    document.getElementById("requestMode").style.display = "block";
-    document.getElementById("generateMode").style.display = "none";
-    document.getElementById("status").innerText = "";
-    document.getElementById("generateStatus").innerText = "";
+
+    // Reset forms
     document.getElementById("quotationForm").reset();
     document.getElementById("generateForm").reset();
+
+    // Clear statuses
+    document.getElementById("status").innerText = "";
+    document.getElementById("generateStatus").innerText = "";
+
+    // Reset option buttons
     document.querySelectorAll(".btn-option").forEach(b => b.classList.remove("active"));
-    
-    // Reset tab to request mode
+
+    // ✅ Reset tabs
     document.querySelectorAll(".form-mode-tab").forEach(tab => tab.classList.remove("active"));
-    document.querySelectorAll(".form-mode-tab")[0].classList.add("active");
+    document.querySelector(".form-mode-tab").classList.add("active"); // first tab
+
+    // ✅ Reset mode contents
+    document.getElementById("requestMode").classList.add("active");
+    document.getElementById("generateMode").classList.remove("active");
+
+    // ✅ Hide disclaimer
+    document.getElementById("disclaimer").style.display = "none";
   }
 
   function switchFormMode(mode) {
@@ -1091,31 +1116,31 @@
     const phoneRaw = document.getElementById("genPhone").value.replace(/\s+/g,"").replace(/^0+/,"");
 
     if (!plan) {
-      document.getElementById("generateStatus").innerText = "❌ Sila pilih pelan.";
+      document.getElementById("generateStatus").innerText = "❌ Please choose a plan.";
       return;
     }
     if (!name) {
-      document.getElementById("generateStatus").innerText = "❌ Sila isi nama penuh.";
+      document.getElementById("generateStatus").innerText = "❌ Please fill in your full name.";
       return;
     }
     if (!dob) {
-      document.getElementById("generateStatus").innerText = "❌ Sila pilih tarikh lahir.";
+      document.getElementById("generateStatus").innerText = "❌ Please select your date of birth.";
       return;
     }
     if (!phoneRaw) {
-      document.getElementById("generateStatus").innerText = "❌ Sila isi nombor telefon.";
+      document.getElementById("generateStatus").innerText = "❌ Please enter your phone number.";
       return;
     }
     if (!job) {
-      document.getElementById("generateStatus").innerText = "❌ Sila isi pekerjaan.";
+      document.getElementById("generateStatus").innerText = "❌ Please fill in your occupation.";
       return;
     }
     if (!sex) {
-      document.getElementById("generateStatus").innerText = "❌ Sila pilih jantina.";
+      document.getElementById("generateStatus").innerText = "❌ Please select your gender.";
       return;
     }
     if (!smoker) {
-      document.getElementById("generateStatus").innerText = "❌ Sila pilih status merokok.";
+      document.getElementById("generateStatus").innerText = "❌ Please choose your smoking status.";
       return;
     }
 
@@ -1132,7 +1157,7 @@
     })
     .catch((error) => {
       console.error("Generation error:", error);
-      document.getElementById("generateStatus").innerText = "❌ Generation failed. Sila cuba lagi.";
+      document.getElementById("generateStatus").innerText = "❌ Generation failed. Please try again.";
     });
   }
  
@@ -1154,13 +1179,13 @@
  
     const phoneRaw = document.getElementById("phone").value.replace(/\s+/g,"").replace(/^0+/,"");
  
-    if (!plan) return showError("Sila pilih pelan.");
-    if (!name) return showError("Sila isi nama penuh.");
-    if (!dob) return showError("Sila pilih tarikh lahir.");
-    if (!phoneRaw) return showError("Sila isi nombor telefon.");
-    if (!job) return showError("Sila isi pekerjaan.");
-    if (!sex) return showError("Sila pilih jantina.");
-    if (!smoker) return showError("Sila pilih status merokok.");
+    if (!plan) return showError("Please choose a plan.");
+    if (!name) return showError("Please fill in your full name.");
+    if (!dob) return showError("Please select your date of birth.");
+    if (!phoneRaw) return showError("Please enter your phone number.");
+    if (!job) return showError("Please fill in your occupation.");
+    if (!sex) return showError("Please select your gender.");
+    if (!smoker) return showError("Please choose your smoking status.");
  
     document.getElementById("quotationForm")["Phone Number"].value = "+60" + phoneRaw;
     document.getElementById("status").innerText = "⏳ Submitting...";
@@ -1191,17 +1216,34 @@
     .catch(() => showError("Submission failed. Sila cuba lagi."));
   });
 
-  // Set max date to today (no future dates)
+  // Set date range: max age at next birthday is 50
   function setMaxDate() {
     const dobInput = document.getElementById('dobInput');
     const genDobInput = document.getElementById('genDobInput');
     const today = new Date();
+    const maxANB = 50; // Max Age at Next Birthday
+    
+    // Max date: today (can't be born in future)
     const yyyy = today.getFullYear();
     const mm = String(today.getMonth() + 1).padStart(2, '0');
     const dd = String(today.getDate()).padStart(2, '0');
     const maxDate = `${yyyy}-${mm}-${dd}`;
+    
+    // Min date: today minus (maxANB + 1) years
+    const cutoffDate = new Date(today);
+    cutoffDate.setFullYear(today.getFullYear() - (maxANB + 1));
+    const minYyyy = cutoffDate.getFullYear();
+    const minMm = String(cutoffDate.getMonth() + 1).padStart(2, '0');
+    const minDd = String(cutoffDate.getDate()).padStart(2, '0');
+    const minDate = `${minYyyy}-${minMm}-${minDd}`;
+    
+    // Apply constraints to both forms
     dobInput.max = maxDate;
-    if (genDobInput) genDobInput.max = maxDate;
+    dobInput.min = minDate;
+    if (genDobInput) {
+      genDobInput.max = maxDate;
+      genDobInput.min = minDate;
+    }
   }
 
   // Initialize on page load
