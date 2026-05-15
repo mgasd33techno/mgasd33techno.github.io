@@ -62,7 +62,95 @@
     }
  
     .center { text-align: center; }
- 
+    /* PAGE HEADER */
+    .plan-title {
+      text-align: center;
+      color: white;
+    }
+
+    .plan-title h1 {
+      font-size: 40px;
+      letter-spacing: 2px;
+    }
+
+    .plan-title p {
+      font-size: 16px;
+    }
+
+    /* CARD CONTAINER */
+    .quotation-container {
+      display: flex;
+      gap: 30px;
+      justify-content: center;
+      margin-top: 30px;
+      flex-wrap: wrap;
+    }
+
+    /* CARD */
+    .quotation-card {
+      background: #f5f5f5;
+      border-radius: 12px;
+      padding: 25px;
+      width: 320px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+
+    /* PLAN TITLE */
+    .quotation-card h3 {
+      font-size: 28px;
+      color: #3b5bfd;
+      margin-bottom: 10px;
+    }
+
+    /* PRICE */
+    .quote-price {
+      font-size: 38px;
+      font-weight: bold;
+      color: #3b5bfd;
+      margin: 10px 0 20px;
+    }
+
+    /* ADD-ON BOX */
+    .addon-box {
+      background: #e6f4ea;
+      border: 1px solid #b7e1c3;
+      padding: 12px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+    }
+
+    /* FEATURE LIST */
+    .quote-items {
+      list-style: none;
+      padding: 0;
+    }
+
+    /* EACH ITEM */
+    .quote-items li {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      margin-bottom: 15px;
+      font-size: 14px;
+    }
+
+    /* ICON STYLE (circle!) */
+    .quote-items li i {
+      background: #dfe6ef;
+      border-radius: 50%;
+      padding: 10px;
+      width: 18px;
+      height: 18px;
+      text-align: center;
+      font-size: 14px;
+    }
+
+    /* TEXT HIGHLIGHT */
+    .highlight {
+      color: #3b5bfd;
+      font-weight: 600;
+    }
+
     h1 {
       color: #d4af37;
       margin-bottom: 8px;
@@ -260,59 +348,183 @@
       color: #dcdcdc;    /* soft silver */
     }
 
-    .quotation-card {
+    #quickQuotationResult {
       display: none;
-      margin-top: 18px;
-      padding: 18px;
-      border-radius: 18px;
-      background: rgba(255,255,255,0.08);
-      border: 1px solid rgba(212,175,55,0.2);
+      margin-top: 20px;
+    }
+
+    .quotation-plan-title {
+      text-align: center;
+      font-size: 32px;
+      font-weight: 900;
+      color: #ffffff;
+      margin-bottom: 4px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      /* text-shadow: 0 2px 8px rgba(212,175,55,0.4); */
+    }
+
+    .quotation-customer-info {
+      text-align: center;
+      margin-bottom: 16px;
+      color: #ffffff; /* ✅ white text */
+    }
+
+    .quotation-customer-info p {
+      margin: 4px 0;
+      font-size: 14px;           /* ✅ bigger than before (20 → 24) */
+      font-weight: 900;          /* ✅ match title boldness */
+      letter-spacing: 2px;       /* ✅ same spacing style */
+      text-transform: uppercase; /* ✅ match title style */
+      /* text-shadow: 0 2px 8px rgba(255,255,255,0.3); ✅ white glow */
+    }
+
+
+    
+    .quotation-card {
+      padding: 32px; /* slightly bigger spacing */
+      border-radius: 16px;
+      background: linear-gradient(135deg, rgba(255,255,255,0.06) 0%, rgba(255,255,255,0.02) 100%);
+      border: 1px solid rgba(212,175,55,0.25);
       color: #f5f5f5;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+      box-shadow: 0 15px 40px rgba(0,0,0,0.35),
+                  inset 0 1px 0 rgba(255,255,255,0.05);
+      backdrop-filter: blur(10px);
+
+      font-size: 40px; /* ✅ bigger overall text */
+      line-height: 1.6;
     }
 
-    .quotation-card h3 {
-      margin-top: 0;
-      margin-bottom: 8px;
-      font-size: 22px;
-      letter-spacing: 1px;
-      color: #d4af37;
+
+    
+    .quote-price {
+      text-align: center;
+      font-size: 32px; /* ✅ smaller than card text emphasis */
+      font-weight: 700; /* still bold but less dominant */
+      color: #d4af37; /* gold highlight */
+      margin-top: 16px;
+
+      /* ❌ removed background, border, padding */
     }
 
-    .quotation-card .quote-primary {
-      font-size: 16px;
-      margin-bottom: 12px;
+
+    .quote-items {
+      list-style: none;
+      padding: 0;
+      margin: 0 0 16px;
+    }
+
+    .quote-items li {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 14px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      font-size: 13px;
+      line-height: 1.6;
       color: #dcdcdc;
     }
 
-    .quotation-card .quote-price {
-      font-size: 34px;
-      font-weight: 900;
-      margin: 0 0 12px;
+    .item-row {
+      display: flex;
+      justify-content: space-between;
+      width: 100%;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .item-row .label {
       color: #ffffff;
+      flex: 1 1 60%;
+      min-width: 0;
     }
 
-    .quotation-card .quote-items {
-      list-style: none;
-      padding-left: 0;
-      margin: 0;
-      line-height: 1.65;
-      color: #e8e8e8;
+    .item-row .value {
+      color: #d4af37;
+      font-weight: 600;
+      text-align: right;
+      flex: 0 0 auto;
+      white-space: nowrap;
     }
 
-    .quotation-card .quote-items li {
-      padding: 8px 0;
-      border-bottom: 1px solid rgba(255,255,255,0.08);
-    }
-
-    .quotation-card .quote-items li:last-child {
+    .quote-items li:last-child {
       border-bottom: none;
     }
 
-    .quotation-card .quote-note {
-      margin-top: 12px;
+    .quote-items li i {
+      font-size: 18px;
+      color: #d4af37;
+      min-width: 20px;
+      margin-top: 2px;
+      flex-shrink: 0;
+
+      background: none;
+      padding: 0;
+      width: auto;
+      height: auto;
+    }
+
+
+    .quote-items .highlight {
+      color: #f5d27a;
+      font-weight: 600;
+    }
+
+    .plan-product-name {
+      font-size: 16px;
+      font-weight: 700;
+      color: #f5d27a;
+      text-align: center;
+      margin-bottom: 16px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    .quote-note {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 14px 0;
+      border-top: 1px solid rgba(255,255,255,0.06);
+      border-bottom: 1px solid rgba(255,255,255,0.06);
       font-size: 13px;
-      color: #cfcfcf;
+      line-height: 1.6;
+      color: #dcdcdc;
+      margin: 16px 0 16px 0;
+    }
+
+    .quote-note i {
+      font-size: 18px;
+      color: #d4af37;
+      min-width: 20px;
+      margin-top: 2px;
+      flex-shrink: 0;
+    }
+
+    .whatsapp-agent-btn {
+      width: 100%;
+      padding: 14px;
+      border-radius: 12px;
+      border: 2px solid #25d366;
+      background: transparent;
+      color: #25d366;
+      font-size: 15px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-top: 12px;
+    }
+
+    .whatsapp-agent-btn:hover {
+      background: #25d366;
+      color: #fff;
+      box-shadow: 0 0 20px rgba(37,211,102,0.3);
     }
 
     .form-mode-tabs {
@@ -890,30 +1102,92 @@
           <input type="hidden" name="Agent Code" id="genAgentCodeField">
           
           <button type="submit" id="generateBtn">GENERATE</button>
-          <p id="generateStatus"></p>
           <div class="disclaimer" style="display:none;" id="disclaimer">
             <p style="font-size: 12px; text-align: center;">
               <strong>*Disclaimer:</strong> Quotation generated is for Class 1/2 only.
               For Class 3 and 4, please use Custom Quotation.
             </p>
           </div>
+          <p id="generateStatus"></p>
         </form>
 
-        <div class="quotation-card" id="quickQuotationResult">
-          <h3 id="quotePlanTitle">Anugerah Max 200</h3>
-          <p class="quote-primary" id="quoteHeader">Nama: — | Umur: — Tahun</p>
-          <p class="quote-price">RM <span id="quotePremium">0.00</span></p>
-          <ul class="quote-items">
-            <li><strong>Hibah Death/Total Permanent Disability:</strong> RM10,000</li>
-            <li><strong>Room &amp; Board:</strong> RM200/day</li>
-            <li><strong>Annual Limit:</strong> RM200,000</li>
-            <li><strong>Lifetime Limit:</strong> Unlimited</li>
-            <li>Cancer &amp; Dialisis treatment (Outpatient)</li>
-            <li>Communicable Disease treatment (Outpatient)</li>
-            <li>Accidental treatment (Outpatient)</li>
-            <li>Gov Hospital allowance: RM100/day</li>
-          </ul>
-          <p class="quote-note">Cash Value (Surrender Value) • SmartSaver 300</p>
+        <div id="quickQuotationResult">
+          <div class="quotation-plan-title" id="quotePlanTitle">Medical Plan</div>
+          
+          <div class="quotation-customer-info">
+            <p id="quoteHeader">Name: —</p>
+            <p id="quoteAge">Age: — Years Old</p>
+          </div>
+
+          <div class="quotation-card">
+            <div class="plan-product-name" id="quotePlanProduct">AnugerahMax Plan200</div>
+            
+            <div class="quote-price">
+              RM <span id="quotePremium">0.00</span>
+            </div>
+
+            <ul class="quote-items">
+              <li>
+                <i class="fa-solid fa-skull"></i>
+                <div class="item-row">
+                  <span class="label">Hibah Death/TPD:</span>
+                  <span class="value">RM10,000</span>
+                </div>
+              </li>
+
+              <li>
+                <i class="fa-solid fa-bed"></i>
+                <div class="item-row">
+                  <span class="label">Room & Board:</span>
+                  <span class="value">RM200 / day</span>
+                </div>
+              </li>
+
+              <li>
+                <i class="fa-solid fa-calendar"></i>
+                <div class="item-row">
+                  <span class="label">Annual Limit:</span>
+                  <span class="value">RM200,000</span>
+                </div>
+              </li>
+
+              <li>
+                <i class="fa-solid fa-infinity"></i>
+                <div class="item-row">
+                  <span class="label">Lifetime Limit:</span>
+                  <span class="value">Unlimited</span>
+                </div>
+              </li>
+
+              <li>
+                <i class="fa-solid fa-shield-virus"></i>
+                <div class="item-row">
+                  <span class="label">Cancer & Dialysis:</span>
+                  <span class="value">(Outpatient)</span>
+                </div>
+              </li>
+
+              <li>
+                <i class="fa-solid fa-hospital"></i>
+                <div class="item-row">
+                  <span class="label">Hospital Allowance:</span>
+                  <span class="value">RM100 / day</span>
+                </div>
+              </li>
+
+              <li>
+                <i class="fa-solid fa-file-contract"></i>
+                <div class="item-row">
+                  <span class="label">Deductible:</span>
+                  <span class="value">SmartSaver300</span>
+                </div>
+              </li>
+            </ul>
+
+            <button type="button" class="whatsapp-agent-btn" onclick="openWhatsAppAgent()">
+              <i class="fa-brands fa-whatsapp"></i> WhatsApp Agent
+            </button>
+          </div>
         </div>
       </div>
     </div>
@@ -1390,9 +1664,12 @@
       if (price !== null) {
         document.getElementById("generateStatus").innerText = "";
 
-        const quoteTitle = plan === "Medical" ? "Anugerah Max 200" : "Hibah Quotation";
+        const quoteTitle = plan === "Medical" ? "Medical Plan" : "Hibah Plan";
+        const productName = plan === "Medical" ? "AnugerahMax Plan200" : "Hibah Plan";
         document.getElementById("quotePlanTitle").textContent = quoteTitle;
-        document.getElementById("quoteHeader").textContent = `Nama: ${name} | Umur: ${ageNextBirthday} Tahun`;
+        document.getElementById("quotePlanProduct").textContent = productName;
+        document.getElementById("quoteHeader").textContent = `Name: ${name}`;
+        document.getElementById("quoteAge").textContent = `Age: ${ageNextBirthday} Years Old`;
         document.getElementById("quotePremium").textContent = price.toFixed(2);
         document.getElementById("quickQuotationResult").style.display = "block";
 
@@ -1508,6 +1785,24 @@
       genDobInput.max = maxDate;
       genDobInput.min = minDate;
     }
+  }
+
+  // ✅ Open WhatsApp with agent and plan details
+  function openWhatsAppAgent() {
+    if (!currentAgent) {
+      alert('Please select an agent first.');
+      return;
+    }
+
+    const name = document.getElementById("quoteHeader").textContent.replace("Name: ", "");
+    const age = document.getElementById("quoteAge").textContent.replace("Age: ", "");
+    const plan = document.getElementById("quotePlanTitle").textContent;
+    const premium = document.getElementById("quotePremium").textContent;
+    const product = document.getElementById("quotePlanProduct").textContent;
+
+    const msg = `Hi ${currentAgent.name},%0A%0ASaya berminat dengan quotation berikut:%0A%0A📋 *Pelan:* ${plan}%0A📦 *Produk:* ${product}%0A👤 *Nama:* ${name}%0A🎂 *Umur:* ${age}%0A💰 *Premium Bulanan:* RM${premium}%0A%0ATerima kasih!`;
+
+    window.open(`https://wa.me/${currentAgent.whatsapp}?text=${msg}`, "_blank");
   }
 
   // Initialize on page load
