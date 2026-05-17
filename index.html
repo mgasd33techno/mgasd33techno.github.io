@@ -401,7 +401,7 @@
       text-align: center;
       font-size: 32px; /* ✅ smaller than card text emphasis */
       font-weight: 700; /* still bold but less dominant */
-      color: #d4af37; /* gold highlight */
+      color: #dcdcdc; 
       margin-top: 16px;
 
       /* ❌ removed background, border, padding */
@@ -453,7 +453,7 @@
 
     .quote-items li i {
       font-size: 18px;
-      color: #d4af37;
+      color: #dcdcdc;
       min-width: 20px;
       margin-top: 2px;
       flex-shrink: 0;
@@ -499,6 +499,95 @@
       min-width: 20px;
       margin-top: 2px;
       flex-shrink: 0;
+    }
+
+    .quote-addon-card {
+      margin-bottom: 18px;
+    }
+
+    .checkbox-card {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 14px 16px;
+      border-radius: 14px;
+      border: 1px solid rgba(212,175,55,0.18);
+      background: rgba(255,255,255,0.04);
+      cursor: pointer;
+      transition: background 0.2s ease, border-color 0.2s ease;
+    }
+
+    .checkbox-card:hover {
+      background: rgba(255,255,255,0.08);
+    }
+
+    .checkbox-card input[type="checkbox"] {
+      position: absolute;
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .checkbox-custom {
+      width: 18px;
+      height: 18px;
+      border-radius: 6px;
+      border: 2px solid #d4af37;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .checkbox-custom::before {
+      content: "";
+      width: 8px;
+      height: 8px;
+      background: #d4af37;
+      border-radius: 2px;
+      transform: scale(0);
+      transition: transform 0.15s ease;
+    }
+
+    .checkbox-card input[type="checkbox"]:checked + .checkbox-custom::before {
+      transform: scale(1);
+    }
+
+    .checkbox-label {
+      color: #dcdcdc;        /* ✅ match list text */
+      font-weight: normal;   /* ✅ not bold anymore */
+      font-size: 13px;       /* ✅ same as list */
+      line-height: 1.6;      /* ✅ consistent spacing */
+      flex: 1;
+    }
+
+
+    .ci-waiver-card {
+      border: none;
+      padding: 0;
+      margin: 0;
+      list-style: none;
+    }
+
+    .ci-waiver-box {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(212,175,55,0.18);
+      border-radius: 14px;
+      padding: 14px;
+      width: 100%;
+    }
+
+    .ci-waiver-box .item-row {
+      gap: 8px;
+    }
+
+    .ci-note {
+      margin-top: 12px;
+      color: #dcdcdc;
+      font-size: 12px;
+      text-align: center;
+      line-height: 1.55;
+      padding-left: 4px;
     }
 
     .whatsapp-agent-btn {
@@ -1126,6 +1215,14 @@
               RM <span id="quotePremium">0.00</span>
             </div>
 
+            <div class="quote-addon-card">
+              <label class="checkbox-card" for="ciWaiverToggle">
+                <input type="checkbox" id="ciWaiverToggle" />
+                <span class="checkbox-custom"></span>
+                <span class="checkbox-label">Add Critical Illness and Waiver</span>
+              </label>
+            </div>
+
             <ul class="quote-items">
               <li>
                 <i class="fa-solid fa-skull"></i>
@@ -1179,7 +1276,17 @@
                 <i class="fa-solid fa-file-contract"></i>
                 <div class="item-row">
                   <span class="label">Deductible:</span>
-                  <span class="value">SmartSaver300</span>
+                  <span class="value">RM300</span>
+                </div>
+              </li>
+
+              <li class="ci-waiver-card" id="ciWaiverCard" style="display:none;">
+                <div class="ci-waiver-box">
+                  <div class="item-row">
+                    <span class="label">43 Critical Illness</span>
+                    <span class="value">RM10,000</span>
+                  </div>
+                  <div class="ci-note">Premium waived upon TPD or Critical Illness</div>
                 </div>
               </li>
             </ul>
@@ -1209,6 +1316,7 @@
   // CSV Data Storage for Medical and Hibah plans
   let medicalData = [];
   let hibahData = [];
+  let lastGeneratedQuote = null;
 
   // GitHub raw URLs for CSV files
   const MEDICAL_CSV_URL = './medical_card.csv';
@@ -1259,58 +1367,62 @@
     }
   }
 
-  // ✅ Get Medical Value
-  function getMedicalValue(age, gender, smoker, waiver = false) {
-    const row = medicalData.find(r => Number(r.Age || r.age) === Number(age));
-    
-    if (!row) {
-      console.warn(`No medical data found for age ${age}`);
-      return null;
-    }
-
-    let key = "anumax";
-    
-    if (gender === "Male") key += "_male";
-    else key += "_female";
-    
-    if (smoker === "Yes") key += "_smoker";
-    else key += "_non_smoker";
-    
-    if (waiver) key += "_waiver";
-
-    const value = row[key];
-    console.log(`Medical lookup: age=${age}, gender=${gender}, smoker=${smoker}, waiver=${waiver} → ${key} = ${value}`);
-    return value ? Number(value) : null;
+  function getCSVField(row, names) {
+    return names.reduce((value, name) => {
+      if (value !== undefined && value !== null) return value;
+      return row[name];
+    }, undefined);
   }
 
-  // ✅ Get Hibah Value
-  function getHibahValue(age, gender, smoker) {
-    const row = hibahData.find(r => Number(r.Age || r.age) === Number(age));
-    
+  function normalizeValue(value) {
+    return String(value || "").trim().toLowerCase();
+  }
+
+  function getCSVPrice(data, planKey, age, gender, smoker, waiver) {
+    const normalizedPlan = normalizeValue(planKey);
+    const normalizedGender = normalizeValue(gender);
+    const normalizedSmoker = normalizeValue(smoker);
+    const normalizedWaiver = normalizeValue(waiver);
+
+    const row = data.find(r => {
+      const rowPlan = normalizeValue(getCSVField(r, ['plan', 'Plan', 'PLAN']));
+      const rowAge = Number(getCSVField(r, ['age', 'Age', 'AGE']));
+      const rowGender = normalizeValue(getCSVField(r, ['gender', 'Gender', 'GENDER']));
+      const rowSmoker = normalizeValue(getCSVField(r, ['is_smoker', 'isSmoker', 'smoker', 'Smoker', 'SMOKER']));
+      const rowWaiver = normalizeValue(getCSVField(r, ['is_waiver', 'isWaiver', 'waiver', 'Waiver', 'IS_WAIVER']));
+
+      return rowPlan === normalizedPlan &&
+             rowAge === Number(age) &&
+             rowGender === normalizedGender &&
+             rowSmoker === normalizedSmoker &&
+             rowWaiver === normalizedWaiver;
+    });
+
     if (!row) {
-      console.warn(`No hibah data found for age ${age}`);
+      console.warn(`No CSV data found for ${planKey}, age ${age}, gender ${gender}, smoker ${smoker}, waiver ${waiver}`);
       return null;
     }
 
-    let key = "hibah";
-    
-    if (gender === "Male") key += "_male";
-    else key += "_female";
-    
-    if (smoker === "Yes") key += "_smoker";
-    else key += "_non_smoker";
+    const priceValue = getCSVField(row, ['price', 'Price', 'PRICE']);
+    return priceValue !== undefined && priceValue !== null && priceValue !== "" ? Number(priceValue) : null;
+  }
 
-    const value = row[key];
-    console.log(`Hibah lookup: age=${age}, gender=${gender}, smoker=${smoker} → ${key} = ${value}`);
-    return value ? Number(value) : null;
+  // ✅ Get Medical Value from medical CSV using plan, gender, age, smoking and waiver filters
+  function getMedicalValue(age, gender, smoker, waiver = 'No') {
+    return getCSVPrice(medicalData, 'anumax', age, gender, smoker, waiver);
+  }
+
+  // ✅ Get Hibah Value from hibah CSV using plan, gender, age, smoking and waiver filters
+  function getHibahValue(age, gender, smoker, waiver = 'No') {
+    return getCSVPrice(hibahData, 'hibah', age, gender, smoker, waiver);
   }
 
   // ✅ Get Value Based on Plan
-  function getPriceValue(age, plan, gender, smoker) {
-    if (plan === "Medical") {
-      return getMedicalValue(age, gender, smoker);
-    } else if (plan === "Hibah") {
-      return getHibahValue(age, gender, smoker);
+  function getPriceValue(age, plan, gender, smoker, waiver) {
+    if (plan === 'Medical') {
+      return getMedicalValue(age, gender, smoker, waiver);
+    } else if (plan === 'Hibah') {
+      return getHibahValue(age, gender, smoker, waiver);
     }
     return null;
   }
@@ -1659,10 +1771,19 @@
       
       // ✅ Calculate age next birthday and lookup price from CSV
       const ageNextBirthday = calculateAgeNextBirthday(dob);
-      const price = getPriceValue(ageNextBirthday, plan, sex, smoker);
+      const waiver = document.getElementById('ciWaiverToggle').checked ? 'Yes' : 'No';
+      const price = getPriceValue(ageNextBirthday, plan, sex, smoker, waiver);
 
       if (price !== null) {
         document.getElementById("generateStatus").innerText = "";
+
+        lastGeneratedQuote = {
+          age: ageNextBirthday,
+          plan,
+          gender: sex,
+          smoker,
+          waiver
+        };
 
         const quoteTitle = plan === "Medical" ? "Medical Plan" : "Hibah Plan";
         const productName = plan === "Medical" ? "AnugerahMax Plan200" : "Hibah Plan";
@@ -1788,6 +1909,25 @@
   }
 
   // ✅ Open WhatsApp with agent and plan details
+  function refreshQuotePrice() {
+    if (!lastGeneratedQuote || document.getElementById('quickQuotationResult').style.display === 'none') {
+      return;
+    }
+
+    const waiver = document.getElementById('ciWaiverToggle').checked ? 'Yes' : 'No';
+    const price = getPriceValue(lastGeneratedQuote.age, lastGeneratedQuote.plan, lastGeneratedQuote.gender, lastGeneratedQuote.smoker, waiver);
+    if (price !== null) {
+      document.getElementById('quotePremium').textContent = price.toFixed(2);
+      lastGeneratedQuote.waiver = waiver;
+    }
+  }
+
+  function toggleCiWaiverDetails() {
+    const ciWaiverChecked = document.getElementById('ciWaiverToggle').checked;
+    document.getElementById('ciWaiverCard').style.display = ciWaiverChecked ? 'block' : 'none';
+    refreshQuotePrice();
+  }
+
   function openWhatsAppAgent() {
     if (!currentAgent) {
       alert('Please select an agent first.');
@@ -1799,8 +1939,10 @@
     const plan = document.getElementById("quotePlanTitle").textContent;
     const premium = document.getElementById("quotePremium").textContent;
     const product = document.getElementById("quotePlanProduct").textContent;
+    const ciWaiverChecked = document.getElementById('ciWaiverToggle').checked;
+    const ciMessage = ciWaiverChecked ? '%0A✅ Critical Illness + waiver included' : '';
 
-    const msg = `Hi ${currentAgent.name},%0A%0ASaya berminat dengan quotation berikut:%0A%0A📋 *Pelan:* ${plan}%0A📦 *Produk:* ${product}%0A👤 *Nama:* ${name}%0A🎂 *Umur:* ${age}%0A💰 *Premium Bulanan:* RM${premium}%0A%0ATerima kasih!`;
+    const msg = `Hi ${currentAgent.name},%0A%0ASaya berminat dengan quotation berikut:%0A%0A📋 *Pelan:* ${plan}%0A📦 *Produk:* ${product}%0A👤 *Nama:* ${name}%0A🎂 *Umur:* ${age}%0A💰 *Premium Bulanan:* RM${premium}${ciMessage}%0A%0ATerima kasih!`;
 
     window.open(`https://wa.me/${currentAgent.whatsapp}?text=${msg}`, "_blank");
   }
@@ -1811,6 +1953,12 @@
     loadMedicalCSV();
     loadHibahCSV();
     setMaxDate();
+
+    const ciWaiverToggle = document.getElementById('ciWaiverToggle');
+    if (ciWaiverToggle) {
+      ciWaiverToggle.addEventListener('change', toggleCiWaiverDetails);
+      toggleCiWaiverDetails();
+    }
     
     // Restrict phone inputs to numbers only (9-10 digits)
     const phoneInputs = document.getElementById('phone');
