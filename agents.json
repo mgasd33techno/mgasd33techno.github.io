@@ -22,7 +22,17 @@
     "lead": true
   },
   {
-    "code": "D3300090",
+    "code": "D3300051",
+    "name": "NATASHA ADILA",
+    "title": "PRUDENTIAL WEALTH PLANNER",
+    "image": "./Picture/D3300051.jpg",
+    "whatsapp": "60167576877",
+    "instagram": "tasha393",
+    "facebook": "nurnatasha.adila",
+    "lead": false
+  },
+  {
+    "code": "D3300051",
     "name": "AMZAR IRFAN",
     "title": "SENIOR CONSULTANT",
     "image": "./Picture/D3300090.png",
