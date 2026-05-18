@@ -284,6 +284,17 @@
       margin-bottom: 20px;
     }
 
+    .agent-box.lead-agent {
+      grid-column: 1 / -1;
+      background: linear-gradient(135deg, #2a2a2a, #1a1a1a);
+      border-color: #f5d27a;
+    }
+
+    .agent-box.lead-agent .agent-name,
+    .agent-box.lead-agent .agent-title {
+      color: #f5d27a;
+    }
+
     .agent-box {
       background: #1a1a1a;
       padding: 16px;
@@ -563,12 +574,13 @@
 
 
     .ci-waiver-card {
-      border: none;
-      padding: 0;
-      margin: 0;
-      list-style: none;
+      display: flex;        /* ✅ THIS FIXES YOUR ISSUE */
+      align-items: flex-start;
+      gap: 12px;
+      padding: 14px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
     }
-
+    
     .ci-waiver-box {
       background: rgba(255,255,255,0.05);
       border: 1px solid rgba(212,175,55,0.18);
@@ -1121,6 +1133,7 @@
           <input type="hidden" name="Sex">
           <input type="hidden" name="Smoker">
           <input type="hidden" name="Agent Code" id="agentCodeField">
+          <input type="hidden" name="Form" value="Custom">
           
           <button type="submit" id="submitBtn">SUBMIT</button>
           <p id="status"></p>
@@ -1192,6 +1205,7 @@
           <input type="hidden" name="Sex">
           <input type="hidden" name="Smoker">
           <input type="hidden" name="Agent Code" id="genAgentCodeField">
+          <input type="hidden" name="Form" value="Quick">
           
           <button type="submit" id="generateBtn">GENERATE</button>
           <div class="disclaimer" style="display:none;" id="disclaimer">
@@ -1284,6 +1298,7 @@
               </li>
 
               <li class="ci-waiver-card" id="ciWaiverCard" style="display:none;">
+                
                 <div class="ci-waiver-box">
                   <div class="item-row">
                     <span class="label">43 Critical Illness</span>
@@ -1538,13 +1553,23 @@
     const container = document.getElementById('agentsContainer');
     container.innerHTML = '';
     
-    // Filter agents by unit
-    const unitAgents = agents.filter(a => getUnitFromCode(a.code) === unit);
+    // Filter agents by unit and place lead agents first
+    const unitAgents = agents
+      .filter(a => getUnitFromCode(a.code) === unit)
+      .sort((a, b) => {
+        const aLead = a.lead === true || String(a.lead).toLowerCase() === 'true';
+        const bLead = b.lead === true || String(b.lead).toLowerCase() === 'true';
+        if (aLead === bLead) return 0;
+        return aLead ? -1 : 1;
+      });
 
     // Display agents
     unitAgents.forEach((agent) => {
       const box = document.createElement('div');
       box.className = 'agent-box';
+      if (agent.lead === true || String(agent.lead).toLowerCase() === 'true') {
+        box.classList.add('lead-agent');
+      }
       box.innerHTML = `
         <img src="${agent.image}" alt="${agent.name}">
         <div class="agent-name">${agent.name}</div>
@@ -1758,20 +1783,6 @@
 
     fetch(currentAgent.scriptURL, { method:"POST", body: new FormData(document.getElementById("generateForm")) })
     .then(() => {
-      const agentCode = currentAgent.code; // Save before reset
-      
-      // Clear form data
-      document.getElementById("generateForm").reset();
-      document.querySelector("#generateForm input[name='Plan']").value = "";
-      document.querySelector("#generateForm input[name='Sex']").value = "";
-      document.querySelector("#generateForm input[name='Smoker']").value = "";
-      document.querySelector("#generateForm input[name='Phone Number']").value = "";
-      
-      // Restore Agent Code after reset
-      document.querySelector("#generateForm input[name='Agent Code']").value = agentCode;
-      
-      document.querySelectorAll("#generateMode .btn-option").forEach(b => b.classList.remove("active"));
-      
       // ✅ Calculate age next birthday and lookup price from CSV
       const ageNextBirthday = calculateAgeNextBirthday(dob);
       const waiver = document.getElementById('ciWaiverToggle').checked ? 'Yes' : 'No';

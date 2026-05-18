@@ -7,7 +7,8 @@
     "whatsapp": "60164321217",
     "instagram": "norman265",
     "facebook": "norman265",
-    "tiktok": "norman.muhammad"
+    "tiktok": "norman.muhammad",
+    "lead": true
   },
   {
     "code": "N1M00001",
@@ -17,7 +18,8 @@
     "whatsapp": "60132443019",
     "instagram": "norman2205",
     "facebook": "wiki.norman",
-    "tiktok": "mantakahara"
+    "tiktok": "mantakahara",
+    "lead": true
   },
   {
     "code": "D3300090",
@@ -27,7 +29,8 @@
     "whatsapp": "60146915481",
     "instagram": "amzar_razali",
     "facebook": "amzar.mxr",
-    "tiktok": "amzar.razali"
+    "tiktok": "amzar.razali",
+    "lead": false
   },
   {
     "code": "D3300145",
@@ -37,6 +40,27 @@
     "whatsapp": "60106569940",
     "instagram": "takaful_bear",
     "facebook": "ammarirfan.razali",
-    "tiktok": "ammarirfanrazali"
+    "tiktok": "ammarirfanrazali",
+    "lead": false
+  },
+  {
+    "code": "N3M00001",
+    "name": "IKRAM RAMLI",
+    "title": "UNIT MANAGER 2",
+    "image": "./Picture/N3M00001.jpg",
+    "whatsapp": "60142445626",
+    "instagram": "ikramramli92",
+    "facebook": "ikramramli1992",
+    "lead": true
+  },
+  {
+    "code": "HKA80001",
+    "name": "HAFEZ KAMAZAMAN",
+    "title": "UNIT MANAGER 2",
+    "image": "./Picture/HKA80001.jpg",
+    "whatsapp": "60124845564",
+    "instagram": "hafezkamazaman",
+    "facebook": "humai.fez",
+    "lead": true
   }
 ]
