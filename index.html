@@ -1219,100 +1219,11 @@
 
         <div id="quickQuotationResult">
           <div class="quotation-plan-title" id="quotePlanTitle">Medical Plan</div>
-          
           <div class="quotation-customer-info">
             <p id="quoteHeader">Name: —</p>
             <p id="quoteAge">Age: — Years Old</p>
           </div>
-
-          <div class="quotation-card">
-            <div class="plan-product-name" id="quotePlanProduct">AnugerahMax Plan200</div>
-            
-            <div class="quote-price">
-              RM <span id="quotePremium">0.00</span>
-            </div>
-
-            <div class="quote-addon-card">
-              <label class="checkbox-card" for="ciWaiverToggle">
-                <input type="checkbox" id="ciWaiverToggle" />
-                <span class="checkbox-custom"></span>
-                <span class="checkbox-label">Add Critical Illness and Waiver</span>
-              </label>
-            </div>
-
-            <ul class="quote-items">
-              <li>
-                <i class="fa-solid fa-skull"></i>
-                <div class="item-row">
-                  <span class="label">Hibah Death/TPD:</span>
-                  <span class="value">RM10,000</span>
-                </div>
-              </li>
-
-              <li>
-                <i class="fa-solid fa-bed"></i>
-                <div class="item-row">
-                  <span class="label">Room & Board:</span>
-                  <span class="value">RM200 / day</span>
-                </div>
-              </li>
-
-              <li>
-                <i class="fa-solid fa-calendar"></i>
-                <div class="item-row">
-                  <span class="label">Annual Limit:</span>
-                  <span class="value">RM200,000</span>
-                </div>
-              </li>
-
-              <li>
-                <i class="fa-solid fa-infinity"></i>
-                <div class="item-row">
-                  <span class="label">Lifetime Limit:</span>
-                  <span class="value">Unlimited</span>
-                </div>
-              </li>
-
-              <li>
-                <i class="fa-solid fa-shield-virus"></i>
-                <div class="item-row">
-                  <span class="label">Cancer & Dialysis:</span>
-                  <span class="value">(Outpatient)</span>
-                </div>
-              </li>
-
-              <li>
-                <i class="fa-solid fa-hospital"></i>
-                <div class="item-row">
-                  <span class="label">Hospital Allowance:</span>
-                  <span class="value">RM100 / day</span>
-                </div>
-              </li>
-
-              <li>
-                <i class="fa-solid fa-file-contract"></i>
-                <div class="item-row">
-                  <span class="label">Deductible:</span>
-                  <span class="value">RM300</span>
-                </div>
-              </li>
-
-              <li class="ci-waiver-card" id="ciWaiverCard" style="display:none;">
-                
-                <div class="ci-waiver-box">
-                  <div class="item-row">
-                    <span class="label">43 Critical Illness</span>
-                    <span class="value">RM10,000</span>
-                  </div>
-                  <div class="ci-note">Premium waived upon TPD or Critical Illness</div>
-                </div>
-              </li>
-            </ul>
-
-            <button type="button" class="whatsapp-agent-btn" onclick="openWhatsAppAgent()">
-              <i class="fa-brands fa-whatsapp"></i> WhatsApp Agent
-            </button>
-          </div>
+          <div id="quoteCardsContainer"></div>
         </div>
       </div>
     </div>
@@ -1334,7 +1245,7 @@
   // CSV Data Storage for Medical and Hibah plans
   let medicalData = [];
   let hibahData = [];
-  let lastGeneratedQuote = null;
+  let lastGeneratedQuotes = [];
 
   // GitHub raw URLs for CSV files
   const MEDICAL_CSV_URL = './medical_card.csv';
@@ -1431,18 +1342,386 @@
   }
 
   // ✅ Get Hibah Value from hibah CSV using plan, gender, age, smoking and waiver filters
-  function getHibahValue(age, gender, smoker, waiver = 'No') {
-    return getCSVPrice(hibahData, 'hibah', age, gender, smoker, waiver);
+  function getHibahValue(age, gender, smoker, waiver = 'No', hibahPlan = 'anugerah') {
+    return getCSVPrice(hibahData, hibahPlan, age, gender, smoker, waiver);
   }
 
   // ✅ Get Value Based on Plan
   function getPriceValue(age, plan, gender, smoker, waiver) {
-    if (plan === 'Medical') {
+    const normalizedPlan = normalizeValue(plan);
+    if (normalizedPlan === 'medical') {
       return getMedicalValue(age, gender, smoker, waiver);
-    } else if (plan === 'Hibah') {
-      return getHibahValue(age, gender, smoker, waiver);
+    }
+    if (normalizedPlan === 'anugerah' || normalizedPlan === 'warisangold') {
+      return getHibahValue(age, gender, smoker, waiver, normalizedPlan);
     }
     return null;
+  }
+
+  function getHibahPlanKeys(age, gender, smoker) {
+    const normalizedGender = normalizeValue(gender);
+    const normalizedSmoker = normalizeValue(smoker);
+    const normalizedAge = Number(age);
+    const keys = new Set();
+
+    hibahData.forEach(row => {
+      const rowAge = Number(getCSVField(row, ['age', 'Age', 'AGE']));
+      const rowGender = normalizeValue(getCSVField(row, ['gender', 'Gender', 'GENDER']));
+      const rowSmoker = normalizeValue(getCSVField(row, ['is_smoker', 'isSmoker', 'smoker', 'Smoker', 'SMOKER']));
+      const rowPlan = normalizeValue(getCSVField(row, ['plan', 'Plan', 'PLAN']));
+
+      if (rowAge === normalizedAge && rowGender === normalizedGender && rowSmoker === normalizedSmoker && rowPlan) {
+        keys.add(rowPlan);
+      }
+    });
+
+    const orderedPlans = ['anugerah', 'warisangold'];
+    return [...keys].sort((a, b) => {
+      const ai = orderedPlans.indexOf(a);
+      const bi = orderedPlans.indexOf(b);
+      if (ai === -1 && bi === -1) return a.localeCompare(b);
+      if (ai === -1) return 1;
+      if (bi === -1) return -1;
+      return ai - bi;
+    });
+  }
+
+  function getPlanDisplayInfo(planKey) {
+    const normalizedPlan = normalizeValue(planKey);
+    if (normalizedPlan === 'medical') {
+      return {
+        quoteTitle: 'Medical Plan',
+        productName: 'AnugerahMax Plan200'
+      };
+    }
+    if (normalizedPlan === 'anugerah') {
+      return {
+        quoteTitle: 'HIBAH ANUGERAH',
+        productName: 'Hibah Anugerah'
+      };
+    }
+    if (normalizedPlan === 'warisangold') {
+      return {
+        quoteTitle: 'HIBAH WARISAN GOLD',
+        productName: 'Hibah Warisan Gold'
+      };
+    }
+    return {
+      quoteTitle: 'Plan',
+      productName: 'Quotation'
+    };
+  }
+
+  function getPlanFeaturesHTML(planKey, index) {
+    const normalizedPlan = normalizeValue(planKey);
+    if (normalizedPlan === 'medical') {
+      return `
+        <li>
+          <i class="fa-solid fa-skull"></i>
+          <div class="item-row">
+            <span class="label">Hibah Death/TPD:</span>
+            <span class="value">RM10,000</span>
+          </div>
+        </li>
+        <li>
+          <i class="fa-solid fa-bed"></i>
+          <div class="item-row">
+            <span class="label">Room & Board:</span>
+            <span class="value">RM200 / day</span>
+          </div>
+        </li>
+        <li>
+          <i class="fa-solid fa-calendar"></i>
+          <div class="item-row">
+            <span class="label">Annual Limit:</span>
+            <span class="value">RM200,000</span>
+          </div>
+        </li>
+        <li>
+          <i class="fa-solid fa-infinity"></i>
+          <div class="item-row">
+            <span class="label">Lifetime Limit:</span>
+            <span class="value">Unlimited</span>
+          </div>
+        </li>
+        <li>
+          <i class="fa-solid fa-shield-virus"></i>
+          <div class="item-row">
+            <span class="label">Cancer & Dialysis:</span>
+            <span class="value">(Outpatient)</span>
+          </div>
+        </li>
+        <li>
+          <i class="fa-solid fa-hospital"></i>
+          <div class="item-row">
+            <span class="label">Hospital Allowance:</span>
+            <span class="value">RM100 / day</span>
+          </div>
+        </li>
+        <li>
+          <i class="fa-solid fa-file-contract"></i>
+          <div class="item-row">
+            <span class="label">Deductible:</span>
+            <span class="value">RM300</span>
+          </div>
+        </li>
+        <li class="ci-waiver-card" id="ciWaiverCard-${index}" style="display:none;">
+          <div class="ci-waiver-box">
+            <div class="item-row">
+              <span class="label">43 Critical Illness</span>
+              <span class="value">RM50,000</span>
+            </div>
+            <div class="ci-note">Premium waived upon TPD or Critical Illness</div>
+          </div>
+        </li>
+      `;
+    }
+    if (normalizedPlan === 'anugerah') {
+      return `
+        <li>
+          <i class="fa-solid fa-skull"></i>
+          <div class="item-row">
+            <span class="label">Death/TPD:</span>
+            <span class="value">RM200,000</span>
+          </div>
+        </li>
+        <li>
+          <i class="fa-solid fa-car-crash"></i>
+          <div class="item-row">
+            <span class="label">Accidental Death:</span>
+            <span class="value">RM250,000</span>
+          </div>
+        </li>
+        <li>
+          <i class="fa-solid fa-calendar-day"></i>
+          <div class="item-row">
+            <span class="label">Term:</span>
+            <span class="value">20 years</span>
+          </div>
+        </li>
+        <li class="ci-waiver-card" id="ciWaiverCard-${index}" style="display:none;">
+          <div class="ci-waiver-box">
+            <div class="item-row">
+              <span class="label">43 Critical Illness</span>
+              <span class="value">RM50,000</span>
+            </div>
+            <div class="ci-note">Premium waived upon TPD or Critical Illness</div>
+          </div>
+        </li>
+      `;
+    }
+    if (normalizedPlan === 'warisangold') {
+      return `
+        <li>
+          <i class="fa-solid fa-skull"></i>
+          <div class="item-row">
+            <span class="label">Death/TPD:</span>
+            <span class="value">RM350,000</span>
+          </div>
+        </li>
+        <li>
+          <i class="fa-solid fa-car-crash"></i>
+          <div class="item-row">
+            <span class="label">Accidental Death:</span>
+            <span class="value">RM700,000</span>
+          </div>
+        </li>
+        <li>
+          <i class="fa-solid fa-plane-departure"></i>
+          <div class="item-row">
+            <span class="label">Accidental Death (Public):</span>
+            <span class="value">RM1,050,000</span>
+          </div>
+        </li>
+        <li>
+          <i class="fa-solid fa-globe"></i>
+          <div class="item-row">
+            <span class="label">Accidental Death (Oversea):</span>
+            <span class="value">RM1,400,000</span>
+          </div>
+        </li>
+        <li>
+          <i class="fa-solid fa-hill-avalanche"></i>
+          <div class="item-row">
+            <span class="label">Accidental Death (Natural Disaster):</span>
+            <span class="value">RM2,100,000</span>
+          </div>
+        </li>
+        <li>
+          <i class="fa-solid fa-sack-dollar"></i>
+          <div class="item-row">
+            <span class="label">Fund:</span>
+            <span class="value">Takafulink</span>
+          </div>
+        </li>
+        <li>
+          <i class="fa-solid fa-calendar-day"></i>
+          <div class="item-row">
+            <span class="label">Term:</span>
+            <span class="value">20 years</span>
+          </div>
+        </li>
+        <li class="ci-waiver-card" id="ciWaiverCard-${index}" style="display:none;">
+          <div class="ci-waiver-box">
+            <div class="item-row">
+              <span class="label">43 Critical Illness</span>
+              <span class="value">RM50,000</span>
+            </div>
+            <div class="ci-note">Premium waived upon TPD or Critical Illness</div>
+          </div>
+        </li>
+      `;
+    }
+    return '';
+  }
+
+  function buildQuoteCardHTML(card, index) {
+    const { productName } = getPlanDisplayInfo(card.planKey || card.plan);
+    return `
+      <div class="quotation-card">
+        <div class="plan-product-name">${productName}</div>
+        <div class="quote-price">
+          RM <span id="quotePremium-${index}">${card.price.toFixed(2)}</span>
+        </div>
+        <div class="quote-addon-card">
+          <label class="checkbox-card" for="ciWaiverToggle-${index}">
+            <input type="checkbox" id="ciWaiverToggle-${index}" onchange="refreshQuotePriceForCard(${index})" />
+            <span class="checkbox-custom"></span>
+            <span class="checkbox-label">Add Critical Illness and Waiver</span>
+          </label>
+        </div>
+        <ul class="quote-items" id="quoteItemsList-${index}">
+          ${getPlanFeaturesHTML(card.planKey || card.plan, index)}
+        </ul>
+        <button type="button" class="whatsapp-agent-btn" onclick="openWhatsAppAgent()">
+          <i class="fa-brands fa-whatsapp"></i> WhatsApp Agent
+        </button>
+      </div>
+    `;
+  }
+
+  function refreshQuotePriceForCard(index) {
+    const card = lastGeneratedQuotes[index];
+    if (!card) return;
+
+    const waiver = document.getElementById(`ciWaiverToggle-${index}`)?.checked ? 'Yes' : 'No';
+    const price = card.planKey === 'medical'
+      ? getMedicalValue(card.age, card.gender, card.smoker, waiver)
+      : getHibahValue(card.age, card.gender, card.smoker, waiver, card.planKey);
+
+    if (price !== null) {
+      card.price = price;
+      card.waiver = waiver;
+      document.getElementById(`quotePremium-${index}`).textContent = price.toFixed(2);
+    }
+
+    const waiverCard = document.getElementById(`ciWaiverCard-${index}`);
+    if (waiverCard) {
+      waiverCard.style.display = waiver === 'Yes' ? 'block' : 'none';
+    }
+  }
+
+  function getHibahQuoteCards(name, age, gender, smoker) {
+    const keys = getHibahPlanKeys(age, gender, smoker);
+    return keys.map(planKey => {
+      const price = getHibahValue(age, gender, smoker, 'No', planKey);
+      return {
+        name,
+        age,
+        gender,
+        smoker,
+        waiver: 'No',
+        plan: planKey,
+        planKey,
+        price: price !== null ? price : 0
+      };
+    }).filter(card => card.price > 0);
+  }
+
+  function renderQuoteCards(name, age, gender, smoker, plan) {
+    const normalizedPlan = normalizeValue(plan);
+    let cards = [];
+
+    if (normalizedPlan === 'medical') {
+      const price = getMedicalValue(age, gender, smoker, 'No');
+      if (price !== null) {
+        cards = [{
+          name,
+          age,
+          gender,
+          smoker,
+          waiver: 'No',
+          plan: 'medical',
+          planKey: 'medical',
+          price
+        }];
+      }
+    } else if (normalizedPlan === 'hibah') {
+      cards = getHibahQuoteCards(name, age, gender, smoker);
+    } else if (normalizedPlan === 'anugerah' || normalizedPlan === 'warisangold') {
+      const price = getHibahValue(age, gender, smoker, 'No', normalizedPlan);
+      if (price !== null) {
+        cards = [{
+          name,
+          age,
+          gender,
+          smoker,
+          waiver: 'No',
+          plan: normalizedPlan,
+          planKey: normalizedPlan,
+          price
+        }];
+      }
+    }
+
+    if (cards.length === 0) {
+      return null;
+    }
+
+    const sectionTitle = normalizedPlan === 'medical' ? 'Medical Plan' : 'Hibah Plan';
+    document.getElementById('quotePlanTitle').textContent = sectionTitle;
+    document.getElementById('quoteHeader').textContent = `Name: ${name}`;
+    document.getElementById('quoteAge').textContent = `Age: ${age} Years Old`;
+
+    lastGeneratedQuotes = cards;
+    document.getElementById('quoteCardsContainer').innerHTML = cards.map((card, index) => buildQuoteCardHTML(card, index)).join('');
+    document.getElementById('quickQuotationResult').style.display = 'block';
+    return cards;
+  }
+
+  function openWhatsAppAgent() {
+    if (!currentAgent) {
+      alert('Please select an agent first.');
+      return;
+    }
+    if (!lastGeneratedQuotes || lastGeneratedQuotes.length === 0) {
+      alert('Please generate a quotation first.');
+      return;
+    }
+
+    const lines = [
+      `Hi ${currentAgent.name},`,
+      '',
+      'Saya berminat dengan quotation berikut:',
+      ''
+    ];
+
+    lastGeneratedQuotes.forEach((card, idx) => {
+      const { quoteTitle, productName } = getPlanDisplayInfo(card.planKey || card.plan);
+      lines.push(`${idx + 1}) ${quoteTitle}`);
+      lines.push(`   Produk: ${productName}`);
+      lines.push(`   Premium Bulanan: RM${card.price.toFixed(2)}`);
+      lines.push(`   CI Waiver: ${card.waiver}`);
+      lines.push('');
+    });
+
+    lines.push(`Nama: ${lastGeneratedQuotes[0].name}`);
+    lines.push(`Umur: ${lastGeneratedQuotes[0].age}`);
+    lines.push('');
+    lines.push('Terima kasih!');
+
+    const msg = encodeURIComponent(lines.join('\n'));
+    window.open(`https://wa.me/${currentAgent.whatsapp}?text=${msg}`, '_blank');
   }
 
   // Background Music - Auto-start on user interaction
@@ -1728,7 +2007,7 @@
   function handleGenerateSubmit(e) {
     e.preventDefault();
     document.getElementById("generateStatus").innerText = "";
-    
+
     if (!currentAgent) {
       document.getElementById("generateStatus").innerText = "❌ Please select an agent first.";
       return;
@@ -1740,7 +2019,7 @@
     const plan = document.getElementById("generateForm")["Plan"].value;
     const sex = document.getElementById("generateForm")["Sex"].value;
     const smoker = document.getElementById("generateForm")["Smoker"].value;
-    const phoneRaw = document.getElementById("genPhone").value.replace(/\s+/g,"").replace(/^0+/,"");
+    const phoneRaw = document.getElementById("genPhone").value.replace(/\s+/g, "").replace(/^0+/, "");
 
     if (!plan) {
       document.getElementById("generateStatus").innerText = "❌ Please choose a plan.";
@@ -1776,52 +2055,32 @@
     }
 
     document.getElementById("generateForm")["Phone Number"].value = "+60" + phoneRaw;
-    // Get agent code from URL hash (most reliable source)
     const agentCodeFromHash = window.location.hash.substring(1);
     document.getElementById("generateForm")["Agent Code"].value = agentCodeFromHash || currentAgent.code;
     document.getElementById("generateStatus").innerText = "⏳ Generating...";
 
-    fetch(currentAgent.scriptURL, { method:"POST", body: new FormData(document.getElementById("generateForm")) })
-    .then(() => {
-      // ✅ Calculate age next birthday and lookup price from CSV
-      const ageNextBirthday = calculateAgeNextBirthday(dob);
-      const waiver = document.getElementById('ciWaiverToggle').checked ? 'Yes' : 'No';
-      const price = getPriceValue(ageNextBirthday, plan, sex, smoker, waiver);
+    fetch(currentAgent.scriptURL, { method: "POST", body: new FormData(document.getElementById("generateForm")) })
+      .then(() => {
+        const ageNextBirthday = calculateAgeNextBirthday(dob);
+        const normalizedPlan = normalizeValue(plan);
+        const cards = renderQuoteCards(name, ageNextBirthday, sex, smoker, normalizedPlan);
 
-      if (price !== null) {
-        document.getElementById("generateStatus").innerText = "";
+        if (cards && cards.length > 0) {
+          document.getElementById("generateStatus").innerText = "";
+          console.log(`Displaying quotation: ${name}, ANB ${ageNextBirthday}, Plan ${plan}, ${cards.length} quote(s)`);
+        } else {
+          document.getElementById("generateStatus").innerText = "❌ Plan currently not available. Please contact the agent for a custom quotation.";
+          document.getElementById("quickQuotationResult").style.display = "none";
+        }
 
-        lastGeneratedQuote = {
-          age: ageNextBirthday,
-          plan,
-          gender: sex,
-          smoker,
-          waiver
-        };
-
-        const quoteTitle = plan === "Medical" ? "Medical Plan" : "Hibah Plan";
-        const productName = plan === "Medical" ? "AnugerahMax Plan200" : "Hibah Plan";
-        document.getElementById("quotePlanTitle").textContent = quoteTitle;
-        document.getElementById("quotePlanProduct").textContent = productName;
-        document.getElementById("quoteHeader").textContent = `Name: ${name}`;
-        document.getElementById("quoteAge").textContent = `Age: ${ageNextBirthday} Years Old`;
-        document.getElementById("quotePremium").textContent = price.toFixed(2);
-        document.getElementById("quickQuotationResult").style.display = "block";
-
-        console.log(`Displaying quotation: ${name}, ANB ${ageNextBirthday}, Plan ${plan}, Price RM ${price}`);
-      } else {
-        document.getElementById("generateStatus").innerText = "❌ Plan currently not available. Please contact the agent for a custom quotation.";
-        document.getElementById("quickQuotationResult").style.display = "none";
-      }
-      
-      setTimeout(() => {
-        document.getElementById("generateStatus").innerText = "";
-      }, 3000);
-    })
-    .catch((error) => {
-      console.error("Generation error:", error);
-      document.getElementById("generateStatus").innerText = "❌ Generation failed. Please try again.";
-    });
+        setTimeout(() => {
+          document.getElementById("generateStatus").innerText = "";
+        }, 3000);
+      })
+      .catch((error) => {
+        console.error("Generation error:", error);
+        document.getElementById("generateStatus").innerText = "❌ Generation failed. Please try again.";
+      });
   }
  
   document.getElementById("quotationForm").addEventListener("submit", e => {
@@ -1923,43 +2182,6 @@
   }
 
   // ✅ Open WhatsApp with agent and plan details
-  function refreshQuotePrice() {
-    if (!lastGeneratedQuote || document.getElementById('quickQuotationResult').style.display === 'none') {
-      return;
-    }
-
-    const waiver = document.getElementById('ciWaiverToggle').checked ? 'Yes' : 'No';
-    const price = getPriceValue(lastGeneratedQuote.age, lastGeneratedQuote.plan, lastGeneratedQuote.gender, lastGeneratedQuote.smoker, waiver);
-    if (price !== null) {
-      document.getElementById('quotePremium').textContent = price.toFixed(2);
-      lastGeneratedQuote.waiver = waiver;
-    }
-  }
-
-  function toggleCiWaiverDetails() {
-    const ciWaiverChecked = document.getElementById('ciWaiverToggle').checked;
-    document.getElementById('ciWaiverCard').style.display = ciWaiverChecked ? 'block' : 'none';
-    refreshQuotePrice();
-  }
-
-  function openWhatsAppAgent() {
-    if (!currentAgent) {
-      alert('Please select an agent first.');
-      return;
-    }
-
-    const name = document.getElementById("quoteHeader").textContent.replace("Name: ", "");
-    const age = document.getElementById("quoteAge").textContent.replace("Age: ", "");
-    const plan = document.getElementById("quotePlanTitle").textContent;
-    const premium = document.getElementById("quotePremium").textContent;
-    const product = document.getElementById("quotePlanProduct").textContent;
-    const ciWaiverChecked = document.getElementById('ciWaiverToggle').checked;
-    const ciMessage = ciWaiverChecked ? '%0A✅ Critical Illness + waiver included' : '';
-
-    const msg = `Hi ${currentAgent.name},%0A%0ASaya berminat dengan quotation berikut:%0A%0A📋 *Pelan:* ${plan}%0A📦 *Produk:* ${product}%0A👤 *Nama:* ${name}%0A🎂 *Umur:* ${age}%0A💰 *Premium Bulanan:* RM${premium}${ciMessage}%0A%0ATerima kasih!`;
-
-    window.open(`https://wa.me/${currentAgent.whatsapp}?text=${msg}`, "_blank");
-  }
 
   // Initialize on page load
   window.addEventListener('load', () => {
@@ -1968,11 +2190,6 @@
     loadHibahCSV();
     setMaxDate();
 
-    const ciWaiverToggle = document.getElementById('ciWaiverToggle');
-    if (ciWaiverToggle) {
-      ciWaiverToggle.addEventListener('change', toggleCiWaiverDetails);
-      toggleCiWaiverDetails();
-    }
     
     // Restrict phone inputs to numbers only (9-10 digits)
     const phoneInputs = document.getElementById('phone');
