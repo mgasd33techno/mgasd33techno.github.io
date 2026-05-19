@@ -1,5 +1,20 @@
 exports.handler = async function (event) {
 
+  // ✅ CORS HEADERS (CRITICAL)
+  const headers = {
+    "Access-Control-Allow-Origin": "*",
+    "Access-Control-Allow-Headers": "Content-Type",
+    "Access-Control-Allow-Methods": "POST, OPTIONS"
+  };
+
+  // ✅ Handle preflight request
+  if (event.httpMethod === "OPTIONS") {
+    return {
+      statusCode: 200,
+      headers
+    };
+  }
+
   try {
     const data = JSON.parse(event.body);
 
@@ -24,13 +39,18 @@ exports.handler = async function (event) {
     const agent = agents.find(a => a.code === agent_code);
 
     if (!agent) {
-      return { statusCode: 404, body: "Agent not found" };
+      return {
+        statusCode: 404,
+        headers,
+        body: "Agent not found"
+      };
     }
 
     const formLabel = form_type === "Quick"
       ? "Quick Quotation"
       : "Custom Quotation";
 
+    // ✅ CLEAN Telegram message
     const text = `
 📢 *NEW LEAD ALERT*
 
@@ -54,24 +74,27 @@ ${remarks || "-"}
 ⚡ Please follow up with the customer as soon as possible.
 `;
 
+    // ✅ Send to Telegram
     await fetch(`https://api.telegram.org/bot${process.env.TOKEN}/sendMessage`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         chat_id: agent.chat_id,
         text: text,
-        parse_mode: "Markdown"   // ✅ IMPORTANT
+        parse_mode: "Markdown"
       })
     });
 
     return {
       statusCode: 200,
+      headers,
       body: "Sent"
     };
 
   } catch (err) {
     return {
       statusCode: 500,
+      headers,
       body: err.message
     };
   }
