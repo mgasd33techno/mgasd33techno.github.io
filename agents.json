@@ -32,7 +32,7 @@
     "lead": false
   },
   {
-    "code": "D3300051",
+    "code": "D3300090",
     "name": "AMZAR IRFAN",
     "title": "SENIOR CONSULTANT",
     "image": "./Picture/D3300090.png",
@@ -40,7 +40,8 @@
     "instagram": "amzar_razali",
     "facebook": "amzar.mxr",
     "tiktok": "amzar.razali",
-    "lead": false
+    "lead": false,
+    "chat_id": 344886216
   },
   {
     "code": "D3300145",
@@ -51,7 +52,8 @@
     "instagram": "takaful_bear",
     "facebook": "ammarirfan.razali",
     "tiktok": "ammarirfanrazali",
-    "lead": false
+    "lead": false,
+    "chat_id": 1120654169
   },
   {
     "code": "N3M00001",
