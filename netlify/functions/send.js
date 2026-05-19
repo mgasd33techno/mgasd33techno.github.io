@@ -1,18 +1,78 @@
 exports.handler = async function (event) {
 
-  const text = "✅ Test message 2 from Netlify bot!";
+  try {
+    const data = JSON.parse(event.body);
 
-  await fetch(`https://api.telegram.org/bot${process.env.TOKEN}/sendMessage`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      chat_id: 344886216,
-      text: text
-    })
-  });
+    const {
+      agent_code,
+      agent_name,
+      customer_name,
+      dob,
+      occupation,
+      plan,
+      form_type,
+      smoking,
+      gender,
+      remarks
+    } = data;
 
-  return {
-    statusCode: 200,
-    body: JSON.stringify({ success: true })
-  };
+    // ✅ Load agents.json
+    const res = await fetch("https://mgasofficial.com/agents.json");
+    const agents = await res.json();
+
+    // ✅ FIXED arrow function
+    const agent = agents.find(a => a.code === agent_code);
+
+    if (!agent) {
+      return { statusCode: 404, body: "Agent not found" };
+    }
+
+    const formLabel = form_type === "Quick"
+      ? "Quick Quotation"
+      : "Custom Quotation";
+
+    const text = `
+📢 *NEW LEAD ALERT*
+
+Hi ${agent.name}, 👋
+
+You have received a new enquiry from your *${formLabel} Form*.
+
+━━━━━━━━━━━━━━━
+👤 *Customer Name:* ${customer_name}
+🎂 *Date of Birth:* ${dob}
+💼 *Occupation:* ${occupation}
+
+📋 *Plan Interested:* ${plan}
+🚬 *Smoking Status:* ${smoking}
+⚧ *Gender:* ${gender}
+━━━━━━━━━━━━━━━
+
+📝 *Remarks:*
+${remarks || "-"}
+
+⚡ Please follow up with the customer as soon as possible.
+`;
+
+    await fetch(`https://api.telegram.org/bot${process.env.TOKEN}/sendMessage`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        chat_id: agent.chat_id,
+        text: text,
+        parse_mode: "Markdown"   // ✅ IMPORTANT
+      })
+    });
+
+    return {
+      statusCode: 200,
+      body: "Sent"
+    };
+
+  } catch (err) {
+    return {
+      statusCode: 500,
+      body: err.message
+    };
+  }
 };
