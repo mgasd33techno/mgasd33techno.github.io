@@ -93,6 +93,7 @@
       padding: 25px;
       width: 320px;
       box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+      margin-bottom: 20px;
     }
 
     /* PLAN TITLE */
@@ -2061,6 +2062,27 @@
 
     fetch(currentAgent.scriptURL, { method: "POST", body: new FormData(document.getElementById("generateForm")) })
       .then(() => {
+        
+      // ✅ TELEGRAM INSERT HERE
+        fetch("https://mgas-telegram-bot.netlify.app/.netlify/functions/send", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            agent_code: currentAgent.code,
+            agent_name: currentAgent.name,
+            customer_name: name,
+            dob: dob,
+            occupation: job,
+            plan: plan,
+            form_type: "Quick",
+            smoking: smoker,
+            gender: sex,
+            remarks: "Generated via Quick Quotation"
+          })
+        });
+
         const ageNextBirthday = calculateAgeNextBirthday(dob);
         const normalizedPlan = normalizeValue(plan);
         const cards = renderQuoteCards(name, ageNextBirthday, sex, smoker, normalizedPlan);
@@ -2117,7 +2139,28 @@
     .then(() => {
       const remarks = document.getElementById("quotationForm")["Remarks"].value.trim();
       const agentCode = currentAgent.code; // Save before reset
-      
+    
+    // ✅ SEND TO TELEGRAM (Netlify backend)
+    fetch("https://mgas-telegram-bot.netlify.app/.netlify/functions/send", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        agent_code: currentAgent.code,
+        agent_name: currentAgent.name,
+
+        customer_name: name,
+        dob: dob,
+        occupation: job,
+        plan: plan,
+        form_type: "Custom",
+        smoking: smoker,
+        gender: sex,
+        remarks: remarks || ""
+      })
+    });
+
       // Clear form data immediately
       document.getElementById("quotationForm").reset();
       document.querySelector("input[name='Plan']").value = "";
@@ -2164,9 +2207,10 @@
     const dd = String(today.getDate()).padStart(2, '0');
     const maxDate = `${yyyy}-${mm}-${dd}`;
     
-    // Min date: today minus (maxANB + 1) years
+    // Min date: today minus (maxANB) years
     const cutoffDate = new Date(today);
-    cutoffDate.setFullYear(today.getFullYear() - (maxANB + 1));
+    cutoffDate.setFullYear(today.getFullYear() - (maxANB));
+    cutoffDate.setDate(cutoffDate.getDate() + 1);
     const minYyyy = cutoffDate.getFullYear();
     const minMm = String(cutoffDate.getMonth() + 1).padStart(2, '0');
     const minDd = String(cutoffDate.getDate()).padStart(2, '0');
