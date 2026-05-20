@@ -28,6 +28,7 @@ exports.handler = async function (event) {
       form_type,
       smoking,
       gender,
+      phone,
       remarks
     } = data;
 
@@ -66,6 +67,7 @@ You have received a new enquiry from your *${formLabel} Form*.
 📋 *Plan Interested:* ${plan}
 🚬 *Smoking Status:* ${smoking}
 ⚧ *Gender:* ${gender}
+📞 *Phone Number:* ${phone}
 ━━━━━━━━━━━━━━━
 
 📝 *Remarks:*
