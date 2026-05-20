@@ -8,18 +8,20 @@
     "instagram": "norman265",
     "facebook": "norman265",
     "tiktok": "norman.muhammad",
-    "lead": true
+    "lead": true,
+    "chat_id": 255243752
   },
   {
     "code": "N1M00001",
     "name": "NORMAN RIDZUAN",
-    "title": "UNIT MANAGER 2",
+    "title": "UNIT MANAGER II",
     "image": "./Picture/N1M00001.jpg",
     "whatsapp": "60132443019",
     "instagram": "norman2205",
     "facebook": "wiki.norman",
     "tiktok": "mantakahara",
-    "lead": true
+    "lead": true,
+    "chat_id": 429832832
   },
   {
     "code": "D3300051",
@@ -44,6 +46,30 @@
     "chat_id": 344886216
   },
   {
+    "code": "N1M00007",
+    "name": "AHMAD SHAHERUL",
+    "title": "EXECUTIVE WEALTH PLANNER",
+    "image": "./Picture/N1M00007.jpg",
+    "whatsapp": "60174856083",
+    "instagram": "ahmadshaherul",
+    "facebook": "ahmad.shaherul.ii",
+    "tiktok": "shaherul656",
+    "lead": false,
+    "chat_id": 610397354
+  },
+  {
+    "code": "D3300138",
+    "name": "SYED FAHMI",
+    "title": "SENIOR CONSULTANT",
+    "image": "./Picture/D3300138.jpg",
+    "whatsapp": "60133438487",
+    "instagram": "pak_syed_takaful",
+    "facebook": "syed.fahmi.965",
+    "tiktok": "pak_syed_takaful",
+    "lead": false,
+    "chat_id": 309515338
+  },
+  {
     "code": "D3300145",
     "name": "AMMAR IRFAN",
     "title": "CONSULTANT",
@@ -58,7 +84,7 @@
   {
     "code": "N3M00001",
     "name": "IKRAM RAMLI",
-    "title": "UNIT MANAGER 2",
+    "title": "UNIT MANAGER II",
     "image": "./Picture/N3M00001.jpg",
     "whatsapp": "60142445626",
     "instagram": "ikramramli92",
@@ -68,11 +94,12 @@
   {
     "code": "HKA80001",
     "name": "HAFEZ KAMAZAMAN",
-    "title": "UNIT MANAGER 2",
+    "title": "UNIT MANAGER II",
     "image": "./Picture/HKA80001.jpg",
     "whatsapp": "60124845564",
     "instagram": "hafezkamazaman",
     "facebook": "humai.fez",
-    "lead": true
+    "lead": true,
+    "chat_id": 220508790
   }
 ]
