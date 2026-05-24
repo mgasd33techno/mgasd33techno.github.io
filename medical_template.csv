@@ -1,0 +1,26 @@
+plan_type,plan_value,r_n_b,is_booster,hospital_room_board,annual_limit,lifetime_limit,outpatient_infectious_disease,additional_annual_limit_critical_conditions,outpatient_cancer_dialysis,govt_hospital_allowance,outpatient_accident_treatment,maternity,mental
+medic_protector,Plan 150,,TRUE,RM 150 per day,"RM 1,150,000",Unlimited,"RM 1,500 per disease","RM 150,000","RM 1,500,000",RM 50 per day,As charged,Not Available,Not Available
+medic_protector,Plan 150,,FALSE,RM 150 per day,"RM 150,000",Unlimited,"RM 1,500 per disease","RM 150,000","RM 750,000",RM 50 per day,"RM 1,500",Not Available,Not Available
+medic_protector,Plan 200,,TRUE,RM 200 per day,"RM 1,200,000",Unlimited,"RM 2,000 per disease","RM 200,000","RM 2,000,000",RM 100 per day,As charged,Not Available,Not Available
+medic_protector,Plan 200,,FALSE,RM 200 per day,"RM 200,000",Unlimited,"RM 2,000 per disease","RM 200,000","RM 1,000,000",RM 100 per day,"RM 1,500",Not Available,Not Available
+medic_protector,Plan 250,,TRUE,RM 250 per day,"RM 1,250,000",Unlimited,"RM 2,500 per disease","RM 250,000","RM 2,500,000",RM 150 per day,As charged,As charged,"RM 5,000"
+medic_protector,Plan 250,,FALSE,RM 250 per day,"RM 250,000",Unlimited,"RM 2,500 per disease","RM 250,000","RM 1,250,000",RM 150 per day,"RM 2,000","RM 4,000","RM 5,000"
+medic_protector,Plan 300,,TRUE,RM 300 per day,"RM 1,300,000",Unlimited,"RM 3,000 per disease","RM 300,000","RM 3,000,000",RM 150 per day,As charged,As charged,"RM 5,000"
+medic_protector,Plan 300,,FALSE,RM 300 per day,"RM 300,000",Unlimited,"RM 3,000 per disease","RM 300,000","RM 1,500,000",RM 150 per day,"RM 2,000","RM 6,000","RM 5,000"
+medic_protector,Plan 400,,TRUE,RM 400 per day,"RM 1,400,000",Unlimited,"RM 4,000 per disease","RM 400,000","RM 4,000,000",RM 200 per day,As charged,As charged,"RM 5,000"
+medic_protector,Plan 400,,FALSE,RM 400 per day,"RM 400,000",Unlimited,"RM 4,000 per disease","RM 400,000","RM 2,000,000",RM 200 per day,"RM 3,000","RM 10,000","RM 5,000"
+asas360_health,"1,000,000",200,,RM 200 per day,Unlimited,Unlimited,"RM 2,000 per disease",Unlimited,"RM 1,500,000",RM 100 per day,"RM 2,000",Not Available,Not Available
+asas360_health,"1,000,000",300,,RM 300 per day,Unlimited,Unlimited,"RM 2,000 per disease",Unlimited,"RM 1,500,000",RM 100 per day,"RM 3,000",Not Available,"RM 5,000"
+asas360_health,"1,000,000",400,,RM 400 per day,Unlimited,Unlimited,"RM 2,000 per disease",Unlimited,"RM 1,500,000",RM 100 per day,"RM 4,000",Not Available,"RM 5,000"
+asas360_health,"1,000,000",500,,RM 500 per day,Unlimited,Unlimited,"RM 2,000 per disease",Unlimited,"RM 1,500,000",RM 100 per day,"RM 5,000",Not Available,"RM 5,000"
+asas360_health,"1,000,000","1,000",,"RM 1,000 per day",Unlimited,Unlimited,"RM 2,000 per disease",Unlimited,"RM 1,500,000",RM 100 per day,"RM 10,000",Not Available,"RM 5,000"
+asas360_health,"2,000,000",200,,RM 200 per day,Unlimited,Unlimited,"RM 2,000 per disease",Unlimited,"RM 3,000,000",RM 100 per day,"RM 2,000",Not Available,Not Available
+asas360_health,"2,000,000",300,,RM 300 per day,Unlimited,Unlimited,"RM 2,000 per disease",Unlimited,"RM 3,000,000",RM 100 per day,"RM 3,000",Not Available,"RM 5,000"
+asas360_health,"2,000,000",400,,RM 400 per day,Unlimited,Unlimited,"RM 2,000 per disease",Unlimited,"RM 3,000,000",RM 100 per day,"RM 4,000",Not Available,"RM 5,000"
+asas360_health,"2,000,000",500,,RM 500 per day,Unlimited,Unlimited,"RM 2,000 per disease",Unlimited,"RM 3,000,000",RM 100 per day,"RM 5,000",Not Available,"RM 5,000"
+asas360_health,"2,000,000","1,000",,"RM 1,000 per day",Unlimited,Unlimited,"RM 2,000 per disease",Unlimited,"RM 3,000,000",RM 100 per day,"RM 10,000",Not Available,"RM 5,000"
+asas360_health,"5,000,000",200,,RM 200 per day,Unlimited,Unlimited,"RM 2,000 per disease",Unlimited,"RM 7,500,000",RM 100 per day,"RM 2,000",Not Available,Not Available
+asas360_health,"5,000,000",300,,RM 300 per day,Unlimited,Unlimited,"RM 2,000 per disease",Unlimited,"RM 7,500,000",RM 100 per day,"RM 3,000",Not Available,"RM 5,000"
+asas360_health,"5,000,000",400,,RM 400 per day,Unlimited,Unlimited,"RM 2,000 per disease",Unlimited,"RM 7,500,000",RM 100 per day,"RM 4,000",Not Available,"RM 5,000"
+asas360_health,"5,000,000",500,,RM 500 per day,Unlimited,Unlimited,"RM 2,000 per disease",Unlimited,"RM 7,500,000",RM 100 per day,"RM 5,000",Not Available,"RM 5,000"
+asas360_health,"5,000,000","1,000",,"RM 1,000 per day",Unlimited,Unlimited,"RM 2,000 per disease",Unlimited,"RM 7,500,000",RM 100 per day,"RM 10,000",Not Available,"RM 5,000"

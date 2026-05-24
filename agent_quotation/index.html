@@ -1,0 +1,986 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+  <title>MGAS Quotation Generator</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.2/html2pdf.bundle.min.js"></script>
+  <style>
+    :root {
+      --bg: #090909;
+      --surface: #141414;
+      --surface-soft: #1f1f1f;
+      --gold: #d4af37;
+      --text: #f8eed7;
+      --muted: #b9a76f;
+      --border: rgba(212,175,55,0.18);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html, body {
+      margin: 0;
+      min-height: 100%;
+      background: #080808;
+      color: var(--text);
+      font-family: Inter, system-ui, sans-serif;
+    }
+
+    body {
+      background: radial-gradient(circle at top left, rgba(212,175,55,0.12), transparent 18%), #080808;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background: radial-gradient(circle at 20% 10%, rgba(212,175,55,0.14), transparent 14%), radial-gradient(circle at 80% 15%, rgba(212,175,55,0.08), transparent 10%);
+    }
+
+    .page {
+      width: min(1180px, calc(100% - 32px));
+      margin: 0 auto;
+      padding: 28px 0 60px;
+    }
+
+    header {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      gap: 24px;
+      align-items: center;
+      margin-bottom: 32px;
+    }
+
+    .brand {
+      display: flex;
+      gap: 18px;
+      align-items: center;
+    }
+
+    .brand img {
+      height: 60px;
+      width: auto;
+      object-fit: contain;
+    }
+
+    .brand h1 {
+      margin: 0;
+      font-size: clamp(2rem, 2.6vw, 2.8rem);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--gold);
+    }
+
+    .intro {
+      max-width: 560px;
+      color: var(--muted);
+      line-height: 1.7;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 24px;
+    }
+
+    .full {
+      grid-column: 1 / -1;
+    }
+
+    .card {
+      background: rgba(18, 18, 18, 0.98);
+      border: 1px solid var(--border);
+      border-radius: 28px;
+      padding: 28px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.35);
+    }
+
+    .card h2 {
+      margin: 0 0 18px;
+      font-size: 1.15rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--gold);
+    }
+
+    .field-grid {
+      display: grid;
+      gap: 18px;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .field-grid.full {
+      grid-template-columns: 1fr;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 8px;
+      color: var(--gold);
+      font-size: 0.95rem;
+      letter-spacing: 0.02em;
+      font-weight: 700;
+    }
+
+    /* Checkbox label that matches the "Medic Booster" style but tighter spacing */
+    .checkbox-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 700;
+      color: var(--gold);
+    }
+
+    .checkbox-label input[type="checkbox"] {
+      width: 14px;
+      height: 14px;
+      margin: 0;
+      /* modern browsers support accent-color to tint the checkbox */
+      accent-color: var(--gold);
+    }
+
+    input,
+    select {
+      width: 100%;
+      border-radius: 16px;
+      border: 1px solid rgba(255,255,255,0.08);
+      padding: 14px 16px;
+      background: #111111;
+      color: var(--text);
+      font-size: 1rem;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    input:focus,
+    select:focus {
+      outline: none;
+      border-color: rgba(212,175,55,0.6);
+      box-shadow: 0 0 0 4px rgba(212,175,55,0.1);
+    }
+
+    .button-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 12px;
+    }
+
+    .button-group button {
+      flex: 1;
+      min-width: 120px;
+      padding: 14px 18px;
+      border: 2px solid rgba(212,175,55,0.3);
+      border-radius: 999px;
+      background: transparent;
+      color: var(--text);
+      cursor: pointer;
+      font-weight: 700;
+      transition: transform 0.2s ease, background-color 0.2s ease, border-color 0.2s ease;
+    }
+
+    .button-group button:hover {
+      background: rgba(212,175,55,0.12);
+    }
+
+    .button-group button.active {
+      background: var(--gold);
+      color: #111;
+      border-color: var(--gold);
+    }
+
+    .section-note {
+      color: var(--muted);
+      margin-top: 10px;
+      font-size: 0.95rem;
+      line-height: 1.6;
+    }
+
+    .actions {
+      display: flex;
+      justify-content: center;
+      gap: 16px;
+      align-items: center;
+      flex-wrap: wrap;
+      margin-top: 24px;
+    }
+
+    .primary-btn {
+      background: var(--gold);
+      color: #111;
+      border: none;
+      border-radius: 999px;
+      padding: 16px 28px;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 14px 30px rgba(212,175,55,0.24);
+      transition: transform 0.2s ease, filter 0.2s ease;
+    }
+
+    .primary-btn:hover {
+      transform: translateY(-1px);
+      filter: brightness(1.04);
+    }
+
+    #pdf-content {
+      display: none;
+      background: #ffffff;
+      border: 1px solid rgba(212,175,55,0.25);
+      border-radius: 24px;
+      padding: 24px;
+      margin-top: 32px;
+      color: #111111;
+      max-width: 100%;
+      font-size: 0.9rem;
+      line-height: 1.35;
+    }
+
+    #pdf-content .invoice-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 18px;
+      flex-wrap: wrap;
+    }
+
+    #pdf-content .preview-title {
+      color: #111111;
+      font-size: clamp(1.4rem, 2vw, 1.8rem);
+      letter-spacing: 0.14em;
+      margin-bottom: 12px;
+    }
+
+    #pdf-content .summary p {
+      margin: 0;
+      color: #111111;
+      font-size: 0.87rem;
+    }
+
+    #pdf-content table {
+      color: #111111;
+      font-size: 0.72rem;
+      line-height: 1.25;
+    }
+
+    #pdf-content th,
+    #pdf-content td {
+      padding: 6px 8px;
+    }
+
+    #pdf-content th {
+      background: #f8e8b8;
+      color: #8b6a12;
+      font-size: 0.75rem;
+    }
+
+    #pdf-content td {
+      border-color: rgba(0, 0, 0, 0.08);
+    }
+
+    #pdf-content .footer {
+      margin-top: 24px;
+      color: #444444;
+      font-size: 0.85rem;
+      line-height: 1.4;
+    }
+
+    #pdf-content .agent-credit {
+      margin-top: 10px;
+      font-style: italic;
+      color: #333333;
+    }
+
+    #pdf-content .footer strong {
+      color: #111111;
+    }
+
+    .invoice-header img {
+      max-height: 64px;
+      object-fit: contain;
+    }
+
+    .divider {
+      height: 4px;
+      background: var(--gold);
+      border-radius: 999px;
+      margin: 22px 0;
+    }
+
+    .preview-title {
+      text-align: center;
+      font-size: clamp(1.7rem, 2.3vw, 2rem);
+      margin: 0;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+    }
+
+    .summary {
+      display: grid;
+      gap: 8px;
+      margin-top: 22px;
+    }
+
+    .summary p {
+      margin: 0;
+      font-size: 0.96rem;
+      line-height: 1.6;
+    }
+
+    .summary b {
+      color: var(--gold);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+      page-break-inside: avoid;
+    }
+
+    th,
+    td {
+      padding: 10px 12px;
+      border: 1px solid rgba(255,255,255,0.08);
+      text-align: left;
+      vertical-align: top;
+      font-size: 0.88rem;
+    }
+
+    th {
+      background: #121212;
+      color: var(--gold);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+
+    tr:nth-child(even) td {
+      background: rgba(255,255,255,0.04);
+    }
+    
+    .logo {
+      margin-left: 35px;
+    }
+
+    .footer {
+      margin-top: 26px;
+      color: var(--muted);
+      line-height: 1.35;
+      font-size: 0.95rem;
+    }
+
+    .footer p {
+      margin: 0;
+      white-space: pre-line;
+    }
+
+    .footer strong {
+      color: var(--text);
+    }
+
+    .plan-header {
+      text-align: left;
+      vertical-align: bottom;
+      line-height: 1.2;
+    }
+
+    .plan-header .plan-name {
+      display: block;
+      margin-top: 8px;
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: #8b6a12;
+    }
+
+    .plan-header .plan-number {
+      display: block;
+      margin-top: 6px;
+      font-size: 0.82rem;
+      color: var(--gold);
+      letter-spacing: 0.08em;
+    }
+
+    @media (max-width: 980px) {
+      .grid {
+        grid-template-columns: 1fr;
+      }
+
+      .field-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .invoice-header {
+        justify-content: flex-start;
+      }
+    }
+
+    @page {
+      size: A4 portrait;
+      margin: 10mm;
+      background: #ffffff;
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <header>
+      <div class="brand">
+        <img src="../Picture/mglogo1.png" alt="MGAS logo" class = "logo">
+        <div>
+          <h1>MGAS Quotation Generator</h1>
+          <p>Professional Medical & Hibah quotation templates for agents, ready to send to clients instantly.</p>
+        </div>
+      </div>
+    </header>
+
+    <div class="grid">
+      <section class="card">
+        <h2>Agent Information</h2>
+        <div class="field-grid full">
+          <div>
+            <label for="agent_name">Agent Name</label>
+            <input id="agent_name" placeholder="Enter agent name">
+          </div>
+          <div>
+            <label for="agent_phone">Agent Phone</label>
+            <input id="agent_phone" placeholder="Enter phone number">
+          </div>
+        </div>
+      </section>
+
+      <section class="card">
+        <h2>Prospect Information</h2>
+        <div class="field-grid full">
+          <div>
+            <label for="prospect_name">Prospect Name</label>
+            <input id="prospect_name" placeholder="Enter prospect name">
+          </div>
+          <div>
+            <label for="age">Age Next Birthday</label>
+            <input id="age" placeholder="Enter age">
+          </div>
+        </div>
+      </section>
+
+      <section class="card full">
+        <h2>Quotation Type</h2>
+        <div>
+          <div id="typeButtons" class="button-group">
+            <button type="button" onclick="setType('medical')" id="btnMedical" class="active">Medical</button>
+            <button type="button" onclick="setType('hibah')" id="btnHibah">Hibah</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="card full">
+        <h2>Plan Configuration</h2>
+        <div class="field-grid full">
+          <div>
+            <label>No. of Plans</label>
+            <div class="button-group" id="planCountButtons">
+              <button type="button" class="active" data-count="1">1</button>
+              <button type="button" data-count="2">2</button>
+              <button type="button" data-count="3">3</button>
+            </div>
+          </div>
+        </div>
+        <div id="plansContainer" class="summary"></div>
+      </section>
+    </div>
+    
+    <div class="actions">
+      <button class="primary-btn" onclick="generate()">Generate Preview</button>
+    </div>
+
+    <hr style="border:none; border-top:1px solid rgba(212,175,55,0.15); margin:40px 0;">
+
+    <div id="pdf-content">
+      <div class="invoice-header">
+        <img src="../Picture/mglogo1.png" alt="MGAS logo" class = "logo">
+        <img src="../Picture/prubsnlogo1.png" alt="PruBSN logo">
+      </div>
+      <div class="divider"></div>
+      <h1 class="preview-title"><span id="title_type"></span> Quotation</h1>
+      <div class="summary">
+        <p><b>SPECIALLY MADE FOR:</b> <strong><span id="t_name"></span></strong></p>
+        <p><b>AGE NEXT BIRTHDAY:</b> <strong><span id="t_age"></span></strong></p>
+      </div>
+      <div id="table-area"></div>
+      <div class="footer">
+        <p>
+          <strong>Designed by:</strong>
+          <i>
+            <strong><span id="a_name"></span></strong>
+            <strong>PRUDENTIAL BSN TAKAFUL BERHAD</strong>
+            <strong>MUQMEEN GROUP</strong>
+            <strong><span id="a_phone"></span></strong>
+          </i>
+        </p>
+      </div>
+
+    </div>
+
+    <div class="actions">
+      <button class="primary-btn" id="downloadBtn" onclick="downloadPDF()" style="display:none;">Download PDF</button>
+    </div>
+
+  </div>
+
+  <script>
+    const planOptions = {
+      medical: ["AnugerahMax", "Asas360"],
+      hibah: ["AnugerahMax", "WarisanGold"]
+    };
+
+    const planTypeMap = {
+      AnugerahMax: "medic_protector",
+      Asas360: "asas360_health",
+      WarisanGold: "warisan_gold"
+    };
+
+    let medicalTemplateData = [];
+
+    async function loadMedicalTemplate() {
+      try {
+        const response = await fetch("../medical_template.csv");
+        const text = await response.text();
+        medicalTemplateData = parseCSV(text);
+      } catch (error) {
+        console.error("Failed to load medical_template.csv", error);
+        medicalTemplateData = [];
+      }
+    }
+
+    function parseCSV(text) {
+      const lines = text.trim().split(/\r?\n/);
+      const headers = lines[0].split(",").map((header) => header.trim());
+      return lines.slice(1).map((line) => {
+        const values = [];
+        let current = "";
+        let inQuotes = false;
+        for (let i = 0; i < line.length; i++) {
+          const char = line[i];
+          if (char === '"') {
+            if (inQuotes && line[i + 1] === '"') {
+              current += '"';
+              i += 1;
+            } else {
+              inQuotes = !inQuotes;
+            }
+          } else if (char === "," && !inQuotes) {
+            values.push(current);
+            current = "";
+          } else {
+            current += char;
+          }
+        }
+        values.push(current);
+        return headers.reduce((obj, header, index) => {
+          obj[header] = values[index] ? values[index].trim() : "";
+          return obj;
+        }, {});
+      });
+    }
+
+    function getMedicalPlanValues(planTypeName) {
+      const planType = planTypeMap[planTypeName];
+      return Array.from(new Set(
+        medicalTemplateData
+          .filter((row) => row.plan_type === planType)
+          .map((row) => String(row.plan_value).trim())
+      )).sort((a, b) => Number(a) - Number(b));
+    }
+
+    function getPlanValueOptionsHTML(planTypeName) {
+      const values = getMedicalPlanValues(planTypeName);
+      if (!values.length) {
+        return '<option value="">No plan values found</option>';
+      }
+      return values.map((value) => `<option value="${value}">${value}</option>`).join("");
+    }
+
+    function findMedicalTemplateRow(planTypeName, planValue, booster) {
+      const planType = planTypeMap[planTypeName];
+      const boosterValue = booster ? "TRUE" : "FALSE";
+      return medicalTemplateData.find((row) =>
+        row.plan_type === planType &&
+        String(row.plan_value) === String(planValue) &&
+        String(row.is_booster).toUpperCase() === boosterValue
+      );
+    }
+
+    function isBoosterChecked(i) {
+      const el = document.getElementById(`booster${i}`);
+      return !!(el && el.checked);
+    }
+
+    function getSelectedCoPayment(i) {
+      return selectedCoPayment[i] || "—";
+    }
+
+    function createCoPaymentButtons(index, container, planName) {
+      container.innerHTML = "";
+      const options = coPaymentOptions[planName] || [];
+      if (!options.length) return;
+      
+      const planIndex = index + 1;
+      options.forEach((option) => {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.textContent = option;
+        button.className = selectedCoPayment[planIndex] === option ? "active" : "";
+        button.addEventListener("click", () => {
+          selectedCoPayment[planIndex] = option;
+          Array.from(container.children).forEach((btn) => btn.classList.remove("active"));
+          button.classList.add("active");
+        });
+        container.appendChild(button);
+      });
+    }
+
+
+    const coPaymentOptions = {
+      AnugerahMax: ["SmartSaver300", "SmartSaver1000", "Deductible 10,000", "Deductible 50,000", "Full Coverage"],
+      Asas360: ["Deductible RM500", "Deductible RM1,000", "Deductible RM3,000", "Auto-Switch", "Co-takaful", "High Deductible RM10,000", "High Deductible RM50,000"]
+    };
+
+    let selectedCoPayment = {};
+
+    const selected = {
+      type: "medical",
+      numPlans: 1,
+      planTypes: ["AnugerahMax"]
+    };
+
+    function setActiveTypeButton(value) {
+      document.getElementById("btnMedical").classList.toggle("active", value === "medical");
+      document.getElementById("btnHibah").classList.toggle("active", value === "hibah");
+    }
+
+    function createPlanTypeButtons(index, container) {
+      container.innerHTML = "";
+      const availablePlans = planOptions[selected.type];
+      selected.planTypes[index] = selected.planTypes[index] && availablePlans.includes(selected.planTypes[index])
+        ? selected.planTypes[index]
+        : availablePlans[0];
+
+      availablePlans.forEach((planName) => {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.textContent = planName;
+        button.className = selected.planTypes[index] === planName ? "active" : "";
+        button.addEventListener("click", () => {
+          selected.planTypes[index] = planName;
+          Array.from(container.children).forEach((btn) => btn.classList.remove("active"));
+          button.classList.add("active");          renderPlanInputs();        });
+        container.appendChild(button);
+      });
+    }
+
+    function parseCurrencyValue(value) {
+      if (!value) return 0;
+      const cleaned = String(value).replace(/[^0-9.-]/g, "");
+      return Number(cleaned) || 0;
+    }
+
+    function formatCurrencyInput(input) {
+      const numbers = String(input.value).replace(/[^0-9]/g, "");
+      if (!numbers) {
+        input.value = "";
+        return;
+      }
+      input.value = `RM ${Number(numbers).toLocaleString("en-US")}`;
+    }
+
+    function attachCurrencyFormatting(input) {
+      input.addEventListener("focus", () => {
+        input.value = String(input.value).replace(/RM\s?/g, "").replace(/,/g, "");
+      });
+      input.addEventListener("input", () => {
+        input.value = String(input.value).replace(/RM\s?/g, "").replace(/,/g, "").replace(/[^0-9]/g, "");
+      });
+      input.addEventListener("blur", () => {
+        if (input.value) formatCurrencyInput(input);
+      });
+    }
+
+    function formatCurrencyDisplay(value) {
+      const number = parseCurrencyValue(value);
+      return number ? `RM ${number.toLocaleString("en-US")}` : "—";
+    }
+
+    function setType(value) {
+      selected.type = value;
+      setActiveTypeButton(value);
+      renderPlanInputs();
+    }
+
+    document.getElementById("planCountButtons").addEventListener("click", (event) => {
+      if (!event.target.matches("button")) return;
+      selected.numPlans = Number(event.target.dataset.count);
+      Array.from(event.currentTarget.children).forEach((btn) => btn.classList.remove("active"));
+      event.target.classList.add("active");
+      renderPlanInputs();
+    });
+
+    function renderPlanInputs() {
+      const num = selected.numPlans;
+      const container = document.getElementById("plansContainer");
+      container.innerHTML = "";
+      selected.planTypes = selected.planTypes.slice(0, num);
+      while (selected.planTypes.length < num) {
+        selected.planTypes.push(planOptions[selected.type][0]);
+      }
+
+      for (let i = 1; i <= num; i++) {
+        const planCard = document.createElement("div");
+        planCard.className = "card";
+        planCard.style.padding = "22px";
+        planCard.style.background = "rgba(18, 18, 18, 0.96)";
+        planCard.innerHTML = `
+          <h3 style="margin:0 0 18px; color: var(--gold);">Plan ${i}</h3>
+          <div style="margin-bottom:18px;">
+            <label>Plan Type</label>
+            <div id="planButtons${i}" class="button-group"></div>
+          </div>
+          <div class="field-grid full">
+            ${selected.type === 'medical' ? `
+            <div>
+              <label for="rb${i}">Plan Value</label>
+              <select id="rb${i}">${getPlanValueOptionsHTML(selected.planTypes[i - 1])}</select>
+            </div>
+            ` : ''}
+            <div>
+              <label for="price${i}">Premium</label>
+              <input id="price${i}" placeholder="RM 0" inputmode="numeric">
+            </div>
+            <div>
+              <label for="sum${i}">Basic Sum Covered</label>
+              <input id="sum${i}" placeholder="RM 0" inputmode="numeric">
+            </div>
+            <div>
+              <label for="mat${i}">Maturity Age</label>
+              <input id="mat${i}" placeholder="70">
+            </div>
+            ${selected.type === 'medical' && selected.planTypes[i - 1] !== 'Asas360' ? `
+            <div style="grid-column: 1 / -1;">
+              <label class="checkbox-label">
+                <input type="checkbox" id="booster${i}">
+                Medic BoostCare
+              </label>
+            </div>
+            ` : ''}
+            <div style="grid-column: 1 / -1;">
+              <label for="ci${i}">Crisis Protector / Shield</label>
+              <input id="ci${i}" placeholder="RM 0" inputmode="numeric">
+            </div>
+            <div style="grid-column: 1 / -1;">
+              <label class="checkbox-label">
+                <input type="checkbox" id="contrib${i}">
+                Contributor Protect
+              </label>
+            </div>
+            <div>
+              <label for="acc${i}">Accidental Protector Plus</label>
+              <input id="acc${i}" placeholder="RM 0" inputmode="numeric">
+            </div>
+            ${selected.type === 'medical' ? `
+            <div style="grid-column: 1 / -1;">
+              <label>Co-Payment Options</label>
+              <div id="coPaymentButtons${i}" class="button-group"></div>
+            </div>
+            ` : ''}
+          </div>
+        `;
+        container.appendChild(planCard);
+        const buttonContainer = planCard.querySelector(`#planButtons${i}`);
+        createPlanTypeButtons(i - 1, buttonContainer);
+        const coPaymentContainer = planCard.querySelector(`#coPaymentButtons${i}`);
+        if (coPaymentContainer) {
+          createCoPaymentButtons(i - 1, coPaymentContainer, selected.planTypes[i - 1]);
+        }
+        attachCurrencyFormatting(planCard.querySelector(`#price${i}`));
+        attachCurrencyFormatting(planCard.querySelector(`#sum${i}`));
+        const accInput = planCard.querySelector(`#acc${i}`);
+        if (accInput) attachCurrencyFormatting(accInput);
+        attachCurrencyFormatting(planCard.querySelector(`#ci${i}`));
+      }
+    }
+
+    function generate() {
+      try {
+        const agentName = document.getElementById("agent_name").value || "—";
+        const agentPhone = document.getElementById("agent_phone").value || "—";
+        const prospectName = document.getElementById("prospect_name").value || "—";
+        const age = document.getElementById("age").value || "—";
+        const num = selected.numPlans;
+        document.getElementById("a_name").innerText = agentName;
+        document.getElementById("a_phone").innerText = agentPhone;
+        document.getElementById("t_name").innerText = prospectName;
+        document.getElementById("t_age").innerText = age;
+        document.getElementById("title_type").innerText = selected.type.toUpperCase();
+
+        let table = `
+          <table>
+            <tr>
+              <th>Detail</th>`;
+        for (let i = 1; i <= num; i++) {
+          table += `<th class="plan-header"><span class="plan-name">${selected.planTypes[i - 1]}</span><span class="plan-number">Plan ${i}</span></th>`;
+        }
+        table += `</tr>`;
+
+        const row = (label, fn) => {
+          let r = `<tr><td><b>${label}</b></td>`;
+          for (let i = 1; i <= num; i++) {
+            try {
+              r += `<td>${fn(i)}</td>`;
+            } catch (e) {
+              console.error(`Error in row "${label}" for plan ${i}:`, e);
+              r += `<td>—</td>`;
+            }
+          }
+          return r + `</tr>`;
+        };
+
+        table += row("Premium", i => formatCurrencyDisplay(document.getElementById(`price${i}`).value));
+        table += row("Maturity Age", i => {
+          const value = document.getElementById(`mat${i}`).value;
+          return value ? `${value} years old` : "—";
+        });
+        table += row("Death or TPD (Disability)", i => formatCurrencyDisplay(document.getElementById(`sum${i}`).value));
+        table += row("Claim upon 43 Critical Illness", i => formatCurrencyDisplay(document.getElementById(`ci${i}`).value));
+        table += row("Claim upon Accidental Injury / Death", i => formatCurrencyDisplay(document.getElementById(`acc${i}`).value));
+        table += row("Premium Waived upon Critical Illness or TPD", i => isContributorProtectChecked(i) ? "Yes" : "No");
+        if (selected.type === "medical") {
+          table += row("Hospital Room & Board", i => {
+            const template = findMedicalTemplateRow(
+              selected.planTypes[i - 1],
+              document.getElementById(`rb${i}`).value,
+              isBoosterChecked(i)
+            );
+            return template ? template.hospital_room_board : document.getElementById(`rb${i}`).value ? `RM ${document.getElementById(`rb${i}`).value}` : "—";
+          });
+        table += row("Annual Limit", i => {
+          const template = findMedicalTemplateRow(
+            selected.planTypes[i - 1],
+            document.getElementById(`rb${i}`).value,
+            isBoosterChecked(i)
+          );
+          return template ? template.annual_limit : "—";
+        });
+        table += row("Lifetime Limit", i => {
+          const template = findMedicalTemplateRow(
+            selected.planTypes[i - 1],
+            document.getElementById(`rb${i}`).value,
+            isBoosterChecked(i)
+          );
+          return template ? template.lifetime_limit : "—";
+        });
+        table += row("Outpatient Dengue and Infectious Diseases Treatment", i => {
+          const template = findMedicalTemplateRow(
+            selected.planTypes[i - 1],
+            document.getElementById(`rb${i}`).value,
+            isBoosterChecked(i)
+          );
+          return template ? template.outpatient_infectious_disease : "—";
+        });
+        table += row("Additional Annual Limit for Cancer, Kidney Failure or Heart Attack", i => {
+          const template = findMedicalTemplateRow(
+            selected.planTypes[i - 1],
+            document.getElementById(`rb${i}`).value,
+            isBoosterChecked(i)
+          );
+          return template ? template.additional_annual_limit_critical_conditions : "—";
+        });
+        table += row("Outpatient Cancer and Kidney Dialysis Treatment", i => {
+          const template = findMedicalTemplateRow(
+            selected.planTypes[i - 1],
+            document.getElementById(`rb${i}`).value,
+            isBoosterChecked(i)
+          );
+          return template ? template.outpatient_cancer_dialysis : "—";
+        });
+        table += row("Government Hospital Allowance", i => {
+          const template = findMedicalTemplateRow(
+            selected.planTypes[i - 1],
+            document.getElementById(`rb${i}`).value,
+            isBoosterChecked(i)
+          );
+          return template ? template.govt_hospital_allowance : "—";
+        });
+        table += row("Emergency Outpatient Treatment for Accidental Injury", i => {
+          const template = findMedicalTemplateRow(
+            selected.planTypes[i - 1],
+            document.getElementById(`rb${i}`).value,
+            isBoosterChecked(i)
+          );
+          return template ? template.outpatient_accident_treatment : "—";
+        });
+        table += row("Maternity Complication (female only)", i => {
+          const template = findMedicalTemplateRow(
+            selected.planTypes[i - 1],
+            document.getElementById(`rb${i}`).value,
+            isBoosterChecked(i)
+          );
+          return template ? template.maternity : "—";
+        });
+        table += row("Mental Care Treatment", i => {
+          const template = findMedicalTemplateRow(
+            selected.planTypes[i - 1],
+            document.getElementById(`rb${i}`).value,
+            isBoosterChecked(i)
+          );
+          return template ? template.mental : "—";
+        });
+        table += row("Co-Payment Option", i => getSelectedCoPayment(i));
+      } else {
+        table += row("Accidental Death (Malaysia)", i => {
+          const sum = parseCurrencyValue(document.getElementById(`sum${i}`).value);
+          return selected.planTypes[i - 1] === "WarisanGold"
+            ? `RM ${(sum * 2).toLocaleString()}`
+            : `RM ${(sum + 50000).toLocaleString()}`;
+        });
+        table += row("Accidental Death (Public Transport or Building)", i => {
+          const sum = parseCurrencyValue(document.getElementById(`sum${i}`).value);
+          return `RM ${(sum * 3).toLocaleString()}`;
+        });
+        table += row("Accidental Death (Oversea)", i => {
+          const sum = parseCurrencyValue(document.getElementById(`sum${i}`).value);
+          return `RM ${(sum * 4).toLocaleString()}`;
+        });
+        table += row("Accidental Death (Natural Disaster)", i => {
+          const sum = parseCurrencyValue(document.getElementById(`sum${i}`).value);
+          return `RM ${(sum * 5).toLocaleString()}`;
+        });
+      }
+
+      table += `</table>`;
+      document.getElementById("table-area").innerHTML = table;
+      document.getElementById("pdf-content").style.display = "block";
+      document.getElementById("downloadBtn").style.display = "inline-block";
+      document.getElementById("pdf-content").scrollIntoView({ behavior: "smooth" });
+      } catch (error) {
+        console.error("Generate preview error:", error);
+        alert("Error generating preview. Check console for details.");
+      }
+    }
+
+    function downloadPDF() {
+      const fileName = (document.getElementById("prospect_name").value || "quotation") + "_quotation.pdf";
+      html2pdf()
+        .set({
+          margin: 10,
+          filename: fileName,
+          image: { type: 'jpeg', quality: 0.98, backgroundColor: '#ffffff' },
+          html2canvas: { scale: 2, backgroundColor: '#ffffff' },
+          jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+        })
+        .from(document.getElementById("pdf-content"))
+        .save();
+    }
+
+    loadMedicalTemplate().then(renderPlanInputs);
+  </script>
+</body>
+</html>
