@@ -260,13 +260,13 @@
 
     #pdf-content table {
       color: #111111;
-      font-size: 0.72rem;
-      line-height: 1.25;
+      font-size: 0.55rem;
+      line-height: 1.15;
     }
 
     #pdf-content th,
     #pdf-content td {
-      padding: 6px 8px;
+      padding: 4px 6px;
     }
 
     #pdf-content th {
@@ -293,7 +293,12 @@
     }
 
     #pdf-content .footer strong {
-      color: #111111;
+      color: #030303;
+    }
+
+    #pdf-content .footer i {
+      color: #857408;
+      font-weight: 600;
     }
 
     .invoice-header img {
@@ -329,7 +334,7 @@
     }
 
     .summary b {
-      color: var(--gold);
+      color: #857408;
     }
 
     table {
@@ -393,12 +398,12 @@
       color: #8b6a12;
     }
 
-    .plan-header .plan-number {
+    .hidden-input-group {
+      display: none;
+    }
+
+    .hidden-input-group.visible {
       display: block;
-      margin-top: 6px;
-      font-size: 0.82rem;
-      color: var(--gold);
-      letter-spacing: 0.08em;
     }
 
     @media (max-width: 980px) {
@@ -445,6 +450,10 @@
           <div>
             <label for="agent_phone">Agent Phone</label>
             <input id="agent_phone" placeholder="Enter phone number">
+          </div>
+          <div>
+            <label for="agent_code">Agent Code</label>
+            <input id="agent_code" placeholder="Enter agent code">
           </div>
         </div>
       </section>
@@ -511,10 +520,11 @@
         <p>
           <strong>Designed by:</strong>
           <i>
-            <strong><span id="a_name"></span></strong>
-            <strong>PRUDENTIAL BSN TAKAFUL BERHAD</strong>
-            <strong>MUQMEEN GROUP</strong>
-            <strong><span id="a_phone"></span></strong>
+            <span id="a_name"></span>
+            <span id="a_code"></span>
+            PRUDENTIAL BSN TAKAFUL BERHAD
+            MUQMEEN GROUP
+            <span id="a_phone"></span>
           </i>
         </p>
       </div>
@@ -528,6 +538,17 @@
   </div>
 
   <script>
+    function formatNumbersOnly(value) {
+      if (!value) return "";
+      return String(value).replace(/[^0-9]/g, "");
+    }
+
+    function attachNumberOnlyRestriction(input) {
+      input.addEventListener("input", () => {
+        input.value = formatNumbersOnly(input.value);
+      });
+    }
+
     const planOptions = {
       medical: ["AnugerahMax", "Asas360"],
       hibah: ["AnugerahMax", "WarisanGold"]
@@ -592,26 +613,62 @@
       )).sort((a, b) => Number(a) - Number(b));
     }
 
+    function getMedicalPlanRoomBoardOptions(planTypeName) {
+      const planType = planTypeMap[planTypeName];
+      return Array.from(new Set(
+        medicalTemplateData
+          .filter((row) => row.plan_type === planType)
+          .map((row) => String(row.plan_value || "").trim())
+          .filter(v => v)
+      ));
+    }
+
+    function getMedicalPlanSvpOptions(planTypeName) {
+      const planType = planTypeMap[planTypeName];
+      return Array.from(new Set(
+        medicalTemplateData
+          .filter((row) => row.plan_type === planType)
+          .map((row) => String(row.svp || "").trim())
+          .filter(v => v)
+      ));
+    }
+
     function getPlanValueOptionsHTML(planTypeName) {
       const values = getMedicalPlanValues(planTypeName);
       if (!values.length) {
-        return '<option value="">No plan values found</option>';
+        return '<option value="">No plan values found</option>'; 
       }
       return values.map((value) => `<option value="${value}">${value}</option>`).join("");
     }
 
-    function findMedicalTemplateRow(planTypeName, planValue, booster) {
+    function findMedicalTemplateRow(planTypeName, planValue, booster, roomBoard, svp) {
       const planType = planTypeMap[planTypeName];
-      const boosterValue = booster ? "TRUE" : "FALSE";
-      return medicalTemplateData.find((row) =>
-        row.plan_type === planType &&
-        String(row.plan_value) === String(planValue) &&
-        String(row.is_booster).toUpperCase() === boosterValue
-      );
+      
+      if (planTypeName === 'Asas360') {
+        // For Asas360: look up by room board (plan_value) and svp
+        return medicalTemplateData.find((row) =>
+          row.plan_type === planType &&
+          String(row.plan_value).trim() === String(roomBoard).trim() &&
+          String(row.svp).trim() === String(svp).trim()
+        );
+      } else {
+        // For AnugerahMax and other plans: look up by plan_value and booster
+        const boosterValue = booster ? "TRUE" : "FALSE";
+        return medicalTemplateData.find((row) =>
+          row.plan_type === planType &&
+          String(row.plan_value) === String(planValue) &&
+          String(row.is_booster).toUpperCase() === boosterValue
+        );
+      }
     }
 
     function isBoosterChecked(i) {
       const el = document.getElementById(`booster${i}`);
+      return !!(el && el.checked);
+    }
+
+    function isContributorProtectChecked(i) {
+      const el = document.getElementById(`contrib${i}`);
       return !!(el && el.checked);
     }
 
@@ -639,6 +696,72 @@
       });
     }
 
+    function createPlanValueButtons(index, container, planName) {
+      container.innerHTML = "";
+      const planIndex = index + 1;
+      const options = getMedicalPlanValues(planName);
+      if (!options.length) {
+        container.innerHTML = '<button type="button" disabled>No plan values found</button>';
+        return;
+      }
+      options.forEach((option) => {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.textContent = option;
+        button.className = selectedPlanValue[planIndex] === option ? "active" : "";
+        button.addEventListener("click", () => {
+          selectedPlanValue[planIndex] = option;
+          Array.from(container.children).forEach((btn) => btn.classList.remove("active"));
+          button.classList.add("active");
+        });
+        container.appendChild(button);
+      });
+    }
+
+    function createRoomBoardButtons(index, container, planName) {
+      container.innerHTML = "";
+      const options = getMedicalPlanRoomBoardOptions(planName);
+      if (!options.length) {
+        container.innerHTML = '<button type="button" disabled>No Room & Board options</button>';
+        return;
+      }
+      const planIndex = index + 1;
+      options.forEach((option) => {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.textContent = option;
+        button.className = selectedPlanRoomBoard[planIndex] === option ? "active" : "";
+        button.addEventListener("click", () => {
+          selectedPlanRoomBoard[planIndex] = option;
+          Array.from(container.children).forEach((btn) => btn.classList.remove("active"));
+          button.classList.add("active");
+        });
+        container.appendChild(button);
+      });
+    }
+
+    function createSvpButtons(index, container, planName) {
+      container.innerHTML = "";
+      const options = getMedicalPlanSvpOptions(planName);
+      if (!options.length) {
+        container.innerHTML = '<button type="button" disabled>No Smart Value Point options</button>';
+        return;
+      }
+      const planIndex = index + 1;
+      options.forEach((option) => {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.textContent = option;
+        button.className = selectedPlanSvp[planIndex] === option ? "active" : "";
+        button.addEventListener("click", () => {
+          selectedPlanSvp[planIndex] = option;
+          Array.from(container.children).forEach((btn) => btn.classList.remove("active"));
+          button.classList.add("active");
+        });
+        container.appendChild(button);
+      });
+    }
+
 
     const coPaymentOptions = {
       AnugerahMax: ["SmartSaver300", "SmartSaver1000", "Deductible 10,000", "Deductible 50,000", "Full Coverage"],
@@ -646,6 +769,9 @@
     };
 
     let selectedCoPayment = {};
+    let selectedPlanValue = {};
+    let selectedPlanRoomBoard = {};
+    let selectedPlanSvp = {};
 
     const selected = {
       type: "medical",
@@ -673,7 +799,14 @@
         button.addEventListener("click", () => {
           selected.planTypes[index] = planName;
           Array.from(container.children).forEach((btn) => btn.classList.remove("active"));
-          button.classList.add("active");          renderPlanInputs();        });
+          button.classList.add("active");
+          // Update plan value buttons when plan type changes
+          const planValueContainer = document.getElementById(`planValueButtons${index + 1}`);
+          if (planValueContainer) {
+            createPlanValueButtons(index, planValueContainer, planName);
+          }
+          renderPlanInputs();
+        });
         container.appendChild(button);
       });
     }
@@ -734,6 +867,19 @@
       }
 
       for (let i = 1; i <= num; i++) {
+        // Initialize plan defaults if not already set
+        if (selected.type === 'medical') {
+          const planName = selected.planTypes[i - 1];
+          if (planName === 'Asas360') {
+            const rbOptions = getMedicalPlanRoomBoardOptions(planName);
+            if (!selectedPlanRoomBoard[i] && rbOptions.length > 0) selectedPlanRoomBoard[i] = rbOptions[0];
+            const svpOptions = getMedicalPlanSvpOptions(planName);
+            if (!selectedPlanSvp[i] && svpOptions.length > 0) selectedPlanSvp[i] = svpOptions[0];
+          } else {
+            const values = getMedicalPlanValues(planName);
+            if (!selectedPlanValue[i] && values.length > 0) selectedPlanValue[i] = values[0];
+          }
+        }
         const planCard = document.createElement("div");
         planCard.className = "card";
         planCard.style.padding = "22px";
@@ -745,12 +891,21 @@
             <div id="planButtons${i}" class="button-group"></div>
           </div>
           <div class="field-grid full">
-            ${selected.type === 'medical' ? `
-            <div>
-              <label for="rb${i}">Plan Value</label>
-              <select id="rb${i}">${getPlanValueOptionsHTML(selected.planTypes[i - 1])}</select>
+            ${selected.type === 'medical' && selected.planTypes[i - 1] === 'Asas360' ? `
+            <div style="grid-column: 1 / -1;">
+              <label>Room & Board</label>
+              <div id="planRoomBoardButtons${i}" class="button-group"></div>
             </div>
-            ` : ''}
+            <div style="grid-column: 1 / -1;">
+              <label>Smart Value Point</label>
+              <div id="planSvpButtons${i}" class="button-group"></div>
+            </div>
+            ` : (selected.type === 'medical' ? `
+            <div style="grid-column: 1 / -1;">
+              <label>Plan Value</label>
+              <div id="planValueButtons${i}" class="button-group"></div>
+            </div>
+            ` : '')}
             <div>
               <label for="price${i}">Premium</label>
               <input id="price${i}" placeholder="RM 0" inputmode="numeric">
@@ -772,7 +927,13 @@
             </div>
             ` : ''}
             <div style="grid-column: 1 / -1;">
-              <label for="ci${i}">Crisis Protector / Shield</label>
+              <label class="checkbox-label">
+                <input type="checkbox" id="crisisCheck${i}">
+                Crisis Protector / Shield
+              </label>
+            </div>
+            <div id="crisisInputDiv${i}" class="hidden-input-group" style="grid-column: 1 / -1;">
+              <label for="ci${i}">Amount</label>
               <input id="ci${i}" placeholder="RM 0" inputmode="numeric">
             </div>
             <div style="grid-column: 1 / -1;">
@@ -781,8 +942,14 @@
                 Contributor Protect
               </label>
             </div>
-            <div>
-              <label for="acc${i}">Accidental Protector Plus</label>
+            <div style="grid-column: 1 / -1;">
+              <label class="checkbox-label">
+                <input type="checkbox" id="accCheck${i}">
+                Accidental Protector Plus
+              </label>
+            </div>
+            <div id="accInputDiv${i}" class="hidden-input-group">
+              <label for="acc${i}">Amount</label>
               <input id="acc${i}" placeholder="RM 0" inputmode="numeric">
             </div>
             ${selected.type === 'medical' ? `
@@ -796,6 +963,18 @@
         container.appendChild(planCard);
         const buttonContainer = planCard.querySelector(`#planButtons${i}`);
         createPlanTypeButtons(i - 1, buttonContainer);
+        const planRoomBoardContainer = planCard.querySelector(`#planRoomBoardButtons${i}`);
+        if (planRoomBoardContainer) {
+          createRoomBoardButtons(i - 1, planRoomBoardContainer, selected.planTypes[i - 1]);
+        }
+        const planSvpContainer = planCard.querySelector(`#planSvpButtons${i}`);
+        if (planSvpContainer) {
+          createSvpButtons(i - 1, planSvpContainer, selected.planTypes[i - 1]);
+        }
+        const planValueContainer = planCard.querySelector(`#planValueButtons${i}`);
+        if (planValueContainer) {
+          createPlanValueButtons(i - 1, planValueContainer, selected.planTypes[i - 1]);
+        }
         const coPaymentContainer = planCard.querySelector(`#coPaymentButtons${i}`);
         if (coPaymentContainer) {
           createCoPaymentButtons(i - 1, coPaymentContainer, selected.planTypes[i - 1]);
@@ -804,19 +983,57 @@
         attachCurrencyFormatting(planCard.querySelector(`#sum${i}`));
         const accInput = planCard.querySelector(`#acc${i}`);
         if (accInput) attachCurrencyFormatting(accInput);
-        attachCurrencyFormatting(planCard.querySelector(`#ci${i}`));
+        const ciInput = planCard.querySelector(`#ci${i}`);
+        if (ciInput) attachCurrencyFormatting(ciInput);
+        
+        // Add event listeners for Crisis Protector checkbox
+        const crisisCheck = planCard.querySelector(`#crisisCheck${i}`);
+        const crisisDiv = planCard.querySelector(`#crisisInputDiv${i}`);
+        if (crisisCheck && crisisDiv) {
+          crisisCheck.addEventListener("change", () => {
+            crisisDiv.classList.toggle("visible", crisisCheck.checked);
+            if (!crisisCheck.checked) {
+              ciInput.value = "";
+            }
+          });
+        }
+        
+        // Add event listeners for Accidental Protector checkbox
+        const accCheck = planCard.querySelector(`#accCheck${i}`);
+        const accDiv = planCard.querySelector(`#accInputDiv${i}`);
+        if (accCheck && accDiv) {
+          accCheck.addEventListener("change", () => {
+            accDiv.classList.toggle("visible", accCheck.checked);
+            if (!accCheck.checked) {
+              accInput.value = "";
+            }
+          });
+        }
       }
     }
 
     function generate() {
       try {
-        const agentName = document.getElementById("agent_name").value || "—";
-        const agentPhone = document.getElementById("agent_phone").value || "—";
-        const prospectName = document.getElementById("prospect_name").value || "—";
-        const age = document.getElementById("age").value || "—";
+        // Formatting functions
+        const formatAlphaUpperCase = (str) => {
+          return String(str || "—").replace(/[^A-Za-z ]/g, "").toUpperCase().trim() || "—";
+        };
+        const formatAlphaNumericUpperCase = (str) => {
+          return String(str || "—").replace(/[^A-Za-z0-9]/g, "").toUpperCase().trim() || "—";
+        };
+        const formatNumbersOnlyOutput = (str) => {
+          return String(str || "—").replace(/[^0-9]/g, "").trim() || "—";
+        };
+
+        const agentName = formatAlphaUpperCase(document.getElementById("agent_name").value);
+        const agentPhone = formatNumbersOnlyOutput(document.getElementById("agent_phone").value);
+        const agentCode = formatAlphaNumericUpperCase(document.getElementById("agent_code").value);
+        const prospectName = formatAlphaUpperCase(document.getElementById("prospect_name").value);
+        const age = formatNumbersOnlyOutput(document.getElementById("age").value);
         const num = selected.numPlans;
         document.getElementById("a_name").innerText = agentName;
         document.getElementById("a_phone").innerText = agentPhone;
+        document.getElementById("a_code").innerText = agentCode;
         document.getElementById("t_name").innerText = prospectName;
         document.getElementById("t_age").innerText = age;
         document.getElementById("title_type").innerText = selected.type.toUpperCase();
@@ -831,15 +1048,22 @@
         table += `</tr>`;
 
         const row = (label, fn) => {
-          let r = `<tr><td><b>${label}</b></td>`;
+          let cells = [];
           for (let i = 1; i <= num; i++) {
             try {
-              r += `<td>${fn(i)}</td>`;
+              cells.push(fn(i));
             } catch (e) {
               console.error(`Error in row "${label}" for plan ${i}:`, e);
-              r += `<td>—</td>`;
+              cells.push("—");
             }
           }
+          // Check if all cells are "—"
+          const hasValue = cells.some(cell => cell !== "—");
+          if (!hasValue) return ""; // Skip row if all empty
+          let r = `<tr><td><b>${label}</b></td>`;
+          cells.forEach(cell => {
+            r += `<td>${cell}</td>`;
+          });
           return r + `</tr>`;
         };
 
@@ -849,87 +1073,107 @@
           return value ? `${value} years old` : "—";
         });
         table += row("Death or TPD (Disability)", i => formatCurrencyDisplay(document.getElementById(`sum${i}`).value));
-        table += row("Claim upon 43 Critical Illness", i => formatCurrencyDisplay(document.getElementById(`ci${i}`).value));
-        table += row("Claim upon Accidental Injury / Death", i => formatCurrencyDisplay(document.getElementById(`acc${i}`).value));
+        table += row("Compensation upon 43 Critical Illness", i => formatCurrencyDisplay(document.getElementById(`ci${i}`).value));
+        table += row("Additional Compensation upon Accidental Death", i => formatCurrencyDisplay(document.getElementById(`acc${i}`).value));
         table += row("Premium Waived upon Critical Illness or TPD", i => isContributorProtectChecked(i) ? "Yes" : "No");
         if (selected.type === "medical") {
           table += row("Hospital Room & Board", i => {
             const template = findMedicalTemplateRow(
               selected.planTypes[i - 1],
-              document.getElementById(`rb${i}`).value,
-              isBoosterChecked(i)
+              selectedPlanValue[i] || '',
+              isBoosterChecked(i),
+              selectedPlanRoomBoard[i] || '',
+              selectedPlanSvp[i] || ''
             );
-            return template ? template.hospital_room_board : document.getElementById(`rb${i}`).value ? `RM ${document.getElementById(`rb${i}`).value}` : "—";
+            return template ? template.hospital_room_board : selectedPlanValue[i] ? `RM ${selectedPlanValue[i]}` : "—";
           });
         table += row("Annual Limit", i => {
           const template = findMedicalTemplateRow(
             selected.planTypes[i - 1],
-            document.getElementById(`rb${i}`).value,
-            isBoosterChecked(i)
+            selectedPlanValue[i] || '',
+            isBoosterChecked(i),
+            selectedPlanRoomBoard[i] || '',
+            selectedPlanSvp[i] || ''
           );
           return template ? template.annual_limit : "—";
         });
         table += row("Lifetime Limit", i => {
           const template = findMedicalTemplateRow(
             selected.planTypes[i - 1],
-            document.getElementById(`rb${i}`).value,
-            isBoosterChecked(i)
+            selectedPlanValue[i] || '',
+            isBoosterChecked(i),
+            selectedPlanRoomBoard[i] || '',
+            selectedPlanSvp[i] || ''
           );
           return template ? template.lifetime_limit : "—";
         });
-        table += row("Outpatient Dengue and Infectious Diseases Treatment", i => {
+        table += row("Outpatient for Dengue / Chikungunya / Influenza / HFMD / Measles", i => {
           const template = findMedicalTemplateRow(
             selected.planTypes[i - 1],
-            document.getElementById(`rb${i}`).value,
-            isBoosterChecked(i)
+            selectedPlanValue[i] || '',
+            isBoosterChecked(i),
+            selectedPlanRoomBoard[i] || '',
+            selectedPlanSvp[i] || ''
           );
           return template ? template.outpatient_infectious_disease : "—";
         });
-        table += row("Additional Annual Limit for Cancer, Kidney Failure or Heart Attack", i => {
+        table += row("Additional Annual Limit if Diagnosed with Cancer, Kidney Failure or Heart Attack", i => {
           const template = findMedicalTemplateRow(
             selected.planTypes[i - 1],
-            document.getElementById(`rb${i}`).value,
-            isBoosterChecked(i)
+            selectedPlanValue[i] || '',
+            isBoosterChecked(i),
+            selectedPlanRoomBoard[i] || '',
+            selectedPlanSvp[i] || ''
           );
           return template ? template.additional_annual_limit_critical_conditions : "—";
         });
         table += row("Outpatient Cancer and Kidney Dialysis Treatment", i => {
           const template = findMedicalTemplateRow(
             selected.planTypes[i - 1],
-            document.getElementById(`rb${i}`).value,
-            isBoosterChecked(i)
+            selectedPlanValue[i] || '',
+            isBoosterChecked(i),
+            selectedPlanRoomBoard[i] || '',
+            selectedPlanSvp[i] || ''
           );
           return template ? template.outpatient_cancer_dialysis : "—";
         });
         table += row("Government Hospital Allowance", i => {
           const template = findMedicalTemplateRow(
             selected.planTypes[i - 1],
-            document.getElementById(`rb${i}`).value,
-            isBoosterChecked(i)
+            selectedPlanValue[i] || '',
+            isBoosterChecked(i),
+            selectedPlanRoomBoard[i] || '',
+            selectedPlanSvp[i] || ''
           );
           return template ? template.govt_hospital_allowance : "—";
         });
         table += row("Emergency Outpatient Treatment for Accidental Injury", i => {
           const template = findMedicalTemplateRow(
             selected.planTypes[i - 1],
-            document.getElementById(`rb${i}`).value,
-            isBoosterChecked(i)
+            selectedPlanValue[i] || '',
+            isBoosterChecked(i),
+            selectedPlanRoomBoard[i] || '',
+            selectedPlanSvp[i] || ''
           );
           return template ? template.outpatient_accident_treatment : "—";
         });
         table += row("Maternity Complication (female only)", i => {
           const template = findMedicalTemplateRow(
             selected.planTypes[i - 1],
-            document.getElementById(`rb${i}`).value,
-            isBoosterChecked(i)
+            selectedPlanValue[i] || '',
+            isBoosterChecked(i),
+            selectedPlanRoomBoard[i] || '',
+            selectedPlanSvp[i] || ''
           );
           return template ? template.maternity : "—";
         });
         table += row("Mental Care Treatment", i => {
           const template = findMedicalTemplateRow(
             selected.planTypes[i - 1],
-            document.getElementById(`rb${i}`).value,
-            isBoosterChecked(i)
+            selectedPlanValue[i] || '',
+            isBoosterChecked(i),
+            selectedPlanRoomBoard[i] || '',
+            selectedPlanSvp[i] || ''
           );
           return template ? template.mental : "—";
         });
@@ -970,7 +1214,7 @@
       const fileName = (document.getElementById("prospect_name").value || "quotation") + "_quotation.pdf";
       html2pdf()
         .set({
-          margin: 10,
+          margin: 0,
           filename: fileName,
           image: { type: 'jpeg', quality: 0.98, backgroundColor: '#ffffff' },
           html2canvas: { scale: 2, backgroundColor: '#ffffff' },
@@ -980,7 +1224,11 @@
         .save();
     }
 
-    loadMedicalTemplate().then(renderPlanInputs);
+    loadMedicalTemplate().then(() => {
+      renderPlanInputs();
+      attachNumberOnlyRestriction(document.getElementById("agent_phone"));
+      attachNumberOnlyRestriction(document.getElementById("age"));
+    });
   </script>
 </body>
 </html>
