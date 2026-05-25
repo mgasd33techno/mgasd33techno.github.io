@@ -368,6 +368,14 @@
       margin-left: 35px;
     }
 
+    
+    .logo-page {
+        width: 700px;   /* increase this value */
+        height: auto;   /* keeps aspect ratio */
+        margin-left: 35px;
+    }
+
+
     .footer {
       margin-top: 26px;
       color: var(--muted);
@@ -385,7 +393,7 @@
     }
 
     .plan-header {
-      text-align: left;
+      text-align: center;
       vertical-align: bottom;
       line-height: 1.2;
     }
@@ -406,6 +414,31 @@
       display: block;
     }
 
+    /* Table cell styling */
+    table .detail-cell {
+      /* Customize detail column here */
+      font-weight: 100;
+    }
+
+    table .plan-cell {
+      /* Customize plan columns here */
+      text-align: center;
+      font-weight: 500;
+    }
+
+    #pdf-content table .detail-cell {
+      /* PDF detail column styling */
+      font-weight: 100;
+      font-size: 0.88rem;
+    }
+
+    #pdf-content table .plan-cell {
+      /* PDF plan column styling */
+      text-align: center;
+      font-weight: 500;
+      font-size: 0.88rem;
+    }
+
     @media (max-width: 980px) {
       .grid {
         grid-template-columns: 1fr;
@@ -422,7 +455,7 @@
 
     @page {
       size: A4 portrait;
-      margin: 10mm;
+      margin: 0mm;
       background: #ffffff;
     }
   </style>
@@ -431,7 +464,7 @@
   <div class="page">
     <header>
       <div class="brand">
-        <img src="../Picture/mglogo1.png" alt="MGAS logo" class = "logo">
+        <img src="../Picture/mglogo1.png" alt="MGAS logo" class = "logo-page">
         <div>
           <h1>MGAS Quotation Generator</h1>
           <p>Professional Medical & Hibah quotation templates for agents, ready to send to clients instantly.</p>
@@ -784,6 +817,83 @@
       document.getElementById("btnHibah").classList.toggle("active", value === "hibah");
     }
 
+    function updatePlanValueSection(index, planName) {
+      const planIndex = index + 1;
+      const card = document.querySelector(`#plansContainer > .card:nth-child(${planIndex})`);
+      if (!card) return;
+
+      const fieldGrid = card.querySelector('.field-grid');
+      if (!fieldGrid) return;
+
+      // Remove existing plan value / room board / SVP sections
+      const pvSection = fieldGrid.querySelector(`[id="planValueButtons${planIndex}"]`)?.closest('div');
+      const rbSection = fieldGrid.querySelector(`[id="planRoomBoardButtons${planIndex}"]`)?.closest('div');
+      const svpSection = fieldGrid.querySelector(`[id="planSvpButtons${planIndex}"]`)?.closest('div');
+      
+      if (pvSection) pvSection.remove();
+      if (rbSection) rbSection.remove();
+      if (svpSection) svpSection.remove();
+
+      // Find anchor point (Contribution input)
+      const priceInput = fieldGrid.querySelector(`#price${planIndex}`);
+      const anchorParent = priceInput?.parentElement;
+
+      if (selected.type === 'medical') {
+        if (planName === 'Asas360') {
+          // Initialize defaults for Asas360
+          const rbOptions = getMedicalPlanRoomBoardOptions(planName);
+          if (!selectedPlanRoomBoard[planIndex] && rbOptions.length > 0) {
+            selectedPlanRoomBoard[planIndex] = rbOptions[0];
+          }
+          const svpOptions = getMedicalPlanSvpOptions(planName);
+          if (!selectedPlanSvp[planIndex] && svpOptions.length > 0) {
+            selectedPlanSvp[planIndex] = svpOptions[0];
+          }
+          
+          // Create Room Board section
+          const rbDiv = document.createElement('div');
+          rbDiv.style.gridColumn = '1 / -1';
+          rbDiv.innerHTML = `<label>Room & Board</label><div id="planRoomBoardButtons${planIndex}" class="button-group"></div>`;
+          if (anchorParent) {
+            fieldGrid.insertBefore(rbDiv, anchorParent);
+          } else {
+            fieldGrid.appendChild(rbDiv);
+          }
+          
+          // Create SVP section
+          const svpDiv = document.createElement('div');
+          svpDiv.style.gridColumn = '1 / -1';
+          svpDiv.innerHTML = `<label>Smart Value Point</label><div id="planSvpButtons${planIndex}" class="button-group"></div>`;
+          if (anchorParent) {
+            fieldGrid.insertBefore(svpDiv, anchorParent);
+          } else {
+            fieldGrid.appendChild(svpDiv);
+          }
+          
+          createRoomBoardButtons(index, rbDiv.querySelector('.button-group'), planName);
+          createSvpButtons(index, svpDiv.querySelector('.button-group'), planName);
+        } else {
+          // Initialize defaults for other plans
+          const values = getMedicalPlanValues(planName);
+          if (!selectedPlanValue[planIndex] && values.length > 0) {
+            selectedPlanValue[planIndex] = values[0];
+          }
+          
+          // Create Plan Value section
+          const pvDiv = document.createElement('div');
+          pvDiv.style.gridColumn = '1 / -1';
+          pvDiv.innerHTML = `<label>Plan Value</label><div id="planValueButtons${planIndex}" class="button-group"></div>`;
+          if (anchorParent) {
+            fieldGrid.insertBefore(pvDiv, anchorParent);
+          } else {
+            fieldGrid.appendChild(pvDiv);
+          }
+          
+          createPlanValueButtons(index, pvDiv.querySelector('.button-group'), planName);
+        }
+      }
+    }
+
     function createPlanTypeButtons(index, container) {
       container.innerHTML = "";
       const availablePlans = planOptions[selected.type];
@@ -800,12 +910,15 @@
           selected.planTypes[index] = planName;
           Array.from(container.children).forEach((btn) => btn.classList.remove("active"));
           button.classList.add("active");
-          // Update plan value buttons when plan type changes
-          const planValueContainer = document.getElementById(`planValueButtons${index + 1}`);
-          if (planValueContainer) {
-            createPlanValueButtons(index, planValueContainer, planName);
+          
+          // Update plan value/room board/SVP section without re-rendering entire form
+          updatePlanValueSection(index, planName);
+          
+          // Update co-payment buttons
+          const coPaymentContainer = document.getElementById(`coPaymentButtons${index + 1}`);
+          if (coPaymentContainer) {
+            createCoPaymentButtons(index, coPaymentContainer, planName);
           }
-          renderPlanInputs();
         });
         container.appendChild(button);
       });
@@ -907,7 +1020,7 @@
             </div>
             ` : '')}
             <div>
-              <label for="price${i}">Premium</label>
+              <label for="price${i}">Contribution</label>
               <input id="price${i}" placeholder="RM 0" inputmode="numeric">
             </div>
             <div>
@@ -942,6 +1055,7 @@
                 Contributor Protect
               </label>
             </div>
+            ${!(selected.type === 'hibah' && selected.planTypes[i - 1] === 'WarisanGold') ? `
             <div style="grid-column: 1 / -1;">
               <label class="checkbox-label">
                 <input type="checkbox" id="accCheck${i}">
@@ -952,6 +1066,7 @@
               <label for="acc${i}">Amount</label>
               <input id="acc${i}" placeholder="RM 0" inputmode="numeric">
             </div>
+            ` : ''}
             ${selected.type === 'medical' ? `
             <div style="grid-column: 1 / -1;">
               <label>Co-Payment Options</label>
@@ -1060,14 +1175,14 @@
           // Check if all cells are "—"
           const hasValue = cells.some(cell => cell !== "—");
           if (!hasValue) return ""; // Skip row if all empty
-          let r = `<tr><td><b>${label}</b></td>`;
+          let r = `<tr><td class="detail-cell"><b>${label}</b></td>`;
           cells.forEach(cell => {
-            r += `<td>${cell}</td>`;
+            r += `<td class="plan-cell">${cell}</td>`;
           });
           return r + `</tr>`;
         };
 
-        table += row("Premium", i => formatCurrencyDisplay(document.getElementById(`price${i}`).value));
+        table += row("Contribution", i => formatCurrencyDisplay(document.getElementById(`price${i}`).value));
         table += row("Maturity Age", i => {
           const value = document.getElementById(`mat${i}`).value;
           return value ? `${value} years old` : "—";
@@ -1075,7 +1190,7 @@
         table += row("Death or TPD (Disability)", i => formatCurrencyDisplay(document.getElementById(`sum${i}`).value));
         table += row("Compensation upon 43 Critical Illness", i => formatCurrencyDisplay(document.getElementById(`ci${i}`).value));
         table += row("Additional Compensation upon Accidental Death", i => formatCurrencyDisplay(document.getElementById(`acc${i}`).value));
-        table += row("Premium Waived upon Critical Illness or TPD", i => isContributorProtectChecked(i) ? "Yes" : "No");
+        table += row("Contribution Waived upon Critical Illness or TPD", i => isContributorProtectChecked(i) ? "Yes" : "No");
         if (selected.type === "medical") {
           table += row("Hospital Room & Board", i => {
             const template = findMedicalTemplateRow(
@@ -1181,21 +1296,31 @@
       } else {
         table += row("Accidental Death (Malaysia)", i => {
           const sum = parseCurrencyValue(document.getElementById(`sum${i}`).value);
+          const acc = parseCurrencyValue(document.getElementById(`acc${i}`).value);
           return selected.planTypes[i - 1] === "WarisanGold"
             ? `RM ${(sum * 2).toLocaleString()}`
-            : `RM ${(sum + 50000).toLocaleString()}`;
+            : `RM ${(sum + acc).toLocaleString()}`;
         });
         table += row("Accidental Death (Public Transport or Building)", i => {
           const sum = parseCurrencyValue(document.getElementById(`sum${i}`).value);
-          return `RM ${(sum * 3).toLocaleString()}`;
+          const acc = parseCurrencyValue(document.getElementById(`acc${i}`).value);
+          return selected.planTypes[i - 1] === "WarisanGold"
+            ? `RM ${(sum * 3).toLocaleString()}`
+            : `RM ${(sum + acc).toLocaleString()}`;
         });
         table += row("Accidental Death (Oversea)", i => {
           const sum = parseCurrencyValue(document.getElementById(`sum${i}`).value);
-          return `RM ${(sum * 4).toLocaleString()}`;
+          const acc = parseCurrencyValue(document.getElementById(`acc${i}`).value);
+          return selected.planTypes[i - 1] === "WarisanGold"
+            ? `RM ${(sum * 4).toLocaleString()}`
+            : `RM ${(sum + acc).toLocaleString()}`;
         });
         table += row("Accidental Death (Natural Disaster)", i => {
           const sum = parseCurrencyValue(document.getElementById(`sum${i}`).value);
-          return `RM ${(sum * 5).toLocaleString()}`;
+          const acc = parseCurrencyValue(document.getElementById(`acc${i}`).value);
+          return selected.planTypes[i - 1] === "WarisanGold"
+            ? `RM ${(sum * 5).toLocaleString()}`
+            : `RM ${(sum + acc).toLocaleString()}`;
         });
       }
 
