@@ -367,13 +367,11 @@
       margin-left: 35px;
     }
 
-    
     .logo-page {
         width: 700px;   /* increase this value */
         height: auto;   /* keeps aspect ratio */
         margin-left: 35px;
     }
-
 
     .footer {
       margin-top: 26px;
@@ -408,7 +406,7 @@
     .hidden-input-group {
       display: none;
     }
-
+   
     .hidden-input-group.visible {
       display: block;
     }
@@ -851,83 +849,6 @@
       document.getElementById("btnHibah").classList.toggle("active", value === "hibah");
     }
 
-    function updatePlanValueSection(index, planName) {
-      const planIndex = index + 1;
-      const card = document.querySelector(`#plansContainer > .card:nth-child(${planIndex})`);
-      if (!card) return;
-
-      const fieldGrid = card.querySelector('.field-grid');
-      if (!fieldGrid) return;
-
-      // Remove existing plan value / room board / SVP sections
-      const pvSection = fieldGrid.querySelector(`[id="planValueButtons${planIndex}"]`)?.closest('div');
-      const rbSection = fieldGrid.querySelector(`[id="planRoomBoardButtons${planIndex}"]`)?.closest('div');
-      const svpSection = fieldGrid.querySelector(`[id="planSvpButtons${planIndex}"]`)?.closest('div');
-      
-      if (pvSection) pvSection.remove();
-      if (rbSection) rbSection.remove();
-      if (svpSection) svpSection.remove();
-
-      // Find anchor point (Contribution input)
-      const priceInput = fieldGrid.querySelector(`#price${planIndex}`);
-      const anchorParent = priceInput?.parentElement;
-
-      if (selected.type === 'medical') {
-        if (planName === 'Asas360') {
-          // Initialize defaults for Asas360
-          const rbOptions = getMedicalPlanRoomBoardOptions(planName);
-          if (!selectedPlanRoomBoard[planIndex] && rbOptions.length > 0) {
-            selectedPlanRoomBoard[planIndex] = rbOptions[0];
-          }
-          const svpOptions = getMedicalPlanSvpOptions(planName);
-          if (!selectedPlanSvp[planIndex] && svpOptions.length > 0) {
-            selectedPlanSvp[planIndex] = svpOptions[0];
-          }
-          
-          // Create Room Board section
-          const rbDiv = document.createElement('div');
-          rbDiv.style.gridColumn = '1 / -1';
-          rbDiv.innerHTML = `<label>Room & Board</label><div id="planRoomBoardButtons${planIndex}" class="button-group"></div>`;
-          if (anchorParent) {
-            fieldGrid.insertBefore(rbDiv, anchorParent);
-          } else {
-            fieldGrid.appendChild(rbDiv);
-          }
-          
-          // Create SVP section
-          const svpDiv = document.createElement('div');
-          svpDiv.style.gridColumn = '1 / -1';
-          svpDiv.innerHTML = `<label>Smart Value Point</label><div id="planSvpButtons${planIndex}" class="button-group"></div>`;
-          if (anchorParent) {
-            fieldGrid.insertBefore(svpDiv, anchorParent);
-          } else {
-            fieldGrid.appendChild(svpDiv);
-          }
-          
-          createRoomBoardButtons(index, rbDiv.querySelector('.button-group'), planName);
-          createSvpButtons(index, svpDiv.querySelector('.button-group'), planName);
-        } else {
-          // Initialize defaults for other plans
-          const values = getMedicalPlanValues(planName);
-          if (!selectedPlanValue[planIndex] && values.length > 0) {
-            selectedPlanValue[planIndex] = values[0];
-          }
-          
-          // Create Plan Value section
-          const pvDiv = document.createElement('div');
-          pvDiv.style.gridColumn = '1 / -1';
-          pvDiv.innerHTML = `<label>Plan Value</label><div id="planValueButtons${planIndex}" class="button-group"></div>`;
-          if (anchorParent) {
-            fieldGrid.insertBefore(pvDiv, anchorParent);
-          } else {
-            fieldGrid.appendChild(pvDiv);
-          }
-          
-          createPlanValueButtons(index, pvDiv.querySelector('.button-group'), planName);
-        }
-      }
-    }
-
     function createPlanTypeButtons(index, container) {
       container.innerHTML = "";
       const availablePlans = planOptions[selected.type];
@@ -944,15 +865,12 @@
           selected.planTypes[index] = planName;
           Array.from(container.children).forEach((btn) => btn.classList.remove("active"));
           button.classList.add("active");
-          
-          // Update plan value/room board/SVP section without re-rendering entire form
-          updatePlanValueSection(index, planName);
-          
-          // Update co-payment buttons
-          const coPaymentContainer = document.getElementById(`coPaymentButtons${index + 1}`);
-          if (coPaymentContainer) {
-            createCoPaymentButtons(index, coPaymentContainer, planName);
+          // Update plan value buttons when plan type changes
+          const planValueContainer = document.getElementById(`planValueButtons${index + 1}`);
+          if (planValueContainer) {
+            createPlanValueButtons(index, planValueContainer, planName);
           }
+          renderPlanInputs();
         });
         container.appendChild(button);
       });
@@ -1082,14 +1000,14 @@
             <div style="grid-column: 1 / -1;">
               <label class="checkbox-label">
                 <input type="checkbox" id="crisisCheck${i}">
-                Crisis Protector / Shield
+                ${selected.type === 'medical' ? 'Crisis Protector / Shield / TotalCare' : 'Crisis Protector / Shield'}
               </label>
             </div>
             <div id="crisisInputDiv${i}" class="hidden-input-group" style="grid-column: 1 / -1;">
               <label for="ci${i}">Amount</label>
               <input id="ci${i}" placeholder="RM 0" inputmode="numeric">
             </div>
-            ${!(selected.type === 'hibah' && selected.planTypes[i - 1] === 'WarisanGold') ? `
+            ${selected.planTypes[i - 1] !== 'WarisanGold' && selected.planTypes[i - 1] !== 'Asas360' ? `
             <div style="grid-column: 1 / -1;">
               <label class="checkbox-label">
                 <input type="checkbox" id="accCheck${i}">
@@ -1100,7 +1018,19 @@
               <label for="acc${i}">Amount</label>
               <input id="acc${i}" placeholder="RM 0" inputmode="numeric">
             </div>
-            ` : ''}
+            ` : (selected.planTypes[i - 1] === 'Asas360' ? `
+            <div style="grid-column: 1 / -1;">
+              <label class="checkbox-label">
+                <input type="checkbox" id="accCheck${i}">
+                Accidental Disablement Protector
+              </label>
+            </div>
+            <div id="accInputDiv${i}" class="hidden-input-group">
+              <label for="acc${i}">Amount</label>
+              <input id="acc${i}" placeholder="RM 0" inputmode="numeric">
+            </div>
+            ` : '')}
+            
             ${selected.type === 'medical' ? `
             <div style="grid-column: 1 / -1;">
               <label>Co-Payment Options</label>
@@ -1337,31 +1267,39 @@
       } else {
         table += row("Accidental Death (Malaysia)", i => {
           const sum = parseCurrencyValue(document.getElementById(`sum${i}`).value);
-          const acc = parseCurrencyValue(document.getElementById(`acc${i}`).value);
-          return selected.planTypes[i - 1] === "WarisanGold"
-            ? `RM ${(sum * 2).toLocaleString()}`
-            : `RM ${(sum + acc).toLocaleString()}`;
+          if (selected.planTypes[i - 1] === "WarisanGold") {
+            return `RM ${(sum * 2).toLocaleString()}`;
+          }
+          const accInput = document.getElementById(`acc${i}`);
+          const acc = accInput ? parseCurrencyValue(accInput.value) : 0;
+          return `RM ${(sum + acc).toLocaleString()}`;
         });
         table += row("Accidental Death (Public Transport or Building)", i => {
           const sum = parseCurrencyValue(document.getElementById(`sum${i}`).value);
-          const acc = parseCurrencyValue(document.getElementById(`acc${i}`).value);
-          return selected.planTypes[i - 1] === "WarisanGold"
-            ? `RM ${(sum * 3).toLocaleString()}`
-            : `RM ${(sum + acc).toLocaleString()}`;
+          if (selected.planTypes[i - 1] === "WarisanGold") {
+            return `RM ${(sum * 3).toLocaleString()}`;
+          }
+          const accInput = document.getElementById(`acc${i}`);
+          const acc = accInput ? parseCurrencyValue(accInput.value) : 0;
+          return `RM ${(sum + acc).toLocaleString()}`;
         });
         table += row("Accidental Death (Oversea)", i => {
           const sum = parseCurrencyValue(document.getElementById(`sum${i}`).value);
-          const acc = parseCurrencyValue(document.getElementById(`acc${i}`).value);
-          return selected.planTypes[i - 1] === "WarisanGold"
-            ? `RM ${(sum * 4).toLocaleString()}`
-            : `RM ${(sum + acc).toLocaleString()}`;
+          if (selected.planTypes[i - 1] === "WarisanGold") {
+            return `RM ${(sum * 4).toLocaleString()}`;
+          }
+          const accInput = document.getElementById(`acc${i}`);
+          const acc = accInput ? parseCurrencyValue(accInput.value) : 0;
+          return `RM ${(sum + acc).toLocaleString()}`;
         });
         table += row("Accidental Death (Natural Disaster)", i => {
           const sum = parseCurrencyValue(document.getElementById(`sum${i}`).value);
-          const acc = parseCurrencyValue(document.getElementById(`acc${i}`).value);
-          return selected.planTypes[i - 1] === "WarisanGold"
-            ? `RM ${(sum * 5).toLocaleString()}`
-            : `RM ${(sum + acc).toLocaleString()}`;
+          if (selected.planTypes[i - 1] === "WarisanGold") {
+            return `RM ${(sum * 5).toLocaleString()}`;
+          }
+          const accInput = document.getElementById(`acc${i}`);
+          const acc = accInput ? parseCurrencyValue(accInput.value) : 0;
+          return `RM ${(sum + acc).toLocaleString()}`;
         });
       }
 
