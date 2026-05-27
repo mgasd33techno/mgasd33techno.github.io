@@ -870,7 +870,7 @@
           if (planValueContainer) {
             createPlanValueButtons(index, planValueContainer, planName);
           }
-          renderPlanInputs();
+          renderPlanInputs(index + 1);
         });
         container.appendChild(button);
       });
@@ -911,20 +911,112 @@
     function setType(value) {
       selected.type = value;
       setActiveTypeButton(value);
-      renderPlanInputs();
+      planFormData = {}; // Clear all data when switching quotation type
+      renderPlanInputs(null, true); // Pass true to skip saving when clearing all
+    }
+
+    // Store form data for each plan
+    let planFormData = {};
+
+    function savePlanFormData() {
+      for (let i = 1; i <= selected.numPlans; i++) {
+        const price = document.getElementById(`price${i}`);
+        const sum = document.getElementById(`sum${i}`);
+        const mat = document.getElementById(`mat${i}`);
+        const booster = document.getElementById(`booster${i}`);
+        const contrib = document.getElementById(`contrib${i}`);
+        const crisisCheck = document.getElementById(`crisisCheck${i}`);
+        const ci = document.getElementById(`ci${i}`);
+        const accCheck = document.getElementById(`accCheck${i}`);
+        const acc = document.getElementById(`acc${i}`);
+
+        planFormData[i] = {
+          price: price ? price.value : "",
+          sum: sum ? sum.value : "",
+          mat: mat ? mat.value : "",
+          booster: booster ? booster.checked : false,
+          contrib: contrib ? contrib.checked : false,
+          crisisCheck: crisisCheck ? crisisCheck.checked : false,
+          ci: ci ? ci.value : "",
+          accCheck: accCheck ? accCheck.checked : false,
+          acc: acc ? acc.value : ""
+        };
+      }
+    }
+
+    function restorePlanFormData() {
+      for (let i = 1; i <= selected.numPlans; i++) {
+        if (!planFormData[i]) continue;
+        
+        const price = document.getElementById(`price${i}`);
+        if (price) price.value = planFormData[i].price;
+        
+        const sum = document.getElementById(`sum${i}`);
+        if (sum) sum.value = planFormData[i].sum;
+        
+        const mat = document.getElementById(`mat${i}`);
+        if (mat) mat.value = planFormData[i].mat;
+        
+        const booster = document.getElementById(`booster${i}`);
+        if (booster) booster.checked = planFormData[i].booster;
+        
+        const contrib = document.getElementById(`contrib${i}`);
+        if (contrib) contrib.checked = planFormData[i].contrib;
+        
+        const crisisCheck = document.getElementById(`crisisCheck${i}`);
+        if (crisisCheck) {
+          crisisCheck.checked = planFormData[i].crisisCheck;
+          const crisisDiv = document.getElementById(`crisisInputDiv${i}`);
+          if (crisisDiv) {
+            crisisDiv.classList.toggle("visible", crisisCheck.checked);
+          }
+        }
+        
+        const ci = document.getElementById(`ci${i}`);
+        if (ci) ci.value = planFormData[i].ci;
+        
+        const accCheck = document.getElementById(`accCheck${i}`);
+        if (accCheck) {
+          accCheck.checked = planFormData[i].accCheck;
+          const accDiv = document.getElementById(`accInputDiv${i}`);
+          if (accDiv) {
+            accDiv.classList.toggle("visible", accCheck.checked);
+          }
+        }
+        
+        const acc = document.getElementById(`acc${i}`);
+        if (acc) acc.value = planFormData[i].acc;
+      }
     }
 
     document.getElementById("planCountButtons").addEventListener("click", (event) => {
       if (!event.target.matches("button")) return;
+      savePlanFormData();
       selected.numPlans = Number(event.target.dataset.count);
       Array.from(event.currentTarget.children).forEach((btn) => btn.classList.remove("active"));
       event.target.classList.add("active");
       renderPlanInputs();
     });
 
-    function renderPlanInputs() {
+    function renderPlanInputs(clearPlanIndex = null, skipSave = false) {
       const num = selected.numPlans;
       const container = document.getElementById("plansContainer");
+      if (!skipSave) {
+        savePlanFormData();
+      }
+      if (clearPlanIndex !== null) {
+        planFormData[clearPlanIndex] = {
+          price: "",
+          sum: "",
+          mat: "",
+          booster: false,
+          contrib: false,
+          crisisCheck: false,
+          ci: "",
+          accCheck: false,
+          acc: ""
+        };
+      }
       container.innerHTML = "";
       selected.planTypes = selected.planTypes.slice(0, num);
       while (selected.planTypes.length < num) {
@@ -1089,6 +1181,7 @@
           });
         }
       }
+      restorePlanFormData();
     }
 
     function generate() {
