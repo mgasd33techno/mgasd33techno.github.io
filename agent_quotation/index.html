@@ -199,10 +199,9 @@
 
     .actions {
       display: flex;
-      justify-content: center;
-      gap: 16px;
+      flex-direction: column;   /* ✅ THIS IS THE KEY */
       align-items: center;
-      flex-wrap: wrap;
+      gap: 10px;
       margin-top: 24px;
     }
 
@@ -227,7 +226,7 @@
     #pdf-content {
       display: none;
       background: #ffffff;
-      border: 1px solid rgba(212,175,55,0.25);
+      border: 1px solid #ffffff;
       border-radius: 24px;
       padding: 24px;
       margin-top: 32px;
@@ -475,6 +474,7 @@
     <div class="grid">
       <section class="card">
         <h2>Agent Information</h2>
+        <input type="hidden" id="sheetName" value="Quotation">
         <div class="field-grid full">
           <div>
             <label for="agent_name">Agent Name</label>
@@ -532,8 +532,10 @@
     </div>
     
     <div class="actions">
-      <button class="primary-btn" onclick="generate()">Generate Preview</button>
+      <button class="primary-btn" onclick="startGenerateProcess()">Generate Preview</button>
+      <p id="generateStatus" style="text-align:center; font-weight:bold;"></p>
     </div>
+    
 
     <hr style="border:none; border-top:1px solid rgba(212,175,55,0.15); margin:40px 0;">
 
@@ -564,13 +566,45 @@
 
     </div>
 
-    <div class="actions">
-      <button class="primary-btn" id="downloadBtn" onclick="downloadPDF()" style="display:none;">Download PDF</button>
+    <div id="downloadSection" class="actions" style="display: none;">
+      <button class="primary-btn" onclick="startDownloadProcess()">
+        Download PDF
+      </button>
+
+      <p id="downloadStatus" style="text-align:center; font-weight:bold;"></p>
     </div>
 
   </div>
 
   <script>
+    const GOOGLE_SHEET_URL = "https://script.google.com/macros/s/AKfycbzfXxgnDD3oq9r--ljoNu3NNbtAJ6aEl3SmHaeyaTNc_3UHm6ktf8MkaVuF2BFdAIuz/exec"; 
+    
+    function sendToGoogleSheet(actionType) {
+      const agentName = document.getElementById("agent_name").value;
+      const agentCode = document.getElementById("agent_code").value;
+      const prospectName = document.getElementById("prospect_name").value;
+      const prospectAge = document.getElementById("age").value;
+
+      const formData = new FormData();
+
+      formData.append("sheet", "Quotation");
+      formData.append("Agent Name", agentName);
+      formData.append("Agent Code", agentCode);
+      formData.append("Prospect Name", prospectName);
+      formData.append("Prospect Age", prospectAge);
+      formData.append("Plan Type", selected.type);
+
+      // ✅ NEW FIELD
+      formData.append("Action Type", actionType);
+
+      return fetch(GOOGLE_SHEET_URL, {
+        method: "POST",
+        body: formData,
+        mode: "no-cors"
+      });
+    }
+
+
     function formatNumbersOnly(value) {
       if (!value) return "";
       return String(value).replace(/[^0-9]/g, "");
@@ -1041,6 +1075,12 @@
             ` : ''}
             <div style="grid-column: 1 / -1;">
               <label class="checkbox-label">
+                <input type="checkbox" id="contrib${i}">
+                Contributor Protect
+              </label>
+            </div>
+            <div style="grid-column: 1 / -1;">
+              <label class="checkbox-label">
                 <input type="checkbox" id="crisisCheck${i}">
                 Crisis Protector / Shield
               </label>
@@ -1048,12 +1088,6 @@
             <div id="crisisInputDiv${i}" class="hidden-input-group" style="grid-column: 1 / -1;">
               <label for="ci${i}">Amount</label>
               <input id="ci${i}" placeholder="RM 0" inputmode="numeric">
-            </div>
-            <div style="grid-column: 1 / -1;">
-              <label class="checkbox-label">
-                <input type="checkbox" id="contrib${i}">
-                Contributor Protect
-              </label>
             </div>
             ${!(selected.type === 'hibah' && selected.planTypes[i - 1] === 'WarisanGold') ? `
             <div style="grid-column: 1 / -1;">
@@ -1175,6 +1209,13 @@
           // Check if all cells are "—"
           const hasValue = cells.some(cell => cell !== "—");
           if (!hasValue) return ""; // Skip row if all empty
+          
+          // For "Contribution Waived" row, skip if all are "No"
+          if (label === "Contribution Waived upon Critical Illness or TPD") {
+            const hasYes = cells.some(cell => cell === "Yes");
+            if (!hasYes) return ""; // Skip if no "Yes" found
+          }
+          
           let r = `<tr><td class="detail-cell"><b>${label}</b></td>`;
           cells.forEach(cell => {
             r += `<td class="plan-cell">${cell}</td>`;
@@ -1325,14 +1366,63 @@
       }
 
       table += `</table>`;
-      document.getElementById("table-area").innerHTML = table;
-      document.getElementById("pdf-content").style.display = "block";
-      document.getElementById("downloadBtn").style.display = "inline-block";
-      document.getElementById("pdf-content").scrollIntoView({ behavior: "smooth" });
+      const tableArea = document.getElementById("table-area");
+      if (tableArea) tableArea.innerHTML = table;
+      
+      const pdfContent = document.getElementById("pdf-content");
+      if (pdfContent) {
+        pdfContent.style.display = "block";
+        pdfContent.scrollIntoView({ behavior: "smooth" });
+      }
+      
+      const downloadSection = document.getElementById("downloadSection");
+      if (downloadSection) downloadSection.style.display = "flex";
       } catch (error) {
         console.error("Generate preview error:", error);
         alert("Error generating preview. Check console for details.");
       }
+    }
+
+    function startGenerateProcess() {
+      const statusEl = document.getElementById("generateStatus");
+
+      // ✅ Show loading text
+      statusEl.innerText = "⏳ Generating...";
+
+      // ✅ Send to Google first
+      sendToGoogleSheet("Generate")
+        .then(() => {
+          // ✅ After success → generate preview
+          generate();
+          statusEl.innerText = ""; // clear text
+        })
+        .catch(() => {
+          statusEl.innerText = "❌ Failed to send data";
+        });
+    }
+
+    function startDownloadProcess() {
+      const statusEl = document.getElementById("downloadStatus");
+
+      // ✅ Show downloading text
+      statusEl.innerText = "⏳ Downloading...";
+
+      // ✅ Send to Google first
+      sendToGoogleSheet("Download")
+        .then(() => {
+          // ✅ After success → trigger PDF download
+          downloadPDF();
+
+          // statusEl.innerText = "✅ Downloaded";
+
+          // optional: clear after 2 sec
+          setTimeout(() => {
+            statusEl.innerText = "";
+          }, 2000);
+        })
+        .catch(() => {
+          statusEl.innerText = "❌ Failed to send data";
+        });
     }
 
     function downloadPDF() {
