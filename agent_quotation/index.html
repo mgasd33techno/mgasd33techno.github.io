@@ -1388,12 +1388,14 @@
         table += row("Accidental Death (Natural Disaster)", i => {
           const sum = parseCurrencyValue(document.getElementById(`sum${i}`).value);
           if (selected.planTypes[i - 1] === "WarisanGold") {
-            return `RM ${(sum * 5).toLocaleString()}`;
+            return `RM ${(sum * 6).toLocaleString()}`;
           }
           const accInput = document.getElementById(`acc${i}`);
           const acc = accInput ? parseCurrencyValue(accInput.value) : 0;
           return `RM ${(sum + acc).toLocaleString()}`;
         });
+        table += row("Badal Haji Benefit", i => "RM 3,000");
+        table += row("Khairat Benefit", i => "RM 3,000");
       }
 
       table += `</table>`;
