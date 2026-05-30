@@ -1394,8 +1394,12 @@
           const acc = accInput ? parseCurrencyValue(accInput.value) : 0;
           return `RM ${(sum + acc).toLocaleString()}`;
         });
-        table += row("Badal Haji Benefit", i => "RM 3,000");
-        table += row("Khairat Benefit", i => "RM 3,000");
+        table += row("Badal Haji Benefit", i => {
+          return selected.planTypes[i - 1] === "WarisanGold" ? "RM 3,000" : "—";
+        });
+        table += row("Khairat Benefit", i => {
+          return selected.planTypes[i - 1] === "WarisanGold" ? "RM 3,000" : "—";
+        });
       }
 
       table += `</table>`;
