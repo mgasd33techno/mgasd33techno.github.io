@@ -1551,7 +1551,7 @@
         <li>
           <i class="fa-solid fa-sack-dollar"></i>
           <div class="item-row">
-            <span class="label">Fund:</span>
+            <span class="label">Investment Fund:</span>
             <span class="value">Takafulink</span>
           </div>
         </li>
@@ -1594,7 +1594,7 @@
         <ul class="quote-items" id="quoteItemsList-${index}">
           ${getPlanFeaturesHTML(card.planKey || card.plan, index)}
         </ul>
-        <button type="button" class="whatsapp-agent-btn" onclick="openWhatsAppAgent()">
+        <button type="button" class="whatsapp-agent-btn" onclick="openWhatsAppAgent(${index})">
           <i class="fa-brands fa-whatsapp"></i> WhatsApp Agent
         </button>
       </div>
@@ -1690,7 +1690,7 @@
     return cards;
   }
 
-  function openWhatsAppAgent() {
+  function openWhatsAppAgent(cardIndex) {
     if (!currentAgent) {
       alert('Please select an agent first.');
       return;
@@ -1707,7 +1707,10 @@
       ''
     ];
 
-    lastGeneratedQuotes.forEach((card, idx) => {
+    // If cardIndex is provided, only show that card; otherwise show all
+    const quotesList = cardIndex !== undefined ? [lastGeneratedQuotes[cardIndex]] : lastGeneratedQuotes;
+    
+    quotesList.forEach((card, idx) => {
       const { quoteTitle, productName } = getPlanDisplayInfo(card.planKey || card.plan);
       lines.push(`${idx + 1}) ${quoteTitle}`);
       lines.push(`   Produk: ${productName}`);
