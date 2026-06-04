@@ -1690,6 +1690,42 @@
     return cards;
   }
 
+  function getPlanDetailsForWhatsApp(planKey, waiver) {
+    const normalizedPlan = normalizeValue(planKey);
+    let details = {};
+
+    if (normalizedPlan === 'medical') {
+      details = {
+        'Death/TPD': 'RM10,000',
+        'Room & Board': 'RM200 / day',
+        'Annual Limit': 'RM200,000',
+        'Lifetime Limit': 'Unlimited'
+      };
+    } else if (normalizedPlan === 'anugerah') {
+      details = {
+        'Death/TPD': 'RM200,000',
+        'Accidental Death': 'RM250,000',
+        'Term': '20 years'
+      };
+      if (waiver === 'Yes') {
+        details['CI Waiver (43 Critical Illness)'] = 'RM50,000';
+        details['Premium Waived'] = 'Upon TPD or Critical Illness';
+      }
+    } else if (normalizedPlan === 'warisangold') {
+      details = {
+        'Death/TPD': 'RM300,000',
+        'Accidental Death': 'RM350,000',
+        'Term': '25 years'
+      };
+      if (waiver === 'Yes') {
+        details['CI Waiver (43 Critical Illness)'] = 'RM75,000';
+        details['Premium Waived'] = 'Upon TPD or Critical Illness';
+      }
+    }
+
+    return details;
+  }
+
   function openWhatsAppAgent(cardIndex) {
     if (!currentAgent) {
       alert('Please select an agent first.');
@@ -1716,6 +1752,12 @@
       lines.push(`   Produk: ${productName}`);
       lines.push(`   Premium Bulanan: RM${card.price.toFixed(2)}`);
       lines.push(`   CI Waiver: ${card.waiver}`);
+      
+      // Add plan details
+      const planDetails = getPlanDetailsForWhatsApp(card.planKey || card.plan, card.waiver);
+      Object.entries(planDetails).forEach(([key, value]) => {
+        lines.push(`   ${key}: ${value}`);
+      });
       lines.push('');
     });
 
