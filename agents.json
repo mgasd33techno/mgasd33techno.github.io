@@ -12,6 +12,27 @@
     "chat_id": 255243752
   },
   {
+    "code": "D3300150",
+    "name": "NAIMANZ NASIR",
+    "title": "EXECUTIVE WEALTH PLANNER",
+    "image": "./Picture/D3300150.jpg",
+    "whatsapp": "60149088168",
+    "instagram": "naimanz_nasir",
+    "facebook": "naimanz.nasir",
+    "tiktok": "naimanznasir",
+    "lead": false,
+    "chat_id": 8915075627
+  },
+  {
+    "code": "D3300024",
+    "name": "DIANA",
+    "title": "EXECUTIVE WEALTH PLANNER",
+    "image": "./Picture/D3300024.jpg",
+    "whatsapp": "60125753793",
+    "instagram": "denahadi",
+    "lead": false
+  },
+  {
     "code": "N1M00001",
     "name": "NORMAN RIDZUAN",
     "title": "UNIT MANAGER II",
@@ -34,9 +55,20 @@
     "lead": false
   },
   {
+    "code": "D3300177",
+    "name": "MADIHAH ALJEERAH",
+    "title": "PRUDENTIAL WEALTH PLANNER",
+    "image": "./Picture/D3300177.jpg",
+    "whatsapp": "60189088185",
+    "instagram": "aljeerahmadihah",
+    "facebook": "MadihahAljeerahAZ",
+    "tiktok": "madihah_prudential",
+    "lead": false
+  },
+  {
     "code": "D3300090",
     "name": "AMZAR IRFAN",
-    "title": "SENIOR CONSULTANT",
+    "title": "WEALTH PLANNER",
     "image": "./Picture/D3300090.png",
     "whatsapp": "60146915481",
     "instagram": "amzar_razali",
@@ -44,6 +76,29 @@
     "tiktok": "amzar.razali",
     "lead": false,
     "chat_id": 344886216
+  },
+  {
+    "code": "D3300006",
+    "name": "MOHD EFFENDY",
+    "title": "WEALTH PLANNER",
+    "image": "./Picture/D3300006.jpg",
+    "whatsapp": "60125317875",
+    "instagram": "effendys83",
+    "facebook": "fendybby",
+    "tiktok": "mohdeffendy",
+    "lead": false,
+    "chat_id": 783182163
+  },
+  {
+    "code": "D3300184",
+    "name": "JULIYA BAHAROM",
+    "title": "WEALTH PLANNER",
+    "image": "./Picture/D3300184.jpg",
+    "whatsapp": "60192648694",
+    "instagram": "juliyabaharom",
+    "facebook": "juliya.baharom",
+    "tiktok": "juliyabaharom",
+    "lead": false
   },
   {
     "code": "N1M00007",
@@ -60,7 +115,7 @@
   {
     "code": "D3300138",
     "name": "SYED FAHMI",
-    "title": "SENIOR CONSULTANT",
+    "title": "WEALTH PLANNER",
     "image": "./Picture/D3300138.jpg",
     "whatsapp": "60133438487",
     "instagram": "pak_syed_takaful",
@@ -72,7 +127,7 @@
   {
     "code": "D3300145",
     "name": "AMMAR IRFAN",
-    "title": "CONSULTANT",
+    "title": "WEALTH PLANNER",
     "image": "./Picture/D3300145.jpg",
     "whatsapp": "60106569940",
     "instagram": "takaful_bear",
@@ -101,5 +156,97 @@
     "facebook": "humai.fez",
     "lead": true,
     "chat_id": 220508790
+  },
+  {
+    "code": "HKA00002",
+    "name": "HAFIRULIZHAM HASSIM",
+    "title": "PRUDENTIAL WEALTH PLANNER",
+    "image": "./Picture/HKA00002.jpg",
+    "whatsapp": "601111961715",
+    "instagram": "hafirulizham",
+    "facebook": "mohd.hafirulizham",
+    "tiktok": "hafirulizham",
+    "lead": false
+  },
+  {
+    "code": "HKA00008",
+    "name": "PIDOT BOTAK",
+    "title": "EXECUTIVE WEALTH PLANNER",
+    "image": "./Picture/HKA00008.jpg",
+    "whatsapp": "601127439330",
+    "instagram": "pidot_tiaww",
+    "facebook": "firdaus.dott",
+    "tiktok": "pidottiaw",
+    "lead": false
+  },
+  {
+    "code": "HKA00022",
+    "name": "HAZYRAH RAZALI",
+    "title": "WEALTH PLANNER",
+    "image": "./Picture/HKA00022.jpg",
+    "whatsapp": "60138802497",
+    "instagram": "hazyrah.razali",
+    "facebook": "hazyrah.razali.2025",
+    "tiktok": "zyrahrazali",
+    "lead": false,
+    "chat_id": 799841733
+  },
+  {
+    "code": "HKA00023",
+    "name": "ARRIF JALALUDIN",
+    "title": "WEALTH PLANNER",
+    "image": "./Picture/HKA00023.jpg",
+    "whatsapp": "60132352434",
+    "instagram": "arrifjalaludinprubsn",
+    "facebook": "arrif.jalaludin",
+    "tiktok": "arrifjalaludin",
+    "lead": false,
+    "chat_id": 290417565
+  },
+  {
+    "code": "N1M00009",
+    "name": "HUZEKRI IZUAN",
+    "title": "PRUDENTIAL WEALTH PLANNER",
+    "image": "./Picture/N1M00009.jpg",
+    "whatsapp": "60133506069",
+    "instagram": "huzekri_izuan",
+    "facebook": "huzekri.izuan",
+    "tiktok": "huzekri.izuan",
+    "lead": false,
+    "chat_id": 1116223878
+  },
+  {
+    "code": "N1M00013",
+    "name": "SYAFIQ PENT",
+    "title": "PRUDENTIAL WEALTH PLANNER",
+    "image": "./Picture/N1M00013.jpg",
+    "whatsapp": "60142494790",
+    "instagram": "syafiq.pent",
+    "facebook": "syafiq.pent",
+    "tiktok": "syafiqpent",
+    "lead": false
+  },
+  {
+    "code": "N1M00053",
+    "name": "LEENDA ISHAK",
+    "title": "WEALTH PLANNER",
+    "image": "./Picture/N1M00053.jpg",
+    "whatsapp": "60124432180",
+    "instagram": "leen_8086",
+    "facebook": "leen.o.sham",
+    "tiktok": "leendaishak",
+    "lead": false
+  },
+  {
+    "code": "N1M00058",
+    "name": "HAFIZUDDIN OTHMAN",
+    "title": "WEALTH PLANNER",
+    "image": "./Picture/N1M00058.jpg",
+    "whatsapp": "60194552072",
+    "instagram": "apiizz95",
+    "facebook": "are.piz.779",
+    "tiktok": "_apizz95",
+    "lead": false,
+    "chat_id": 806656286
   }
 ]
