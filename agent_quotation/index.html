@@ -223,6 +223,106 @@
       filter: brightness(1.04);
     }
 
+    .site-footer {
+      margin-top: 80px;
+      background: linear-gradient(180deg, #0b0b0b, #050505);
+      border-top: 1px solid rgba(212,175,55,0.25);
+      color: var(--muted);
+      padding: 50px 20px 20px;
+    }
+
+    .footer-container {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 40px;
+      max-width: 1180px;
+      margin: 0 auto;
+    }
+
+    /* BRAND */
+    .footer-brand img {
+      width: 80px;
+      margin-bottom: 10px;
+    }
+
+    .footer-brand h3 {
+      margin: 0;
+      color: var(--gold);
+      letter-spacing: 0.1em;
+    }
+
+    .footer-brand p {
+      font-size: 0.9rem;
+      line-height: 1.5;
+    }
+
+    /* LINKS */
+    .footer-links h4,
+    .footer-social h4 {
+      color: var(--gold);
+      margin-bottom: 12px;
+    }
+
+    .footer-social i {
+      margin-right: 8px;
+    }
+
+    .footer-links a,
+    .footer-social a {
+      display: block;
+      color: var(--text);
+      text-decoration: none;
+      margin-bottom: 8px;
+      font-size: 0.9rem;
+      transition: color 0.2s ease;
+    }
+
+    .footer-links a:hover,
+    .footer-social a:hover {
+      color: var(--gold);
+    }
+
+    /* SOCIAL ICON STYLE (premium glow effect) */
+    .footer-social a {
+      position: relative;
+    }
+
+    .footer-social a::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      bottom: -2px;
+      width: 0%;
+      height: 2px;
+      background: var(--gold);
+      transition: width 0.3s ease;
+    }
+
+    .footer-social a:hover::after {
+      width: 100%;
+    }
+
+    /* BOTTOM */
+    .footer-bottom {
+      text-align: center;
+      margin-top: 40px;
+      padding-top: 15px;
+      border-top: 1px solid rgba(212,175,55,0.15);
+      font-size: 0.8rem;
+      color: #888;
+    }
+
+    /* RESPONSIVE */
+    @media (max-width: 900px) {
+      .footer-container {
+        grid-template-columns: 1fr;
+        text-align: center;
+      }
+
+      .footer-brand img {
+        margin: 0 auto 10px;
+      }
+    }
     #pdf-content {
       display: none;
       background: #ffffff;
@@ -281,7 +381,7 @@
     #pdf-content .footer {
       margin-top: 24px;
       color: #444444;
-      font-size: 0.85rem;
+      font-size: 0.70rem;
       line-height: 1.4;
     }
 
@@ -539,7 +639,7 @@
 
     <div id="pdf-content">
       <div class="invoice-header">
-        <img src="../Picture/mglogo1.png" alt="MGAS logo" class = "logo">
+        <img src="../Picture/mglogo2.jpg" alt="MGAS logo" class = "logo">
         <img src="../Picture/prubsnlogo1.png" alt="PruBSN logo">
       </div>
       <div class="divider"></div>
@@ -1482,5 +1582,13 @@
       attachNumberOnlyRestriction(document.getElementById("age"));
     });
   </script>
+
+  <footer>
+    <div class="footer-bottom">
+      <p>© 2026 Muqmeen Group Alor Setar (MGAS). All Rights Reserved.</p>
+      <p>Designed for internal use by Muqmeen Group Alor Setar agents.</p>
+    </div>
+  </footer>
+
 </body>
 </html>
