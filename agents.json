@@ -166,7 +166,8 @@
     "instagram": "hafirulizham",
     "facebook": "mohd.hafirulizham",
     "tiktok": "hafirulizham",
-    "lead": false
+    "lead": false,
+    "chat_id": 1096513759
   },
   {
     "code": "HKA00008",
@@ -248,5 +249,16 @@
     "tiktok": "_apizz95",
     "lead": false,
     "chat_id": 806656286
+  },
+  {
+    "code": "D3300190",
+    "name": "COACH AMIRUL",
+    "title": "WEALTH PLANNER",
+    "image": "./Picture/D3300190.jpg",
+    "whatsapp": "60164744678",
+    "instagram": "mdmirul95",
+    "facebook": "amirul22111995",
+    "tiktok": "coach.amirul.badminton",
+    "lead": false
   }
 ]
