@@ -47,16 +47,21 @@
     header {
       display: flex;
       flex-wrap: wrap;
-      justify-content: space-between;
+      justify-content: center;
       gap: 24px;
       align-items: center;
       margin-bottom: 32px;
+      text-align: center;
+      flex-direction: column;
     }
 
     .brand {
       display: flex;
       gap: 18px;
       align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      text-align: center;
     }
 
     .brand img {
@@ -67,10 +72,25 @@
 
     .brand h1 {
       margin: 0;
-      font-size: clamp(2rem, 2.6vw, 2.8rem);
-      letter-spacing: 0.12em;
+      font-size: clamp(2.8rem, 5vw, 4rem);
+      letter-spacing: 0.08em;
       text-transform: uppercase;
-      color: var(--gold);
+      font-weight: 700;
+      text-align: center;
+
+      /* Fallback color (for older browsers) */
+      color: #d4af37;
+
+      /* Gradient text */
+      background: linear-gradient(135deg, #d4af37, #f5d27a);
+      -webkit-background-clip: text;
+      background-clip: text;
+
+      /* Makes text transparent so gradient shows */
+      -webkit-text-fill-color: transparent;
+
+      /* Optional subtle premium depth (very light) */
+      text-shadow: 0 2px 8px rgba(212, 175, 55, 0.2);
     }
 
     .intro {
@@ -561,10 +581,9 @@
   <div class="page">
     <header>
       <div class="brand">
-        <img src="../Picture/mglogo1.png" alt="MGAS logo" class = "logo-page">
         <div>
           <h1>MGAS Quotation Generator</h1>
-          <p>Professional Medical & Hibah quotation templates for agents, ready to send to clients instantly.</p>
+          <p>Simplified Medical & Hibah quotation templates for agents to quickly prepare clean, client-friendly summaries. All figures and plan details must be sourced from PruBSN Mobility and are subject to official documentation.</p>
         </div>
       </div>
     </header>
