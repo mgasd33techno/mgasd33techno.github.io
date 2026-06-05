@@ -63,7 +63,8 @@
     "instagram": "aljeerahmadihah",
     "facebook": "MadihahAljeerahAZ",
     "tiktok": "madihah_prudential",
-    "lead": false
+    "lead": false,
+    "chat_id": 74413996
   },
   {
     "code": "D3300090",
@@ -98,7 +99,8 @@
     "instagram": "juliyabaharom",
     "facebook": "juliya.baharom",
     "tiktok": "juliyabaharom",
-    "lead": false
+    "lead": false,
+    "chat_id": 35551400
   },
   {
     "code": "N1M00007",
@@ -111,30 +113,6 @@
     "tiktok": "shaherul656",
     "lead": false,
     "chat_id": 610397354
-  },
-  {
-    "code": "D3300138",
-    "name": "SYED FAHMI",
-    "title": "WEALTH PLANNER",
-    "image": "./Picture/D3300138.jpg",
-    "whatsapp": "60133438487",
-    "instagram": "pak_syed_takaful",
-    "facebook": "syed.fahmi.965",
-    "tiktok": "pak_syed_takaful",
-    "lead": false,
-    "chat_id": 309515338
-  },
-  {
-    "code": "D3300145",
-    "name": "AMMAR IRFAN",
-    "title": "WEALTH PLANNER",
-    "image": "./Picture/D3300145.jpg",
-    "whatsapp": "60106569940",
-    "instagram": "takaful_bear",
-    "facebook": "ammarirfan.razali",
-    "tiktok": "ammarirfanrazali",
-    "lead": false,
-    "chat_id": 1120654169
   },
   {
     "code": "N3M00001",
@@ -178,7 +156,8 @@
     "instagram": "pidot_tiaww",
     "facebook": "firdaus.dott",
     "tiktok": "pidottiaw",
-    "lead": false
+    "lead": false,
+    "chat_id": 705384071
   },
   {
     "code": "HKA00022",
@@ -259,6 +238,7 @@
     "instagram": "mdmirul95",
     "facebook": "amirul22111995",
     "tiktok": "coach.amirul.badminton",
-    "lead": false
+    "lead": false,
+    "chat_id": 7453191784
   }
 ]

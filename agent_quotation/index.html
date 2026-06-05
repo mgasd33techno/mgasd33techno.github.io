@@ -556,6 +556,17 @@
       font-size: 0.75rem;
     }
 
+    tr.contribution-row td {
+      background: #e8e8e8 !important;
+      color: #555 !important;
+      font-weight: 600;
+    }
+
+    #pdf-content tr.contribution-row td {
+      background: #e8e8e8 !important;
+      color: #555 !important;
+    }
+
     @media (max-width: 980px) {
       .grid {
         grid-template-columns: 1fr;
@@ -1338,7 +1349,7 @@
         }
         table += `</tr>`;
 
-        const row = (label, fn) => {
+        const row = (label, fn, rowClass = "") => {
           let cells = [];
           for (let i = 1; i <= num; i++) {
             try {
@@ -1358,15 +1369,23 @@
             if (!hasYes) return ""; // Skip if no "Yes" found
           }
           
-          let r = `<tr><td class="detail-cell"><b>${label}</b></td>`;
+          const trClass = rowClass ? ` class="${rowClass}"` : "";
+          let r = `<tr${trClass}><td class="detail-cell"><b>${label}</b></td>`;
           cells.forEach(cell => {
             r += `<td class="plan-cell">${cell}</td>`;
           });
           return r + `</tr>`;
         };
 
-        table += row("Contribution", i => formatCurrencyDisplay(document.getElementById(`price${i}`).value));
-        table += row("Maturity Age", i => {
+        table += row(
+          `<strong>Contribution</strong>`,
+          i => {
+            const value = formatCurrencyDisplay(document.getElementById(`price${i}`).value);
+            return `<strong>${value}</strong>`;
+          },
+          "contribution-row"
+        ); 
+       table += row("Maturity Age", i => {
           const value = document.getElementById(`mat${i}`).value;
           return value ? `${value} years old` : "—";
         });
