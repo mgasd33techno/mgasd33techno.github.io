@@ -412,7 +412,7 @@
     }
 
     #pdf-content .footer strong {
-      color: #030303;
+      color: #000000 !important;
     }
 
     #pdf-content .footer i {
@@ -567,6 +567,224 @@
       color: #555 !important;
     }
 
+    /* THEME SELECTOR */
+    .theme-selector {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      margin-bottom: 24px;
+      flex-wrap: wrap;
+    }
+
+    .theme-selector label {
+      color: var(--text);
+      font-size: 0.95rem;
+      font-weight: 600;
+    }
+
+    .theme-buttons {
+      display: flex;
+      gap: 8px;
+    }
+
+    .theme-btn {
+      padding: 8px 16px;
+      border: 2px solid rgba(212,175,55,0.3);
+      background: transparent;
+      color: var(--text);
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      font-weight: 500;
+      transition: all 0.3s ease;
+    }
+
+    .theme-btn:hover {
+      border-color: var(--gold);
+      color: var(--gold);
+    }
+
+    .theme-btn.active {
+      background: var(--gold);
+      color: #111111;
+      border-color: var(--gold);
+    }
+
+    /* MG LIGHT THEME (Default) */
+    #pdf-content.theme-light {
+      background: #ffffff;
+      color: #111111;
+    }
+
+    #pdf-content.theme-light table {
+      color: #111111;
+    }
+
+    #pdf-content.theme-light th {
+      background: #d4af37;
+      color: #58440b;
+    }
+
+    #pdf-content.theme-light td {
+      background: #ffffff;
+      color: #111111;
+    }
+
+    #pdf-content.theme-light tr:nth-child(even) td {
+      background: #f9f9f9;
+    }
+
+    #pdf-content.theme-light tr.contribution-row td {
+      background: #e8e8e8 !important;
+      color: #555 !important;
+    }
+
+    #pdf-content.theme-light .summary p {
+      color: #111111;
+    }
+
+    #pdf-content.theme-light .summary b {
+      color: #d4af37;
+    }
+
+    #pdf-content.theme-light .footer i {
+      color: #d4af37;
+    }
+
+    #pdf-content.theme-light .plan-header .plan-name {
+      color: #58440b;
+    }
+
+    /* MG DARK THEME */
+    #pdf-content.theme-dark {
+      background: #ffffff;
+      color: #111111;
+    }
+
+    #pdf-content.theme-dark .preview-title {
+      color: #111111;
+    }
+
+    #pdf-content.theme-dark .summary p {
+      color: #111111;
+    }
+
+    #pdf-content.theme-dark .summary b {
+      color: #857408 ;
+    }
+
+    #pdf-content.theme-dark table {
+      color: #ffffff;
+    }
+
+    #pdf-content.theme-dark th {
+      background: #d4af37;
+      color: #000000;
+      font-weight: 600;
+    }
+
+    #pdf-content.theme-dark td {
+      background: #000000;
+      color: #ffffff;
+      border-color: rgba(212,175,55,0.2);
+    }
+
+    #pdf-content.theme-dark tr:nth-child(even) td {
+      background: #000000;
+    }
+
+    #pdf-content.theme-dark tr.contribution-row td {
+      background: #999999 !important;
+      color: #000000 !important;
+    }
+
+    #pdf-content.theme-dark .summary p {
+      color: #857408;
+    }
+
+    #pdf-content.theme-dark .summary b {
+      color: #857408;
+    }
+
+    #pdf-content.theme-dark .footer {
+      color: #857408;
+    }
+
+    #pdf-content.theme-dark .footer strong {
+      color: #857408;
+    }
+
+    #pdf-content.theme-dark .footer i {
+      color: #857408;
+    }
+
+    #pdf-content.theme-dark .divider {
+      background: #857408;
+    }
+
+    #pdf-content.theme-dark .plan-header .plan-name {
+      color: #000000;
+    }
+
+    /* PRUSBN THEME */
+    #pdf-content.theme-prusbn {
+      background: #ffffff;
+      color: #000000;
+    }
+
+    #pdf-content.theme-prusbn .preview-title {
+      color: #000000;
+    }
+
+    #pdf-content.theme-prusbn .summary p {
+      color: #17a2b8;
+    }
+
+    #pdf-content.theme-prusbn .summary b {
+      color: #17a2b8;
+    }
+
+    #pdf-content.theme-prusbn table {
+      color: #000000;
+    }
+
+    #pdf-content.theme-prusbn th {
+      background: #dc3545;
+      color: #ffffff;
+      font-weight: 600;
+    }
+
+    #pdf-content.theme-prusbn td {
+      background: #dfffff;
+      color: #000000;
+      border-color: rgba(0, 0, 0, 0.1);
+    }
+
+    #pdf-content.theme-prusbn tr:nth-child(even) td {
+      background: #dfffff;
+    }
+
+    #pdf-content.theme-prusbn tr.contribution-row td {
+      background: #0d8a96 !important;
+      color: #ffffff !important;
+    }
+
+    #pdf-content.theme-prusbn .plan-header .plan-name {
+      color: #ffffff;
+    }
+
+    #pdf-content.theme-prusbn .footer {
+      color: #dc3545;
+    }
+
+    #pdf-content.theme-prusbn .footer i {
+      color: #dc3545;
+    }
+
+    #pdf-content.theme-prusbn .divider {
+      background: #dc3545;
+    }
+
     @media (max-width: 980px) {
       .grid {
         grid-template-columns: 1fr;
@@ -659,6 +877,18 @@
       </section>
     </div>
     
+    <div class="card full">
+      <h2>Quotation Theme</h2>
+      <div class="theme-selector">
+        <label>Choose Theme:</label>
+        <div class="theme-buttons">
+          <button type="button" class="theme-btn active" onclick="setTheme('light')" id="themeLight">MG Light</button>
+          <button type="button" class="theme-btn" onclick="setTheme('dark')" id="themeDark">MG Dark</button>
+          <button type="button" class="theme-btn" onclick="setTheme('prusbn')" id="themePrusbn">PruBSN</button>
+        </div>
+      </div>
+    </div>
+
     <div class="actions">
       <button class="primary-btn" onclick="startGenerateProcess()">Generate Preview</button>
       <p id="generateStatus" style="text-align:center; font-weight:bold;"></p>
@@ -1043,6 +1273,16 @@
       setActiveTypeButton(value);
       planFormData = {}; // Clear all data when switching quotation type
       renderPlanInputs(null, true); // Pass true to skip saving when clearing all
+    }
+
+    // Theme management
+    let selectedTheme = "light";
+
+    function setTheme(theme) {
+      selectedTheme = theme;
+      document.getElementById("themeLight").classList.toggle("active", theme === "light");
+      document.getElementById("themeDark").classList.toggle("active", theme === "dark");
+      document.getElementById("themePrusbn").classList.toggle("active", theme === "prusbn");
     }
 
     // Store form data for each plan
@@ -1547,6 +1787,8 @@
       const pdfContent = document.getElementById("pdf-content");
       if (pdfContent) {
         pdfContent.style.display = "block";
+        // Apply theme class
+        pdfContent.className = `theme-${selectedTheme}`;
         pdfContent.scrollIntoView({ behavior: "smooth" });
       }
       
