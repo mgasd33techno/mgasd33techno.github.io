@@ -1302,6 +1302,8 @@
         const ci = document.getElementById(`ci${i}`);
         const accCheck = document.getElementById(`accCheck${i}`);
         const acc = document.getElementById(`acc${i}`);
+        const cv20Check = document.getElementById(`cv20Check${i}`);
+        const cv20 = document.getElementById(`cv20${i}`);
 
         planFormData[i] = {
           price: price ? price.value : "",
@@ -1312,7 +1314,9 @@
           crisisCheck: crisisCheck ? crisisCheck.checked : false,
           ci: ci ? ci.value : "",
           accCheck: accCheck ? accCheck.checked : false,
-          acc: acc ? acc.value : ""
+          acc: acc ? acc.value : "",
+          cv20Check: cv20Check ? cv20Check.checked : false,
+          cv20: cv20 ? cv20.value : ""
         };
       }
     }
@@ -1347,6 +1351,18 @@
         
         const ci = document.getElementById(`ci${i}`);
         if (ci) ci.value = planFormData[i].ci;
+        
+        const cv20Check = document.getElementById(`cv20Check${i}`);
+        if (cv20Check) {
+          cv20Check.checked = planFormData[i].cv20Check;
+          const cv20Div = document.getElementById(`cv20InputDiv${i}`);
+          if (cv20Div) {
+            cv20Div.classList.toggle("visible", cv20Check.checked);
+          }
+        }
+        
+        const cv20 = document.getElementById(`cv20${i}`);
+        if (cv20) cv20.value = planFormData[i].cv20;
         
         const accCheck = document.getElementById(`accCheck${i}`);
         if (accCheck) {
@@ -1495,6 +1511,16 @@
               <input id="acc${i}" placeholder="RM 0" inputmode="numeric">
             </div>
             ` : '')}
+            <div style="grid-column: 1 / -1;">
+              <label class="checkbox-label">
+                <input type="checkbox" id="cv20Check${i}">
+                Cash Value - Year 20
+              </label>
+            </div>
+            <div id="cv20InputDiv${i}" class="hidden-input-group" style="grid-column: 1 / -1;">
+              <label for="cv20${i}">Amount</label>
+              <input id="cv20${i}" placeholder="RM 0" inputmode="numeric">
+            </div>
             
             ${selected.type === 'medical' ? `
             <div style="grid-column: 1 / -1;">
@@ -1529,6 +1555,8 @@
         if (accInput) attachCurrencyFormatting(accInput);
         const ciInput = planCard.querySelector(`#ci${i}`);
         if (ciInput) attachCurrencyFormatting(ciInput);
+        const cv20Input = planCard.querySelector(`#cv20${i}`);
+        if (cv20Input) attachCurrencyFormatting(cv20Input);
         
         // Add event listeners for Crisis Protector checkbox
         const crisisCheck = planCard.querySelector(`#crisisCheck${i}`);
@@ -1550,6 +1578,18 @@
             accDiv.classList.toggle("visible", accCheck.checked);
             if (!accCheck.checked) {
               accInput.value = "";
+            }
+          });
+        }
+        
+        // Add event listeners for Cash Value Year 20 checkbox
+        const cv20Check = planCard.querySelector(`#cv20Check${i}`);
+        const cv20Div = planCard.querySelector(`#cv20InputDiv${i}`);
+        if (cv20Check && cv20Div) {
+          cv20Check.addEventListener("change", () => {
+            cv20Div.classList.toggle("visible", cv20Check.checked);
+            if (!cv20Check.checked) {
+              cv20Input.value = "";
             }
           });
         }
@@ -1782,6 +1822,8 @@
           return selected.planTypes[i - 1] === "WarisanGold" ? "RM 3,000" : "—";
         });
       }
+        table += row("Cash Value - Year 20 (10% - 15% Fund Performance)", i => formatCurrencyDisplay(document.getElementById(`cv20${i}`).value));
+        
 
       table += `</table>`;
       const tableArea = document.getElementById("table-area");
