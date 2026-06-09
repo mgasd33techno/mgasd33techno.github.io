@@ -1,6 +1,7 @@
 ﻿<!DOCTYPE html>
 <html>
 <head>
+  
   <title>MGAS Quotation Generator</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.2/html2pdf.bundle.min.js"></script>
   <style>
@@ -16,6 +17,98 @@
 
     * {
       box-sizing: border-box;
+    }
+
+    
+    .site-header {
+      background: #000000;
+      border-bottom: 1px solid rgba(212, 175, 55, 0.18);
+      padding: 16px 0;
+    }
+
+
+    .header-container {
+      width: min(1180px, calc(100% - 32px));
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 40px;
+    }
+
+    .header-brand {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      text-decoration: none;
+      flex-shrink: 0;
+    }
+
+    .header-logo {
+      height: 48px;
+      width: auto;
+      object-fit: contain;
+      display: block;
+    }
+
+    .header-title {
+      margin: 0;
+      color: var(--gold);
+      font-size: 1.1rem;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      white-space: nowrap;
+    }
+
+    .header-nav {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      flex-wrap: wrap;
+      margin: 0;
+    }
+
+    .nav-link {
+      position: relative;
+      text-decoration: none;
+      color: var(--text);
+      font-weight: 600;
+      font-size: 0.9rem;
+      padding: 10px 14px;
+      border-radius: 8px;
+      transition: all 0.2s ease;
+      white-space: nowrap;
+    }
+
+    .nav-link:hover {
+      color: var(--gold);
+      background: rgba(212, 175, 55, 0.1);
+    }
+
+    .nav-link.active {
+      color: #111;
+      background: var(--gold);
+    }
+
+    @media (max-width: 900px) {
+      .header-container {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 16px;
+      }
+
+      .header-nav {
+        width: 100%;
+        justify-content: flex-start;
+      }
+
+      .header-logo {
+        height: 42px;
+      }
+
+      .header-title {
+        font-size: 0.95rem;
+      }
     }
 
     html, body {
@@ -810,6 +903,23 @@
   </style>
 </head>
 <body>
+  
+<header class="site-header">
+  <div class="header-container">
+    <!-- Logo & Title -->
+    <a href="#" class="header-brand">
+      <img src="../Picture/mglogo.png" alt="MGAS Logo" class="header-logo">
+      <h1 class="header-title">MGAS Agent Tool</h1>
+    </a>
+
+    <!-- Navigation -->
+    <nav class="header-nav">
+      <a href="#" class="nav-link active">Quotation Generator</a>
+      <!-- <a href="#" class="nav-link">Medical Journey</a>
+      <a href="#" class="nav-link">Lapse Revival Guide</a> -->
+    </nav>
+  </div>
+</header>
   <div class="page">
     <header>
       <div class="brand">
@@ -1822,7 +1932,7 @@
           return selected.planTypes[i - 1] === "WarisanGold" ? "RM 3,000" : "—";
         });
       }
-        table += row("Cash Value - Year 20 (10% - 15% Fund Performance)", i => formatCurrencyDisplay(document.getElementById(`cv20${i}`).value));
+        table += row("Cash Value - Year 20 (5% Fund Performance)", i => formatCurrencyDisplay(document.getElementById(`cv20${i}`).value));
         
 
       table += `</table>`;
