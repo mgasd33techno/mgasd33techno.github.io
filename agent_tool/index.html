@@ -485,8 +485,15 @@
     }
 
     @media (max-width: 980px) {
-  /* ✅ NO STACKING - Keep grid layouts intact */
-  
+  .hero {
+    grid-template-columns: 1fr;
+  }
+
+  .tools-grid,
+  .info-grid {
+    grid-template-columns: 1fr;
+  }
+
   /* ✅ FIXED HEADER */
   .header-container {
     flex-direction: row;
@@ -519,9 +526,8 @@
   }
 
   .bottom-cta {
-    flex-direction: row;
-    align-items: center;
-    gap: 18px;
+    flex-direction: column;
+    align-items: flex-start;
   }
 }
 
