@@ -1,6 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+  />
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>MGAS Agent Tool</title>
@@ -64,6 +68,43 @@
       text-decoration: none;
     }
 
+    .info-card {
+      padding: 22px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .info-icon {
+      width: 52px;
+      height: 52px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 16px;
+      margin-bottom: 14px;
+      background: linear-gradient(135deg, rgba(212, 175, 55, 0.18), rgba(212, 175, 55, 0.05));
+      border: 1px solid rgba(212, 175, 55, 0.2);
+      box-shadow: 0 10px 24px rgba(0, 0, 0, 0.25);
+    }
+
+    .info-icon i {
+      font-size: 1.2rem;
+      color: var(--gold);
+    }
+
+    .info-card h4 {
+      margin: 0 0 10px;
+      color: var(--gold);
+      font-size: 1rem;
+      letter-spacing: 0.04em;
+    }
+
+    .info-card p {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.7;
+      font-size: 0.94rem;
+    }
     /* =========================
       HEADER
     ========================= */
@@ -788,7 +829,7 @@
 
       <div class="info-grid">
         <div class="info-card">
-          <h4>Faster Preparation</h4>
+          <h4><i class="fa-solid fa-bolt"></i> Faster Preparation</h4>
           <p>
             Reduce repetitive manual work by keeping commonly used agent tools in one
             branded and accessible place.
@@ -796,7 +837,7 @@
         </div>
 
         <div class="info-card">
-          <h4>Consistent Presentation</h4>
+          <h4><i class="fa-solid fa-gem"></i> Consistent Presentation</h4>
           <p>
             Ensure quotation previews and internal tools follow a consistent MGAS
             premium look and feel.
@@ -804,13 +845,14 @@
         </div>
 
         <div class="info-card">
-          <h4>Agent-Friendly Workflow</h4>
+          <h4><i class="fa-solid fa-handshake"></i> Agent-Friendly Workflow</h4>
           <p>
             Make it easier for agents to move from tool to tool without needing to
             search separate links or pages.
           </p>
         </div>
       </div>
+
     </section>
 
     <section class="bottom-cta">
