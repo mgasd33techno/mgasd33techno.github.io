@@ -1,0 +1,678 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MGAS Agent Tool</title>
+
+  <style>
+    :root {
+      --bg: #080808;
+      --surface: #111111;
+      --surface-soft: #181818;
+      --surface-hover: #1f1f1f;
+      --gold: #d4af37;
+      --gold-soft: #f2d47a;
+      --text: #f8eed7;
+      --muted: #b9a76f;
+      --border: rgba(212, 175, 55, 0.18);
+      --shadow: 0 20px 50px rgba(0, 0, 0, 0.35);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    #tools {
+      scroll-margin-top: 100px;
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      min-height: 100%;
+      font-family: Inter, system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+    }
+
+    body {
+      background:
+        radial-gradient(circle at top left, rgba(212,175,55,0.12), transparent 20%),
+        radial-gradient(circle at 85% 10%, rgba(212,175,55,0.08), transparent 15%),
+        #080808;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background:
+        radial-gradient(circle at 20% 10%, rgba(212,175,55,0.08), transparent 13%),
+        radial-gradient(circle at 80% 15%, rgba(212,175,55,0.05), transparent 12%);
+      z-index: 0;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .site-header {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      background: rgba(0, 0, 0, 0.85);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .header-container {
+      width: min(1180px, calc(100% - 32px));
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 20px;
+      padding: 14px 0;
+    }
+
+    .header-brand {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      flex-shrink: 0;
+    }
+
+    .header-logo {
+      height: 48px;
+      width: auto;
+      object-fit: contain;
+      display: block;
+    }
+
+    .header-title-wrap {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .header-title {
+      margin: 0;
+      font-size: 1.05rem;
+      color: var(--gold);
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .header-subtitle {
+      margin: 2px 0 0;
+      font-size: 0.78rem;
+      color: var(--muted);
+      letter-spacing: 0.03em;
+    }
+
+    .header-nav {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .nav-link {
+      color: var(--text);
+      font-weight: 600;
+      font-size: 0.92rem;
+      padding: 10px 14px;
+      border-radius: 10px;
+      transition: all 0.2s ease;
+    }
+
+    .nav-link:hover {
+      background: rgba(212,175,55,0.1);
+      color: var(--gold);
+    }
+
+    .nav-link.active {
+      background: var(--gold);
+      color: #111111;
+    }
+
+    .page {
+      position: relative;
+      z-index: 1;
+      width: min(1180px, calc(100% - 32px));
+      margin: 0 auto;
+      padding: 38px 0 70px;
+    }
+
+    .hero {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 28px;
+      margin-bottom: 28px;
+    }
+
+    .hero-card,
+    .panel,
+    .tool-card,
+    .info-card {
+      background: rgba(18, 18, 18, 0.96);
+      border: 1px solid var(--border);
+      border-radius: 28px;
+      box-shadow: var(--shadow);
+    }
+
+    .hero-card {
+      padding: 36px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .hero-card::after {
+      content: "";
+      position: absolute;
+      width: 280px;
+      height: 280px;
+      right: -80px;
+      top: -80px;
+      background: radial-gradient(circle, rgba(212,175,55,0.18), transparent 70%);
+      pointer-events: none;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      border: 1px solid rgba(212,175,55,0.25);
+      padding: 8px 14px;
+      border-radius: 999px;
+      color: var(--gold-soft);
+      font-size: 0.82rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      font-weight: 700;
+      margin-bottom: 18px;
+      background: rgba(212,175,55,0.06);
+    }
+
+    .hero-title {
+      margin: 0 0 14px;
+      font-size: clamp(2.4rem, 5vw, 4rem);
+      line-height: 1.02;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      font-weight: 900;
+      color: #d4af37;
+      background: linear-gradient(135deg, #d4af37, #f5d27a);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-shadow: 0 2px 10px rgba(212,175,55,0.12);
+    }
+
+    .hero-text {
+      margin: 0;
+      max-width: 760px;
+      color: #e7dbc0;
+      line-height: 1.8;
+      font-size: 1rem;
+    }
+
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 24px;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 170px;
+      padding: 14px 20px;
+      border-radius: 999px;
+      border: 1px solid transparent;
+      font-weight: 800;
+      font-size: 0.95rem;
+      transition: all 0.2s ease;
+      cursor: pointer;
+    }
+
+    .btn-primary {
+      background: var(--gold);
+      color: #111111;
+      box-shadow: 0 14px 28px rgba(212,175,55,0.22);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-1px);
+      filter: brightness(1.03);
+    }
+
+    .btn-secondary {
+      background: transparent;
+      color: var(--text);
+      border-color: rgba(212,175,55,0.24);
+    }
+
+    .btn-secondary:hover {
+      background: rgba(212,175,55,0.1);
+      color: var(--gold);
+      border-color: var(--gold);
+    }
+
+    .panel {
+      padding: 28px;
+      display: grid;
+      gap: 18px;
+      align-content: start;
+    }
+
+    .panel h3 {
+      margin: 0;
+      color: var(--gold);
+      font-size: 1.1rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .panel p {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.7;
+      font-size: 0.95rem;
+    }
+
+    .quick-list {
+      display: grid;
+      gap: 12px;
+      margin-top: 4px;
+    }
+
+    .quick-item {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(212,175,55,0.08);
+      border-radius: 18px;
+      padding: 14px 16px;
+    }
+
+    .quick-item strong {
+      display: block;
+      color: var(--text);
+      margin-bottom: 4px;
+      font-size: 0.95rem;
+    }
+
+    .quick-item span {
+      color: var(--muted);
+      font-size: 0.88rem;
+      line-height: 1.5;
+    }
+
+    .section {
+      margin-top: 34px;
+    }
+
+    .section-title {
+      margin: 0 0 18px;
+      color: var(--gold);
+      font-size: 1.1rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .tools-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 22px;
+    }
+
+    .tool-card {
+      padding: 24px;
+      transition: transform 0.2s ease, border-color 0.2s ease, background 0.2s ease;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      min-height: 250px;
+    }
+
+    .tool-card:hover {
+      transform: translateY(-3px);
+      border-color: rgba(212,175,55,0.32);
+      background: rgba(24, 24, 24, 0.98);
+    }
+
+    .tool-badge {
+      display: inline-block;
+      width: fit-content;
+      padding: 6px 10px;
+      border-radius: 999px;
+      font-size: 0.78rem;
+      font-weight: 800;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+
+    .tool-badge-live {
+      border: 1px solid rgba(34, 139, 34, 0.4);
+      background: rgba(34, 139, 34, 0.12);
+      color: #3bd16f;
+    }
+
+    .tool-badge-coming-soon {
+      border: 1px solid rgba(180, 180, 180, 0.25);
+      background: rgba(200, 200, 200, 0.05);
+      color: #d6d6d6;
+    }
+    .tool-card h3 {
+      margin: 0;
+      color: var(--text);
+      font-size: 1.2rem;
+    }
+
+    .tool-card p {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.7;
+      font-size: 0.95rem;
+      flex-grow: 1;
+    }
+
+    .tool-actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: auto;
+    }
+
+    .mini-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 11px 14px;
+      border-radius: 999px;
+      font-size: 0.88rem;
+      font-weight: 700;
+      border: 1px solid rgba(212,175,55,0.22);
+      background: transparent;
+      color: var(--text);
+      transition: all 0.2s ease;
+    }
+
+    .mini-btn:hover {
+      background: rgba(212,175,55,0.1);
+      color: var(--gold);
+      border-color: var(--gold);
+    }
+
+    .mini-btn.primary {
+      background: var(--gold);
+      color: #111;
+      border-color: var(--gold);
+    }
+
+    .mini-btn.primary:hover {
+      filter: brightness(1.03);
+    }
+
+    .info-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 22px;
+    }
+
+    .info-card {
+      padding: 22px;
+    }
+
+    .info-card h4 {
+      margin: 0 0 10px;
+      color: var(--gold);
+      font-size: 1rem;
+      letter-spacing: 0.04em;
+    }
+
+    .info-card p {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.7;
+      font-size: 0.94rem;
+    }
+
+    .bottom-cta {
+      margin-top: 34px;
+      padding: 28px;
+      border-radius: 28px;
+      border: 1px solid var(--border);
+      background: linear-gradient(135deg, rgba(212,175,55,0.08), rgba(255,255,255,0.02));
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+      box-shadow: var(--shadow);
+    }
+
+    .bottom-cta h3 {
+      margin: 0 0 6px;
+      color: var(--gold);
+      font-size: 1.2rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .bottom-cta p {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.7;
+      max-width: 760px;
+    }
+
+    .site-footer {
+      margin-top: 70px;
+      border-top: 1px solid rgba(212,175,55,0.15);
+      padding-top: 22px;
+      text-align: center;
+      color: #8f8f8f;
+      font-size: 0.86rem;
+      line-height: 1.7;
+    }
+
+    @media (max-width: 980px) {
+      .hero {
+        grid-template-columns: 1fr;
+      }
+
+      .tools-grid,
+      .info-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .header-container {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .header-nav {
+        width: 100%;
+      }
+
+      .bottom-cta {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .hero-card,
+      .panel,
+      .tool-card,
+      .info-card {
+        border-radius: 22px;
+      }
+
+      .hero-card,
+      .panel,
+      .tool-card,
+      .info-card,
+      .bottom-cta {
+        padding: 20px;
+      }
+
+      .header-logo {
+        height: 42px;
+      }
+
+      .header-title {
+        font-size: 0.95rem;
+      }
+
+      .hero-title {
+        font-size: clamp(2rem, 10vw, 2.8rem);
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="site-header">
+    <div class="header-container">
+      <a href="./index.html" class="header-brand">
+        <img src="../Picture/mglogo.png" alt="MGAS Logo" class="header-logo">
+        <div class="header-title-wrap">
+          <h1 class="header-title">MGAS Agent Tool</h1>
+          <!-- <p class="header-subtitle">Internal productivity tools for agents</p> -->
+        </div>
+      </a>
+
+      <nav class="header-nav">
+        <a href="./index.html" class="nav-link active">Home</a>
+        <a href="../agent_quotation/index.html" class="nav-link">Quotation Generator</a>
+        <!-- <a href="#tools" class="nav-link">Tools</a> -->
+      </nav>
+    </div>
+  </header>
+
+  <main class="page">
+    <section class="hero">
+      <div class="hero-card">
+        <div class="eyebrow">Internal Agent Platform</div>
+        <h2 class="hero-title">MGAS Agent Tool</h2>
+        <p class="hero-text">
+          A centralized internal portal for Muqmeen Group Alor Setar agents to access productivity tools, generate simplified client-friendly quotation summaries, and streamline day-to-day sales support workflows with a clean premium interface.
+        </p>
+
+        <div class="hero-actions">
+          <!-- <a href="../agent_quotation/index.html" class="btn btn-primary">Open Quotation Generator</a> -->
+          <a href="#tools" class="btn btn-secondary">Explore Tools</a>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="tools">
+      <h2 class="section-title">Available Tools</h2>
+
+      <div class="tools-grid">
+        <article class="tool-card">
+          <span class="tool-badge tool-badge-live">Live</span>
+          <h3>Quotation Generator</h3>
+          <p>
+            Generate simplified Medical and Hibah quotation templates for agents to
+            quickly prepare professional, client-friendly summaries. All figures and
+            plan details should be sourced from official PruBSN Mobility information.
+          </p>
+          <div class="tool-actions">
+            <a href="../agent_quotation/index.html" class="mini-btn primary">Launch Tool</a>
+          </div>
+        </article>
+        <article class="tool-card">
+          <span class="tool-badge tool-badge-coming-soon">Coming Soon</span>
+          <h3>Power Agent Profile</h3>
+          <p>
+            An exclusive marketing profile for selected Power Agents, enabling them to showcase their brand, share across social media, and receive client enquiries through structured lead capture and quotation requests, subject to leader approval.
+          </p>
+          <div class="tool-actions">
+            <span class="mini-btn">Planned</span>
+          </div>
+        </article>
+        <article class="tool-card">
+          <span class="tool-badge tool-badge-coming-soon">Coming Soon</span>
+          <h3>Medical Journey</h3>
+          <p>
+            A tool designed to calculate waiting periods and determine coverage eligibility based on each client’s policy commencement date, helping agents provide clear and accurate explanations.
+          </p>
+          <div class="tool-actions">
+            <span class="mini-btn">Planned</span>
+          </div>
+        </article>
+
+        <article class="tool-card">
+          <span class="tool-badge tool-badge-coming-soon">Coming Soon</span>
+          <h3>Lapse Revival Guide</h3>
+          <p>
+            A support tool to guide agents through policy revival scenarios by determining requirements and next steps based on the policy’s lapse duration.
+          </p>
+          <div class="tool-actions">
+            <span class="mini-btn">Planned</span>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2 class="section-title">Why This Portal ?</h2>
+
+      <div class="info-grid">
+        <div class="info-card">
+          <h4>Faster Preparation</h4>
+          <p>
+            Reduce repetitive manual work by keeping commonly used agent tools in one
+            branded and accessible place.
+          </p>
+        </div>
+
+        <div class="info-card">
+          <h4>Consistent Presentation</h4>
+          <p>
+            Ensure quotation previews and internal tools follow a consistent MGAS
+            premium look and feel.
+          </p>
+        </div>
+
+        <div class="info-card">
+          <h4>Agent-Friendly Workflow</h4>
+          <p>
+            Make it easier for agents to move from tool to tool without needing to
+            search separate links or pages.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section class="bottom-cta">
+      <div>
+        <h3>Ready to Start?</h3>
+        <p>
+          Open the Quotation Generator to prepare a simplified Medical or Hibah quotation template.
+        </p>
+      </div>
+
+      <a href="../agent_quotation/index.html" class="btn btn-primary">Go to Quotation Generator</a>
+    </section>
+
+    <footer class="site-footer">
+      <p>© 2026 Muqmeen Group Alor Setar (MGAS). All Rights Reserved.</p>
+      <p>Designed for internal use by Muqmeen Group Alor Setar agents.</p>
+    </footer>
+  </main>
+
+</body>
+</html>

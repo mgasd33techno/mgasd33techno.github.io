@@ -240,5 +240,65 @@
     "tiktok": "coach.amirul.badminton",
     "lead": false,
     "chat_id": 7453191784
+  },
+  {
+    "code": "N3M00002",
+    "name": "SHAZLEEN SHAKER",
+    "title": "WEALTH PLANNER",
+    "image": "./Picture/N3M00002.jpg",
+    "whatsapp": "60194808464",
+    "instagram": "shazleenshaker",
+    "facebook": "profile.php?id=1198338051",
+    "tiktok": "shazleenshaker",
+    "lead": false,
+    "chat_id": 774061264
+  },
+  {
+    "code": "N3M00003",
+    "name": "IZZAT RAMLI",
+    "title": "WEALTH PLANNER",
+    "image": "./Picture/N3M00003.jpg",
+    "whatsapp": "60174551005",
+    "instagram": "izztrmli",
+    "facebook": "izzatramli93",
+    "tiktok": "izzatbisnes",
+    "lead": false,
+    "chat_id": 229303518
+  },
+  {
+    "code": "N3M00010",
+    "name": "AZRIL TAPAI",
+    "title": "WEALTH PLANNER",
+    "image": "./Picture/N3M00010.jpg",
+    "whatsapp": "601129962326",
+    "instagram": "azriltapai",
+    "facebook": "azril.tapai",
+    "tiktok": "_azriltapai",
+    "lead": false,
+    "chat_id": 7058439377
+  },
+  {
+    "code": "N3M00005",
+    "name": "FARHAN KHOIRUNNIZAM",
+    "title": "WEALTH PLANNER",
+    "image": "./Picture/N3M00005.jpg",
+    "whatsapp": "601129962326",
+    "instagram": "paankhoirunnizam",
+    "facebook": "muhammadfarhan.khoirunnizam",
+    "tiktok": "paankhoirunnizam",
+    "lead": false,
+    "chat_id": 577331155
+  },
+  {
+    "code": "N3M00018",
+    "name": "FARA ALYA",
+    "title": "WEALTH PLANNER",
+    "image": "./Picture/N3M00018.jpg",
+    "whatsapp": "60124774127",
+    "instagram": "faraalya.prubsn",
+    "facebook": "fara.alya.7",
+    "tiktok": "itsmefaghaaa",
+    "lead": false,
+    "chat_id": 53738661
   }
 ]
