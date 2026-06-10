@@ -236,6 +236,35 @@
       grid-template-columns: 1fr;
     }
 
+    .smoke-toggle {
+      display: flex;
+      gap: 10px;
+      margin-top: 6px;
+    }
+
+    .smoke-toggle button {
+      padding: 10px 16px;
+      border: 1px solid rgba(212,175,55,0.22);
+      border-radius: 10px;
+      background: transparent;
+      color: var(--text);
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .smoke-toggle button:hover {
+      background: rgba(212,175,55,0.08);
+      color: var(--gold);
+      border-color: var(--gold);
+    }
+
+    .smoke-toggle button.active {
+      background: var(--gold);
+      color: #111;
+      border-color: var(--gold);
+    }
+
     label {
       display: block;
       margin-bottom: 8px;
@@ -959,18 +988,33 @@
       </section>
 
       <section class="card">
-        <h2>Prospect Information</h2>
-        <div class="field-grid full">
-          <div>
-            <label for="prospect_name">Prospect Name</label>
-            <input id="prospect_name" placeholder="Enter prospect name">
-          </div>
-          <div>
-            <label for="age">Age Next Birthday</label>
-            <input id="age" placeholder="Enter age">
-          </div>
+      <h2>Prospect Information</h2>
+      <div class="field-grid full">
+        <div>
+          <label for="prospect_name">Prospect Name</label>
+          <input id="prospect_name" placeholder="Enter prospect name">
         </div>
-      </section>
+
+        <div>
+          <label for="age">Age Next Birthday</label>
+          <input id="age" placeholder="Enter age">
+        </div>
+
+        <div>
+          <label for="job">Job</label>
+          <input id="job" placeholder="Enter job title">
+        </div>
+
+        <div>
+          <label>Smoking Status</label>
+          <div class="smoke-toggle">
+            <button type="button" onclick="setSmokingStatus('non_smoking')" id="btnNonSmoking" class="active">No</button>
+            <button type="button" onclick="setSmokingStatus('is_smoking')" id="btnSmoking">Yes</button>
+          </div>
+          <input type="hidden" id="smoke" value="non_smoking">
+        </div>
+      </div>
+    </section>
 
       <section class="card full">
         <h2>Quotation Type</h2>
@@ -979,6 +1023,16 @@
             <button type="button" onclick="setType('medical')" id="btnMedical" class="active">Medical</button>
             <button type="button" onclick="setType('hibah')" id="btnHibah">Hibah</button>
           </div>
+        </div>
+        <div style="margin-top: 18px;">
+          <label class="checkbox-label">
+            <input type="checkbox" id="customTitleCheck" onchange="toggleCustomTitle()">
+            Custom Title
+          </label>
+        </div>
+        <div id="customTitleInputDiv" class="hidden-input-group" style="grid-column: 1 / -1; margin-top: 12px;">
+          <label for="customTitle">Enter Custom Title</label>
+          <input id="customTitle" placeholder="Enter custom title">
         </div>
       </section>
 
@@ -1089,6 +1143,25 @@
       return String(value).replace(/[^0-9]/g, "");
     }
 
+    function updateSummaryDisplay() {
+      const name = document.getElementById("prospect_name").value.trim();
+      const job = document.getElementById("job").value.trim();
+      const smoke = document.getElementById("smoke").value; // expected: 'non_smoking' or 'is_smoking'
+
+      let speciallyMadeFor = "-";
+
+      if (name) {
+        const smokeLabel = smoke === "is_smoking" ? "Smoker" : "Non Smoker";
+
+        if (job) {
+          speciallyMadeFor = `${name} / ${job} / ${smokeLabel}`;
+        } else {
+          speciallyMadeFor = `${name} / ${smokeLabel}`;
+        }
+      }
+
+      document.getElementById("t_name").textContent = speciallyMadeFor;
+    }
     function attachNumberOnlyRestriction(input) {
       input.addEventListener("input", () => {
         input.value = formatNumbersOnly(input.value);
@@ -1148,6 +1221,18 @@
           return obj;
         }, {});
       });
+    }
+
+    function setSmokingStatus(value) {
+      document.getElementById("smoke").value = value;
+
+      const btnNonSmoking = document.getElementById("btnNonSmoking");
+      const btnSmoking = document.getElementById("btnSmoking");
+
+      btnNonSmoking.classList.toggle("active", value === "non_smoking");
+      btnSmoking.classList.toggle("active", value === "is_smoking");
+
+      updateSummaryDisplay();
     }
 
     function getMedicalPlanValues(planTypeName) {
@@ -1394,6 +1479,15 @@
       setActiveTypeButton(value);
       planFormData = {}; // Clear all data when switching quotation type
       renderPlanInputs(null, true); // Pass true to skip saving when clearing all
+    }
+
+    function toggleCustomTitle() {
+      const checkbox = document.getElementById("customTitleCheck");
+      const inputDiv = document.getElementById("customTitleInputDiv");
+      inputDiv.classList.toggle("visible", checkbox.checked);
+      if (!checkbox.checked) {
+        document.getElementById("customTitle").value = "";
+      }
     }
 
     // Theme management
@@ -1731,15 +1825,35 @@
         const agentName = formatAlphaUpperCase(document.getElementById("agent_name").value);
         const agentPhone = formatNumbersOnlyOutput(document.getElementById("agent_phone").value);
         const agentCode = formatAlphaNumericUpperCase(document.getElementById("agent_code").value);
-        const prospectName = formatAlphaUpperCase(document.getElementById("prospect_name").value);
+
+        const rawProspectName = document.getElementById("prospect_name").value.trim().toUpperCase();
+        const rawJob = document.getElementById("job").value.trim().toUpperCase();
+        const smoke = document.getElementById("smoke").value.toUpperCase();
         const age = formatNumbersOnlyOutput(document.getElementById("age").value);
         const num = selected.numPlans;
+
+        const smokeLabel = smoke === "is_smoking" ? "Smoker" : "Non Smoker";
+
+        let speciallyMadeFor = "—";
+        if (rawProspectName) {
+          if (rawJob) {
+            speciallyMadeFor = `${rawProspectName} / ${rawJob} / ${smokeLabel}`;
+          } else {
+            speciallyMadeFor = `${rawProspectName} / ${smokeLabel}`;
+          }
+        }
+
         document.getElementById("a_name").innerText = agentName;
         document.getElementById("a_phone").innerText = agentPhone;
         document.getElementById("a_code").innerText = agentCode;
-        document.getElementById("t_name").innerText = prospectName;
-        document.getElementById("t_age").innerText = age;
-        document.getElementById("title_type").innerText = selected.type.toUpperCase();
+        document.getElementById("t_name").innerText = speciallyMadeFor;
+        document.getElementById("t_age").innerText = age || "-";
+        
+        // Check for custom title
+        const customTitleInput = document.getElementById("customTitle").value.trim();
+        const titleText = customTitleInput && customTitleInput.length > 3 ? customTitleInput.toUpperCase() : selected.type.toUpperCase();
+        document.getElementById("title_type").innerText = titleText;
+
 
         let table = `
           <table>
@@ -2023,7 +2137,13 @@
       renderPlanInputs();
       attachNumberOnlyRestriction(document.getElementById("agent_phone"));
       attachNumberOnlyRestriction(document.getElementById("age"));
+
+      document.getElementById("prospect_name").addEventListener("input", updateSummaryDisplay);
+      document.getElementById("job").addEventListener("input", updateSummaryDisplay);
+
+      updateSummaryDisplay();
     });
+
   </script>
 
   <footer>
