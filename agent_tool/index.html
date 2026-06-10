@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <!-- <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" /> -->
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>MGAS Agent Tool</title>
 
   <style>
@@ -63,14 +63,12 @@
       text-decoration: none;
     }
 
+    
     .site-header {
-      position: sticky;
-      top: 0;
-      z-index: 20;
       background: rgba(0, 0, 0, 0.85);
-      backdrop-filter: blur(10px);
       border-bottom: 1px solid var(--border);
     }
+
 
     .header-container {
       width: min(1180px, calc(100% - 32px));
@@ -487,58 +485,84 @@
     }
 
     @media (max-width: 980px) {
-      .hero {
-        grid-template-columns: 1fr;
-      }
+  /* ✅ NO STACKING - Keep grid layouts intact */
+  
+  /* ✅ FIXED HEADER */
+  .header-container {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+  }
 
-      .tools-grid,
-      .info-grid {
-        grid-template-columns: 1fr;
-      }
+  .header-nav {
+    width: auto;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: nowrap;
+  }
 
-      .header-container {
-        flex-direction: column;
-        align-items: flex-start;
-      }
+  .nav-link {
+    font-size: 0.85rem;
+    padding: 8px 10px;
+    white-space: nowrap;
+  }
 
-      .header-nav {
-        width: 100%;
-      }
+  .header-brand {
+    min-width: 0;
+    gap: 10px;
+  }
 
-      .bottom-cta {
-        flex-direction: column;
-        align-items: flex-start;
-      }
+  .header-title-wrap {
+    min-width: 0;
+  }
+
+  .bottom-cta {
+    flex-direction: row;
+    align-items: center;
+    gap: 18px;
+  }
+}
+
+  @media (max-width: 640px) {
+    .hero-card,
+    .panel,
+    .tool-card,
+    .info-card {
+      border-radius: 22px;
     }
 
-    @media (max-width: 640px) {
-      .hero-card,
-      .panel,
-      .tool-card,
-      .info-card {
-        border-radius: 22px;
-      }
-
-      .hero-card,
-      .panel,
-      .tool-card,
-      .info-card,
-      .bottom-cta {
-        padding: 20px;
-      }
-
-      .header-logo {
-        height: 42px;
-      }
-
-      .header-title {
-        font-size: 0.95rem;
-      }
-
-      .hero-title {
-        font-size: clamp(2rem, 10vw, 2.8rem);
-      }
+    .hero-card,
+    .panel,
+    .tool-card,
+    .info-card,
+    .bottom-cta {
+      padding: 20px;
     }
+
+    .header-logo {
+      height: 36px;
+    }
+
+    .header-title {
+      font-size: 0.85rem;
+      letter-spacing: 0.04em;
+    }
+
+    .nav-link {
+      font-size: 0.78rem;
+      padding: 7px 9px;
+    }
+
+    .header-container {
+      gap: 10px;
+    }
+
+    .hero-title {
+      font-size: clamp(2rem, 10vw, 2.8rem);
+    }
+  }
   </style>
 </head>
 <body>
