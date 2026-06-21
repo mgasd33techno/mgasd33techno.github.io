@@ -988,7 +988,7 @@
     .footer-bottom {
       text-align: center;
       padding: 20px 15px;
-      font-size: 14px;
+      font-size: 10px;
       color: #666;
     }
 
@@ -1364,8 +1364,8 @@
   }
 
   // ✅ Get Medical Value from medical CSV using plan, gender, age, smoking and waiver filters
-  function getMedicalValue(age, gender, smoker, waiver = 'No') {
-    return getCSVPrice(medicalData, 'anumax', age, gender, smoker, waiver);
+  function getMedicalValue(age, gender, smoker, waiver = 'No', medicalPlan = 'anumax') {
+    return getCSVPrice(medicalData, medicalPlan, age, gender, smoker, waiver);
   }
 
   // ✅ Get Hibah Value from hibah CSV using plan, gender, age, smoking and waiver filters
@@ -1376,8 +1376,8 @@
   // ✅ Get Value Based on Plan
   function getPriceValue(age, plan, gender, smoker, waiver) {
     const normalizedPlan = normalizeValue(plan);
-    if (normalizedPlan === 'medical') {
-      return getMedicalValue(age, gender, smoker, waiver);
+    if (normalizedPlan === 'anumaxstepup' || normalizedPlan === 'anumax') {
+      return getMedicalValue(age, gender, smoker, waiver, normalizedPlan);
     }
     if (normalizedPlan === 'anugerah' || normalizedPlan === 'warisangold') {
       return getHibahValue(age, gender, smoker, waiver, normalizedPlan);
@@ -1415,10 +1415,16 @@
 
   function getPlanDisplayInfo(planKey) {
     const normalizedPlan = normalizeValue(planKey);
-    if (normalizedPlan === 'medical') {
+    if (normalizedPlan === 'anumaxstepup') {
       return {
         quoteTitle: 'Medical Plan',
-        productName: 'AnugerahMax Plan200'
+        productName: 'AnugerahMax Step-Up'
+      };
+    }
+    if (normalizedPlan === 'anumax') {
+      return {
+        quoteTitle: 'Medical Plan',
+        productName: 'AnugerahMax Level'
       };
     }
     if (normalizedPlan === 'anugerah') {
@@ -1439,15 +1445,22 @@
     };
   }
 
-  function getPlanFeaturesHTML(planKey, index) {
+  function planSupportsWaiver(planKey) {
     const normalizedPlan = normalizeValue(planKey);
-    if (normalizedPlan === 'medical') {
+    // Only anumax and hibah plans (anugerah, warisangold) support waiver
+    // anumaxstepup does NOT support waiver
+    return normalizedPlan === 'anumax' || normalizedPlan === 'anugerah' || normalizedPlan === 'warisangold';
+  }
+
+  function getPlanFeaturesHTML(planKey, index, hasWaiver = false) {
+    const normalizedPlan = normalizeValue(planKey);
+    if (normalizedPlan === 'anumaxstepup') {
       return `
         <li>
           <i class="fa-solid fa-skull"></i>
           <div class="item-row">
             <span class="label">Hibah Death/TPD:</span>
-            <span class="value">RM10,000</span>
+             <span class="value">RM10,000</span>
           </div>
         </li>
         <li>
@@ -1492,11 +1505,83 @@
             <span class="value">RM300</span>
           </div>
         </li>
-        <li class="ci-waiver-card" id="ciWaiverCard-${index}" style="display:none;">
+        <li>
+          <i class="fa-solid fa-calendar-day"></i>
+          <div class="item-row">
+            <span class="label">Term:</span>
+            <span class="value">Age 70</span>
+          </div>
+        </li>
+        <li class="ci-waiver-card">
+          <div class="ci-waiver-box">
+            <div class="ci-note">Premium Repricing Every 3 Years</div>
+          </div>
+        </li>
+      `;
+    }
+    if (normalizedPlan === 'anumax') {
+      return `
+        <li>
+          <i class="fa-solid fa-skull"></i>
+          <div class="item-row">
+            <span class="label">Hibah Death/TPD:</span>
+            <span class="value" id="hibahDeathValue-${index}">${hasWaiver ? 'RM20,000' : 'RM10,000'}</span>
+          </div>
+        </li>
+        <li>
+          <i class="fa-solid fa-bed"></i>
+          <div class="item-row">
+            <span class="label">Room & Board:</span>
+            <span class="value">RM200 / day</span>
+          </div>
+        </li>
+        <li>
+          <i class="fa-solid fa-calendar"></i>
+          <div class="item-row">
+            <span class="label">Annual Limit:</span>
+            <span class="value">RM200,000</span>
+          </div>
+        </li>
+        <li>
+          <i class="fa-solid fa-infinity"></i>
+          <div class="item-row">
+            <span class="label">Lifetime Limit:</span>
+            <span class="value">Unlimited</span>
+          </div>
+        </li>
+        <li>
+          <i class="fa-solid fa-shield-virus"></i>
+          <div class="item-row">
+            <span class="label">Cancer & Dialysis:</span>
+            <span class="value">(Outpatient)</span>
+          </div>
+        </li>
+        <li>
+          <i class="fa-solid fa-hospital"></i>
+          <div class="item-row">
+            <span class="label">Hospital Allowance:</span>
+            <span class="value">RM100 / day</span>
+          </div>
+        </li>
+        <li>
+          <i class="fa-solid fa-file-contract"></i>
+          <div class="item-row">
+            <span class="label">Deductible:</span>
+            <span class="value">RM300</span>
+          </div>
+        </li>
+        <li>
+          <i class="fa-solid fa-calendar-day"></i>
+          <div class="item-row">
+            <span class="label">Term:</span>
+            <span class="value">Age 70</span>
+          </div>
+        </li>
+        <li class="ci-waiver-card" id="ciWaiverCard-${index}" style="display:${hasWaiver ? 'block' : 'none'};">
           <div class="ci-waiver-box">
             <div class="item-row">
               <span class="label">43 Critical Illness</span>
-              <span class="value">RM50,000</span>
+              <span class="value">RM10,000</span>
             </div>
             <div class="ci-note">Premium waived upon TPD or Critical Illness</div>
           </div>
@@ -1526,7 +1611,7 @@
             <span class="value">20 years</span>
           </div>
         </li>
-        <li class="ci-waiver-card" id="ciWaiverCard-${index}" style="display:none;">
+        <li class="ci-waiver-card" id="ciWaiverCard-${index}" style="display:${hasWaiver ? 'block' : 'none'};">
           <div class="ci-waiver-box">
             <div class="item-row">
               <span class="label">43 Critical Illness</span>
@@ -1588,7 +1673,7 @@
             <span class="value">20 years</span>
           </div>
         </li>
-        <li class="ci-waiver-card" id="ciWaiverCard-${index}" style="display:none;">
+        <li class="ci-waiver-card" id="ciWaiverCard-${index}" style="display:${hasWaiver ? 'block' : 'none'};">
           <div class="ci-waiver-box">
             <div class="item-row">
               <span class="label">43 Critical Illness</span>
@@ -1604,12 +1689,14 @@
 
   function buildQuoteCardHTML(card, index) {
     const { productName } = getPlanDisplayInfo(card.planKey || card.plan);
+    const supportsWaiver = planSupportsWaiver(card.planKey || card.plan);
     return `
       <div class="quotation-card">
         <div class="plan-product-name">${productName}</div>
         <div class="quote-price">
           RM <span id="quotePremium-${index}">${card.price.toFixed(2)}</span>
         </div>
+        ${supportsWaiver ? `
         <div class="quote-addon-card">
           <label class="checkbox-card" for="ciWaiverToggle-${index}">
             <input type="checkbox" id="ciWaiverToggle-${index}" onchange="refreshQuotePriceForCard(${index})" />
@@ -1617,6 +1704,7 @@
             <span class="checkbox-label">Add Critical Illness and Waiver</span>
           </label>
         </div>
+        ` : ''}
         <ul class="quote-items" id="quoteItemsList-${index}">
           ${getPlanFeaturesHTML(card.planKey || card.plan, index)}
         </ul>
@@ -1632,9 +1720,12 @@
     if (!card) return;
 
     const waiver = document.getElementById(`ciWaiverToggle-${index}`)?.checked ? 'Yes' : 'No';
-    const price = card.planKey === 'medical'
-      ? getMedicalValue(card.age, card.gender, card.smoker, waiver)
-      : getHibahValue(card.age, card.gender, card.smoker, waiver, card.planKey);
+    const normalizedPlanKey = normalizeValue(card.planKey);
+    const isMedical = normalizedPlanKey === 'anumax' || normalizedPlanKey === 'anumaxstepup';
+    
+    const price = isMedical
+      ? getMedicalValue(card.age, card.gender, card.smoker, waiver, normalizedPlanKey)
+      : getHibahValue(card.age, card.gender, card.smoker, waiver, normalizedPlanKey);
 
     if (price !== null) {
       card.price = price;
@@ -1646,6 +1737,29 @@
     if (waiverCard) {
       waiverCard.style.display = waiver === 'Yes' ? 'block' : 'none';
     }
+
+    // Re-render the features list to update values based on waiver state
+    const quoteItemsList = document.getElementById(`quoteItemsList-${index}`);
+    if (quoteItemsList) {
+      quoteItemsList.innerHTML = getPlanFeaturesHTML(card.planKey || card.plan, index, waiver === 'Yes');
+    }
+  }
+
+  function getMedicalQuoteCards(name, age, gender, smoker) {
+    const medicalPlans = ['anumaxstepup','anumax'];
+    return medicalPlans.map(planKey => {
+      const price = getMedicalValue(age, gender, smoker, 'No', planKey);
+      return {
+        name,
+        age,
+        gender,
+        smoker,
+        waiver: 'No',
+        plan: planKey,
+        planKey,
+        price: price !== null ? price : 0
+      };
+    }).filter(card => card.price > 0);
   }
 
   function getHibahQuoteCards(name, age, gender, smoker) {
@@ -1670,19 +1784,7 @@
     let cards = [];
 
     if (normalizedPlan === 'medical') {
-      const price = getMedicalValue(age, gender, smoker, 'No');
-      if (price !== null) {
-        cards = [{
-          name,
-          age,
-          gender,
-          smoker,
-          waiver: 'No',
-          plan: 'medical',
-          planKey: 'medical',
-          price
-        }];
-      }
+      cards = getMedicalQuoteCards(name, age, gender, smoker);
     } else if (normalizedPlan === 'hibah') {
       cards = getHibahQuoteCards(name, age, gender, smoker);
     } else if (normalizedPlan === 'anugerah' || normalizedPlan === 'warisangold') {
