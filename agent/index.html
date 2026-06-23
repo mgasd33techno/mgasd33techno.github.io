@@ -1,0 +1,2488 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+  />
+
+
+  <style>
+    * { box-sizing: border-box; }
+ 
+    html, body {
+      width: 100%;
+      max-width: 100%;
+      margin: 0;
+      padding: 0;
+      overflow-x: hidden;
+      -webkit-text-size-adjust: 100%;
+    }
+ 
+    body {
+      font-family: Arial, sans-serif;
+      background: linear-gradient(135deg, #0a0a0a 0%, #1a1410 50%, #0f0f0f 100%);
+      background-attachment: fixed;
+      color: #f5d27a;
+      padding: 16px;
+      position: relative;
+      min-height: 100vh;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: 
+        radial-gradient(circle at 20% 50%, rgba(212,175,55,0.05) 0%, transparent 50%),
+        radial-gradient(circle at 80% 80%, rgba(212,175,55,0.03) 0%, transparent 50%);
+      pointer-events: none;
+      z-index: -1;
+    }
+ 
+    .container {
+      width: 100%;
+      max-width: 420px;
+      margin: 0 auto;
+    }
+ 
+    .card {
+      background: #111;
+      padding: 20px;
+      border-radius: 18px;
+      margin-bottom: 20px;
+      box-shadow: 0 0 20px rgba(212,175,55,0.15);
+    }
+ 
+    .center { text-align: center; }
+    /* PAGE HEADER */
+    .plan-title {
+      text-align: center;
+      color: white;
+    }
+
+    .plan-title h1 {
+      font-size: 40px;
+      letter-spacing: 2px;
+    }
+
+    .plan-title p {
+      font-size: 16px;
+    }
+
+    /* CARD CONTAINER */
+    .quotation-container {
+      display: flex;
+      gap: 30px;
+      justify-content: center;
+      margin-top: 30px;
+      flex-wrap: wrap;
+    }
+
+    /* CARD */
+    .quotation-card {
+      background: #f5f5f5;
+      border-radius: 12px;
+      padding: 25px;
+      width: 320px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+      margin-bottom: 20px;
+    }
+
+    /* PLAN TITLE */
+    .quotation-card h3 {
+      font-size: 28px;
+      color: #3b5bfd;
+      margin-bottom: 10px;
+    }
+
+    /* PRICE */
+    .quote-price {
+      font-size: 38px;
+      font-weight: bold;
+      color: #3b5bfd;
+      margin: 10px 0 20px;
+    }
+
+    /* ADD-ON BOX */
+    .addon-box {
+      background: #e6f4ea;
+      border: 1px solid #b7e1c3;
+      padding: 12px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+    }
+
+    /* FEATURE LIST */
+    .quote-items {
+      list-style: none;
+      padding: 0;
+    }
+
+    /* EACH ITEM */
+    .quote-items li {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      margin-bottom: 15px;
+      font-size: 14px;
+    }
+
+    /* ICON STYLE (circle!) */
+    .quote-items li i {
+      background: #dfe6ef;
+      border-radius: 50%;
+      padding: 10px;
+      width: 18px;
+      height: 18px;
+      text-align: center;
+      font-size: 14px;
+    }
+
+    /* TEXT HIGHLIGHT */
+    .highlight {
+      color: #3b5bfd;
+      font-weight: 600;
+    }
+
+    h1 {
+      color: #d4af37;
+      margin-bottom: 8px;
+      font-size: 32px;
+      text-align: center;
+      font-weight: 900;
+      letter-spacing: 4px;
+      text-shadow: 0 2px 10px rgba(212,175,55,0.5),
+                   0 4px 20px rgba(212,175,55,0.3),
+                   2px 2px 5px rgba(0,0,0,0.8);
+      font-family: 'Arial Black', 'Helvetica Bold', sans-serif;
+    }
+
+    .social-icons {
+      margin-top: 10px;
+      display: flex;
+      justify-content: center;
+      gap: 30px;                /* space between icons */
+    }
+
+    .social-icons i {
+      font-size: 30px;          /* bigger than before */
+      color: #d4af37;           /* gold */
+    }
+    
+    .social-icons a {
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .subtitle-text {
+      color: #d4af37;
+      font-size: 14px;
+      margin-top: -12px;
+      margin-bottom: 12px;
+      letter-spacing: 2px;
+      font-weight: bold;
+      text-shadow: 0 2px 8px rgba(212,175,55,0.4);
+    }
+
+    h2 {
+      color: #d4af37;
+      margin-bottom: 12px;
+      font-size: 22px;
+    }
+ 
+    h3 {
+      color: #d4af37;
+      margin-bottom: 12px;
+      font-size: 20px;
+    }
+
+    #agentDisplayName {
+      color: #f5d27a;
+      background: linear-gradient(135deg, #d4af37 0%, #f5d27a 50%, #d4af37 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      font-weight: 900;
+      font-size: 22px;
+      margin-bottom: 12px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      -webkit-text-stroke: 0.5px rgba(212,175,55,0.3);
+    }
+
+    @supports not (-webkit-text-fill-color: transparent) {
+      #agentDisplayName {
+        color: #f5d27a;
+        -webkit-text-fill-color: #f5d27a;
+      }
+    }
+
+    #agentDisplayTitle {
+      color: #ff8c00;
+      background: linear-gradient(90deg, #ff6b6b 0%, #ff8c00 25%, #ffd700 50%, #ff8c00 75%, #ff6b6b 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      font-size: 14px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: capitalize;
+      -webkit-text-stroke: 0.3px rgba(255,140,0,0.2);
+    }
+
+    @supports not (-webkit-text-fill-color: transparent) {
+      #agentDisplayTitle {
+        color: #ff8c00;
+        -webkit-text-fill-color: #ff8c00;
+      }
+    }
+
+    .location-text {
+      position: relative;
+      letter-spacing: 10px;
+    }
+
+    .location-text::before,
+    .location-text::after {
+      content: "";
+      display: inline-block;
+      width: 40px;
+      height: 1px;
+      background: rgba(212,175,55,0.6);
+      vertical-align: middle;
+      margin: 0 12px;
+    }
+ 
+    .prudential { 
+      color: #c8102e; 
+      font-weight: 900; 
+      font-size: 13px;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      text-shadow: 0 1px 2px rgba(200,16,46,0.3);
+    }
+    .bsn { 
+      color: #00b3a4; 
+      font-weight: 900; 
+      font-size: 13px;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      text-shadow: 0 1px 2px rgba(0,179,164,0.3);
+    }
+
+    .agents-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+
+    .agent-box.lead-agent {
+      grid-column: 1 / -1;
+      background: linear-gradient(135deg, #2a2a2a, #1a1a1a);
+      border-color: #f5d27a;
+    }
+
+    .agent-box.lead-agent .agent-name,
+    .agent-box.lead-agent .agent-title {
+      color: #f5d27a;
+    }
+
+    .agent-box {
+      background: #1a1a1a;
+      padding: 16px;
+      border-radius: 14px;
+      border: 2px solid #d4af37;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      position: relative;
+    }
+
+    .agent-box:hover {
+      background: #2a2a2a;
+      box-shadow: 0 0 15px rgba(212,175,55,0.3);
+    }
+
+    .agent-box img {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      object-fit: cover;
+      margin-bottom: 10px;
+      border: 2px solid #d4af37;
+    }
+
+    .agent-name {
+      background: linear-gradient(135deg, #d4af37 0%, #f5d27a 50%, #d4af37 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      font-weight: 900;
+      font-size: 13px;
+      margin-bottom: 6px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      filter: drop-shadow(0 2px 4px rgba(212,175,55,0.3));
+    }
+
+    .agent-title {
+      background: linear-gradient(90deg, #ff6b6b 0%, #ff8c00 25%, #ffd700 50%, #ff8c00 75%, #ff6b6b 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: capitalize;
+      filter: drop-shadow(0 1px 3px rgba(255,107,107,0.2));
+    }
+    
+    .form-title {
+      text-align: center;
+    }
+    
+    .form-subtitle {
+      text-align: center;
+      font-size: 12px;   /* smaller */
+      margin-top: -6px;
+      margin-bottom: 20px;
+      line-height: 1.3;
+
+      color: #dcdcdc;    /* soft silver */
+    }
+
+    #quickQuotationResult {
+      display: none;
+      margin-top: 20px;
+    }
+
+    .quotation-plan-title {
+      text-align: center;
+      font-size: 32px;
+      font-weight: 900;
+      color: #ffffff;
+      margin-bottom: 4px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      /* text-shadow: 0 2px 8px rgba(212,175,55,0.4); */
+    }
+
+    .quotation-customer-info {
+      text-align: center;
+      margin-bottom: 16px;
+      color: #ffffff; /* ✅ white text */
+    }
+
+    .quotation-customer-info p {
+      margin: 4px 0;
+      font-size: 14px;           /* ✅ bigger than before (20 → 24) */
+      font-weight: 900;          /* ✅ match title boldness */
+      letter-spacing: 2px;       /* ✅ same spacing style */
+      text-transform: uppercase; /* ✅ match title style */
+      /* text-shadow: 0 2px 8px rgba(255,255,255,0.3); ✅ white glow */
+    }
+
+
+    
+    .quotation-card {
+      padding: 32px; /* slightly bigger spacing */
+      border-radius: 16px;
+      background: linear-gradient(135deg, rgba(255,255,255,0.06) 0%, rgba(255,255,255,0.02) 100%);
+      border: 1px solid rgba(212,175,55,0.25);
+      color: #f5f5f5;
+      box-shadow: 0 15px 40px rgba(0,0,0,0.35),
+                  inset 0 1px 0 rgba(255,255,255,0.05);
+      backdrop-filter: blur(10px);
+
+      font-size: 40px; /* ✅ bigger overall text */
+      line-height: 1.6;
+    }
+
+
+    
+    .quote-price {
+      text-align: center;
+      font-size: 32px; /* ✅ smaller than card text emphasis */
+      font-weight: 700; /* still bold but less dominant */
+      color: #dcdcdc; 
+      margin-top: 16px;
+
+      /* ❌ removed background, border, padding */
+    }
+
+
+    .quote-items {
+      list-style: none;
+      padding: 0;
+      margin: 0 0 16px;
+    }
+
+    .quote-items li {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 14px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      font-size: 13px;
+      line-height: 1.6;
+      color: #dcdcdc;
+    }
+
+    .item-row {
+      display: flex;
+      justify-content: space-between;
+      width: 100%;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .item-row .label {
+      color: #ffffff;
+      flex: 1 1 60%;
+      min-width: 0;
+    }
+
+    .item-row .value {
+      color: #d4af37;
+      font-weight: 600;
+      text-align: right;
+      flex: 0 0 auto;
+      white-space: nowrap;
+    }
+
+    .quote-items li:last-child {
+      border-bottom: none;
+    }
+
+    .quote-items li i {
+      font-size: 18px;
+      color: #dcdcdc;
+      min-width: 20px;
+      margin-top: 2px;
+      flex-shrink: 0;
+
+      background: none;
+      padding: 0;
+      width: auto;
+      height: auto;
+    }
+
+
+    .quote-items .highlight {
+      color: #f5d27a;
+      font-weight: 600;
+    }
+
+    .plan-product-name {
+      font-size: 16px;
+      font-weight: 700;
+      color: #f5d27a;
+      text-align: center;
+      margin-bottom: 16px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    .quote-note {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 14px 0;
+      border-top: 1px solid rgba(255,255,255,0.06);
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      font-size: 13px;
+      line-height: 1.6;
+      color: #dcdcdc;
+      margin: 16px 0 16px 0;
+    }
+
+    .quote-note i {
+      font-size: 18px;
+      color: #d4af37;
+      min-width: 20px;
+      margin-top: 2px;
+      flex-shrink: 0;
+    }
+
+    .quote-addon-card {
+      margin-bottom: 18px;
+    }
+
+    .checkbox-card {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 14px 16px;
+      border-radius: 14px;
+      border: 1px solid rgba(212,175,55,0.18);
+      background: rgba(255,255,255,0.04);
+      cursor: pointer;
+      transition: background 0.2s ease, border-color 0.2s ease;
+    }
+
+    .checkbox-card:hover {
+      background: rgba(255,255,255,0.08);
+    }
+
+    .checkbox-card input[type="checkbox"] {
+      position: absolute;
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .checkbox-custom {
+      width: 18px;
+      height: 18px;
+      border-radius: 6px;
+      border: 2px solid #d4af37;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .checkbox-custom::before {
+      content: "";
+      width: 8px;
+      height: 8px;
+      background: #d4af37;
+      border-radius: 2px;
+      transform: scale(0);
+      transition: transform 0.15s ease;
+    }
+
+    .checkbox-card input[type="checkbox"]:checked + .checkbox-custom::before {
+      transform: scale(1);
+    }
+
+    .checkbox-label {
+      color: #dcdcdc;        /* ✅ match list text */
+      font-weight: normal;   /* ✅ not bold anymore */
+      font-size: 13px;       /* ✅ same as list */
+      line-height: 1.6;      /* ✅ consistent spacing */
+      flex: 1;
+    }
+
+
+    .ci-waiver-card {
+      display: flex;        /* ✅ THIS FIXES YOUR ISSUE */
+      align-items: flex-start;
+      gap: 12px;
+      padding: 14px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+    
+    .ci-waiver-box {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(212,175,55,0.18);
+      border-radius: 14px;
+      padding: 14px;
+      width: 100%;
+    }
+
+    .ci-waiver-box .item-row {
+      gap: 8px;
+    }
+
+    .ci-note {
+      margin-top: 12px;
+      color: #dcdcdc;
+      font-size: 12px;
+      text-align: center;
+      line-height: 1.55;
+      padding-left: 4px;
+    }
+
+    .whatsapp-agent-btn {
+      width: 100%;
+      padding: 14px;
+      border-radius: 12px;
+      border: 2px solid #25d366;
+      background: transparent;
+      color: #25d366;
+      font-size: 15px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-top: 12px;
+    }
+
+    .whatsapp-agent-btn:hover {
+      background: #25d366;
+      color: #fff;
+      box-shadow: 0 0 20px rgba(37,211,102,0.3);
+    }
+
+    .form-mode-tabs {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+      border-bottom: 2px solid #333;
+    }
+
+    .form-mode-tab {
+      flex: 1;
+      padding: 12px;
+      background: transparent;
+      border: none;
+      color: #999;
+      font-weight: bold;
+      cursor: pointer;
+      text-align: center;
+      border-bottom: 3px solid transparent;
+      transition: all 0.3s ease;
+      text-transform: uppercase;
+      font-size: 12px;
+      letter-spacing: 1px;
+    }
+
+    
+    .form-mode-tab:hover {
+      color: #d4af37;              /* ✅ gold text */
+      border-bottom-color: #d4af37;/* ✅ underline highlight */
+      background: none;            /* ✅ remove gold bg */
+    }
+
+
+    .form-mode-tab.active {
+      color: #d4af37;
+      border-bottom-color: #d4af37;
+    }
+
+    .form-mode-content {
+      display: none;
+    }
+
+    .form-mode-content.active {
+      display: block;
+    }
+
+    .disclaimer {
+      background: rgba(212,175,55,0.1);
+      border-left: 3px solid #d4af37;
+      padding: 8px;
+      margin-top: 12px;
+      border-radius: 6px;
+      font-size: 10px;
+      color: #dcdcdc;
+      line-height: 1.3;
+    }
+
+    .subtitle {
+      text-align: center;
+      color: #f5d27a;
+      font-size: 18px;
+      margin-bottom: 20px;
+      font-weight: bold;
+    }
+ 
+    .profile-img {
+      width: 96px;
+      height: 96px;
+      border-radius: 50%;
+      border: 3px solid #d4af37;
+      object-fit: cover;
+      margin: 14px auto;
+      display: block;
+      box-shadow: 0 0 25px rgba(212,175,55,0.6),
+                  0 0 50px rgba(212,175,55,0.4),
+                  inset 0 0 15px rgba(212,175,55,0.2);
+      animation: profileGlow 2s ease-in-out infinite;
+    }
+
+    @keyframes profileGlow {
+      0%, 100% {
+        box-shadow: 0 0 25px rgba(212,175,55,0.6),
+                    0 0 50px rgba(212,175,55,0.4),
+                    inset 0 0 15px rgba(212,175,55,0.2);
+      }
+      50% {
+        box-shadow: 0 0 35px rgba(212,175,55,0.8),
+                    0 0 70px rgba(212,175,55,0.6),
+                    inset 0 0 20px rgba(212,175,55,0.3);
+      }
+    }
+ 
+    label {
+      font-weight: bold;
+      margin-bottom: 6px;
+      display: block;
+      font-size: 15px;
+    }
+ 
+    .input-box {
+      width: 100%;
+      padding: 14px;
+      margin-bottom: 16px;
+      font-size: 16px;
+      border-radius: 10px;
+      border: 1px solid #333;
+      background: #1a1a1a;
+      color: #ffffff;
+    }
+    
+    textarea.input-box {
+      font-family: Arial, sans-serif;
+      font-size: 16px;
+      line-height: 1.4;
+      resize: none;
+    }
+
+    .input-box::placeholder { color: #aaaaaa; }
+ 
+    input[type="date"] {
+      color: #aaaaaa;
+      color-scheme: dark;
+    }
+
+    input[type="date"]:valid {
+      color: #ffffff;
+    }
+ 
+    .phone-wrapper {
+      display: flex;
+      align-items: center;
+      background: #1a1a1a;
+      border: 1px solid #333;
+      border-radius: 10px;
+      margin-bottom: 16px;
+    }
+    
+    
+    .country-code {
+      padding: 14px 12px;
+      background: #111;
+      color: #ffffff;
+      font-weight: bold;
+      border-right: 1px solid #333;
+    }
+ 
+    .phone-wrapper input {
+      flex: 1;
+      padding: 14px;
+      font-size: 16px;
+      border: none;
+      background: transparent;
+      color: #ffffff;
+    }
+ 
+    .btn-group {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+ 
+    .btn-option {
+      flex: 1;
+      padding: 14px;
+      border-radius: 12px;
+      border: 2px solid #d4af37;
+      text-align: center;
+      cursor: pointer;
+      color: #d4af37;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: all 0.3s ease;
+      -webkit-user-select: none;
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
+      touch-action: manipulation;
+    }
+
+    .btn-option i {
+      font-size: 22px;
+      color: #d4af37;
+      transition: color 0.3s ease;
+    }
+        
+    .btn-option.active i {
+      color: #000;
+    }
+
+    .btn-option img {
+      height: 24px;
+      width: 24px;
+      filter: 
+        invert(72%)
+        sepia(68%)
+        saturate(540%)
+        hue-rotate(6deg)
+        brightness(95%)
+        contrast(92%);
+      transition: filter 0.3s ease;
+    }
+
+
+
+    .btn-option.active {
+      background: #d4af37;
+      color: #000;
+      font-weight: bold;
+      border-color: #d4af37;
+      box-shadow: 0 0 10px rgba(212,175,55,0.3);
+    }
+
+    .btn-option.active:active {
+      box-shadow: 0 0 15px rgba(212,175,55,0.5);
+    }
+
+    .btn-option.active img {
+      filter: brightness(0.3);
+    }
+
+    .btn-back {
+      background: transparent;
+      color: #666;
+      margin-bottom: 12px;
+      width: auto;
+      padding: 8px 12px;
+      font-size: 12px;
+      display: inline-block;
+      border: 1px solid #444;
+      border-radius: 6px;
+      transition: all 0.3s ease;
+    }
+
+    .btn-back:hover {
+      color: #888;
+      border-color: #555;
+    }
+
+    button {
+      width: 100%;
+      padding: 16px;
+      border-radius: 14px;
+      border: 2px solid #d4af37;
+      background: transparent;
+      color: #d4af37;
+      font-size: 17px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+    }
+
+    button:hover {
+      background: #d4af37;
+      color: #000;
+      box-shadow: 0 0 20px rgba(212,175,55,0.4);
+    }
+ 
+    #status {
+      margin-top: 16px;
+      text-align: center;
+      font-weight: bold;
+      min-height: 20px;
+      font-size: 15px;
+    }
+
+    #generateStatus {
+      margin-top: 16px;
+      text-align: center;
+      font-weight: bold;
+      min-height: 20px;
+      font-size: 15px;
+    }
+
+    .screen {
+      display: none;
+    }
+
+    .screen.active {
+      display: block;
+    }
+
+    .mg-logo {
+      width: 140px;
+      height: 140px;
+      border-radius: 50%;
+      object-fit: cover;
+      margin: 16px auto;
+      display: block;
+      border: 3px solid #d4af37;
+      box-shadow: 0 0 30px rgba(212,175,55,0.6),
+                  0 0 60px rgba(212,175,55,0.4),
+                  inset 0 0 20px rgba(212,175,55,0.2);
+      animation: glow 2s ease-in-out infinite;
+    }
+
+    @keyframes glow {
+      0%, 100% {
+        box-shadow: 0 0 30px rgba(212,175,55,0.6),
+                    0 0 60px rgba(212,175,55,0.4),
+                    inset 0 0 20px rgba(212,175,55,0.2);
+      }
+      50% {
+        box-shadow: 0 0 40px rgba(212,175,55,0.8),
+                    0 0 80px rgba(212,175,55,0.6),
+                    inset 0 0 30px rgba(212,175,55,0.3);
+      }
+    }
+
+    .unit-selector {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .unit-btn {
+      padding: 10px 16px;
+      border-radius: 10px;
+      border: 2px solid #d4af37;
+      background: transparent;
+      color: #d4af37;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      -webkit-user-select: none;
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
+      touch-action: manipulation;
+    }
+
+    .unit-btn:hover {
+      box-shadow: 0 0 10px rgba(212,175,55,0.3);
+    }
+
+    .unit-btn.active {
+      background: #d4af37;
+      color: #000;
+      box-shadow: 0 0 15px rgba(212,175,55,0.5);
+    }
+
+    .agent-box {
+      background: #1a1a1a;
+      padding: 16px;
+      border-radius: 14px;
+      border: 2px solid #d4af37;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      position: relative;
+    }
+
+    .footer-bottom {
+      text-align: center;
+      padding: 20px 15px;
+      font-size: 10px;
+      color: #666;
+    }
+
+    .footer-title {
+      font-weight: 600;
+      letter-spacing: 1px;
+      margin-bottom: 10px;
+      color: #666;
+    }
+
+    .footer-text {
+      max-width: 700px;
+      margin: 0 auto 15px;
+      line-height: 1.6;
+      color: #666;
+    }
+
+    .footer-copy {
+      font-size: 13px;
+      color: #999;
+    }
+</style>
+</head>
+ 
+<body>
+<!-- Background Music -->
+<audio id="bgMusic" loop muted>
+  <source src="../Audio/background.mp3" type="audio/mpeg">
+</audio>
+
+<div class="container">
+ 
+  <!-- MAIN LANDING PAGE -->
+  <div class="screen active" id="mainScreen">
+    <div class="card center">
+      <h1>MUQMEEN GROUP</h1>
+      <p class="subtitle-text location-text">ALOR SETAR</p>
+      <img class="mg-logo" src="../Picture/mglogo.png" alt="MG Logo">
+    </div>
+
+    <div class="card">
+      <p class="subtitle">Choose Your Takaful Hero</p>
+      <div class="unit-selector" id="unitSelector"></div>
+      <div class="agents-grid" id="agentsContainer"></div>
+    </div>
+  </div>
+
+  <!-- PROFILE -->
+  <div class="screen" id="profileScreen">
+    <button class="btn-back" onclick="goBack()">← Back to Agents</button>
+    <div class="card center">
+      <h2 id="agentDisplayName">MUQMEEN GROUP</h2>
+      <img class="profile-img" id="agentDisplayImage" src="" alt="Agent Profile">
+      <p id="agentDisplayTitle" style="margin: 0;"></p>
+      <p style="margin-top: 4px;">
+        <span class="prudential">Prudential</span>
+        <span class="bsn">BSN</span>
+      </p>
+      <div class="social-icons">
+        <a id="igLink" target="_blank" aria-label="Instagram">
+          <i class="fa-brands fa-instagram"></i>
+        </a>
+
+        <a id="fbLink" target="_blank" aria-label="Facebook">
+          <i class="fa-brands fa-facebook"></i>
+        </a>
+
+        <a id="waLink" target="_blank" aria-label="WhatsApp">
+          <i class="fa-brands fa-whatsapp"></i>
+        </a>
+
+        <a id="ttLink" target="_blank" aria-label="TikTok">
+          <i class="fa-brands fa-tiktok"></i>
+        </a>
+      </div>
+    </div>
+ 
+    <!-- FORM -->
+    <div class="card" id="formScreen">
+      <div class="form-mode-tabs">
+        <button
+          type="button"
+          class="form-mode-tab"
+          onclick="switchFormMode('request')"
+        >
+          Custom Quotation
+        </button>
+
+        <button
+          type="button"
+          class="form-mode-tab active"
+          onclick="switchFormMode('generate')"
+        >
+          Quick Quotation
+        </button>
+      </div>
+
+      <!-- REQUEST CUSTOM QUOTATION MODE -->
+      <div class="form-mode-content" id="requestMode">
+        <h3 class="form-title">Request Custom Quotation</h3>
+        <p class="form-subtitle">
+          Get your personalised takaful quotation from your Takaful Hero
+          tailored to your needs and lifestyle.
+        </p>
+
+        <form id="quotationForm">
+          <label>Plan</label>
+          <div class="btn-group">
+            <div class="btn-option" onclick="pick(this,'Medical','Plan')">
+              <i class="fa-solid fa-heart-pulse"></i>
+              Medical
+            </div>
+
+            <div class="btn-option" onclick="pick(this,'Hibah','Plan')">
+              <i class="fa-solid fa-people-roof"></i>
+              Hibah
+            </div>
+          </div>
+          
+          <label>Full Name</label>
+          <input name="Name" class="input-box" placeholder="As per IC" required>
+          
+          <label>Birth Date</label>
+          <input name="DOB" type="date" class="input-box" id="dobInput" required>
+          
+          <label>Phone Number</label>
+          <div class="phone-wrapper">
+            <div class="country-code">+60</div>
+            <input id="phone" class="input-box" style="margin:0" placeholder="123456789" required>
+          </div>
+          <input type="hidden" name="Phone Number">
+          
+          <label>Occupation</label>
+          <input name="Occupation" class="input-box" placeholder="e.g. Teacher" required>
+          
+          <label>Gender</label>
+          <div class="btn-group">
+            <div class="btn-option" onclick="pick(this,'Male','Sex')">
+              <i class="fa-solid fa-person"></i>
+              Male
+            </div>
+            <div class="btn-option" onclick="pick(this,'Female','Sex')">
+              <i class="fa-solid fa-person-dress"></i>
+              Female
+            </div>
+          </div>
+          
+          <label>Smoking Status</label>
+          <div class="btn-group">
+            <div class="btn-option" onclick="pick(this,'No','Smoker')">
+              <i class="fa-solid fa-ban-smoking"></i>
+              Non-Smoker
+            </div>
+            <div class="btn-option" onclick="pick(this,'Yes','Smoker')">
+              <i class="fa-solid fa-smoking"></i>
+              Smoker
+            </div>
+          </div>          
+          
+          <label>Remarks to Agent (Optional)</label>
+          <textarea 
+            name="Remarks" 
+            class="input-box" 
+            placeholder="Any medical condition, budget range, or special concern?"
+            rows="3"
+          ></textarea>
+
+          <input type="hidden" name="Plan">
+          <input type="hidden" name="Sex">
+          <input type="hidden" name="Smoker">
+          <input type="hidden" name="Agent Code" id="agentCodeField">
+          <input type="hidden" name="Form" value="Custom">
+          
+          <button type="submit" id="submitBtn">SUBMIT</button>
+          <p id="status"></p>
+        </form>
+      </div>
+
+      <!-- GENERATE QUOTATION MODE -->
+      <div class="form-mode-content active" id="generateMode">
+        <h3 class="form-title">Generate Quick Quotation</h3>
+        <p class="form-subtitle">
+          Generate a quick quotation under one click - fast and easy
+        </p>
+
+        <form id="generateForm" onsubmit="handleGenerateSubmit(event)">
+          <label>Plan</label>
+          <div class="btn-group">
+            <div class="btn-option" onclick="pick(this,'Medical','Plan')">
+              <i class="fa-solid fa-heart-pulse"></i>
+              Medical
+            </div>
+
+            <div class="btn-option" onclick="pick(this,'Hibah','Plan')">
+              <i class="fa-solid fa-people-roof"></i>
+              Hibah
+            </div>
+          </div>
+ 
+          <label>Full Name</label>
+          <input name="Name" class="input-box" placeholder="As per IC" required>
+ 
+          <label>Birth Date</label>
+          <input name="DOB" type="date" class="input-box" id="genDobInput" required>
+ 
+          <label>Phone Number</label>
+          <div class="phone-wrapper">
+            <div class="country-code">+60</div>
+            <input id="genPhone" class="input-box" style="margin:0" placeholder="123456789" required>
+          </div>
+          <input type="hidden" name="Phone Number">
+ 
+          <label>Occupation</label>
+          <input name="Occupation" class="input-box" placeholder="e.g. Teacher" required>
+ 
+          <label>Gender</label>
+          <div class="btn-group">
+            <div class="btn-option" onclick="pick(this,'Male','Sex')">
+              <i class="fa-solid fa-person"></i>
+              Male
+            </div>
+            <div class="btn-option" onclick="pick(this,'Female','Sex')">
+              <i class="fa-solid fa-person-dress"></i>
+              Female
+            </div>
+          </div>
+ 
+          <label>Smoking Status</label>
+          <div class="btn-group">
+            <div class="btn-option" onclick="pick(this,'No','Smoker')">
+              <i class="fa-solid fa-ban-smoking"></i>
+              Non-Smoker
+            </div>
+            <div class="btn-option" onclick="pick(this,'Yes','Smoker')">
+              <i class="fa-solid fa-smoking"></i>
+              Smoker
+            </div>
+          </div>
+
+          <input type="hidden" name="Plan">
+          <input type="hidden" name="Sex">
+          <input type="hidden" name="Smoker">
+          <input type="hidden" name="Agent Code" id="genAgentCodeField">
+          <input type="hidden" name="Form" value="Quick">
+          
+          <button type="submit" id="generateBtn">GENERATE</button>
+          <div class="disclaimer" id="disclaimer">
+            <p style="font-size: 12px; text-align: center;">
+              <strong>*Disclaimer:</strong> Quotation generated is for Class 1/2 only.
+              For Class 3 and 4, please use Custom Quotation.
+            </p>
+          </div>
+          <p id="generateStatus"></p>
+        </form>
+
+        <div id="quickQuotationResult">
+          <div class="quotation-plan-title" id="quotePlanTitle">Medical Plan</div>
+          <div class="quotation-customer-info">
+            <p id="quoteHeader">Name: —</p>
+            <p id="quoteAge">Age: — Years Old</p>
+          </div>
+          <div id="quoteCardsContainer"></div>
+        </div>
+      </div>
+    </div>
+ 
+    <!-- SUCCESS -->
+    <div class="card center" id="successScreen" style="display:none;">
+      <h2>✅ Submission Successful</h2>
+      <p>Thank You! Your enquiry on takaful quotation has been received.</p>
+      <button onclick="resetForm()">Submit Another Request</button>
+    </div>
+  </div>
+ 
+</div>
+ 
+<script>
+  // Google Apps Script URL (shared for all agents)
+  const GOOGLE_SHEET_URL = 'https://script.google.com/macros/s/AKfycbyyQBPv7kb-3xjtFi1oNOrnWKE-5re3WaP98eDUpK21LzH-0Epg17eFp9tx59IOC9xs/exec';
+
+  // CSV Data Storage for Medical and Hibah plans
+  let medicalData = [];
+  let hibahData = [];
+  let lastGeneratedQuotes = [];
+
+  // GitHub raw URLs for CSV files
+  const MEDICAL_CSV_URL = '../medical_card.csv';
+  const HIBAH_CSV_URL = '../hibah.csv';
+
+  // ✅ CSV to JSON Converter
+  function csvToJSON(csv) {
+    const lines = csv.trim().split("\n");
+    const headers = lines[0].split(",");
+
+    return lines.slice(1).map(line => {
+      const values = line.split(",");
+      let obj = {};
+      headers.forEach((h, i) => {
+        obj[h.trim()] = values[i] ? values[i].trim() : "";
+      });
+      return obj;
+    });
+  }
+
+  // ✅ Load Medical CSV
+  async function loadMedicalCSV() {
+    try {
+      console.log('Loading Medical CSV from:', MEDICAL_CSV_URL);
+      const res = await fetch(MEDICAL_CSV_URL);
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const text = await res.text();
+      medicalData = csvToJSON(text);
+      console.log('Medical data loaded:', medicalData.length, 'rows');
+    } catch (error) {
+      console.error('Error loading Medical CSV:', error);
+      medicalData = [];
+    }
+  }
+
+  // ✅ Load Hibah CSV
+  async function loadHibahCSV() {
+    try {
+      console.log('Loading Hibah CSV from:', HIBAH_CSV_URL);
+      const res = await fetch(HIBAH_CSV_URL);
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const text = await res.text();
+      hibahData = csvToJSON(text);
+      console.log('Hibah data loaded:', hibahData.length, 'rows');
+    } catch (error) {
+      console.error('Error loading Hibah CSV:', error);
+      hibahData = [];
+    }
+  }
+
+  function getCSVField(row, names) {
+    return names.reduce((value, name) => {
+      if (value !== undefined && value !== null) return value;
+      return row[name];
+    }, undefined);
+  }
+
+  function normalizeValue(value) {
+    return String(value || "").trim().toLowerCase();
+  }
+
+  function getCSVPrice(data, planKey, age, gender, smoker, waiver) {
+    const normalizedPlan = normalizeValue(planKey);
+    const normalizedGender = normalizeValue(gender);
+    const normalizedSmoker = normalizeValue(smoker);
+    const normalizedWaiver = normalizeValue(waiver);
+
+    const row = data.find(r => {
+      const rowPlan = normalizeValue(getCSVField(r, ['plan', 'Plan', 'PLAN']));
+      const rowAge = Number(getCSVField(r, ['age', 'Age', 'AGE']));
+      const rowGender = normalizeValue(getCSVField(r, ['gender', 'Gender', 'GENDER']));
+      const rowSmoker = normalizeValue(getCSVField(r, ['is_smoker', 'isSmoker', 'smoker', 'Smoker', 'SMOKER']));
+      const rowWaiver = normalizeValue(getCSVField(r, ['is_waiver', 'isWaiver', 'waiver', 'Waiver', 'IS_WAIVER']));
+
+      return rowPlan === normalizedPlan &&
+             rowAge === Number(age) &&
+             rowGender === normalizedGender &&
+             rowSmoker === normalizedSmoker &&
+             rowWaiver === normalizedWaiver;
+    });
+
+    if (!row) {
+      console.warn(`No CSV data found for ${planKey}, age ${age}, gender ${gender}, smoker ${smoker}, waiver ${waiver}`);
+      return null;
+    }
+
+    const priceValue = getCSVField(row, ['price', 'Price', 'PRICE']);
+    return priceValue !== undefined && priceValue !== null && priceValue !== "" ? Number(priceValue) : null;
+  }
+
+  // ✅ Get Medical Value from medical CSV using plan, gender, age, smoking and waiver filters
+  function getMedicalValue(age, gender, smoker, waiver = 'No', medicalPlan = 'anumax') {
+    return getCSVPrice(medicalData, medicalPlan, age, gender, smoker, waiver);
+  }
+
+  // ✅ Get Hibah Value from hibah CSV using plan, gender, age, smoking and waiver filters
+  function getHibahValue(age, gender, smoker, waiver = 'No', hibahPlan = 'anugerah') {
+    return getCSVPrice(hibahData, hibahPlan, age, gender, smoker, waiver);
+  }
+
+  // ✅ Get Value Based on Plan
+  function getPriceValue(age, plan, gender, smoker, waiver) {
+    const normalizedPlan = normalizeValue(plan);
+    if (normalizedPlan === 'anumaxstepup' || normalizedPlan === 'anumax') {
+      return getMedicalValue(age, gender, smoker, waiver, normalizedPlan);
+    }
+    if (normalizedPlan === 'anugerah' || normalizedPlan === 'warisangold') {
+      return getHibahValue(age, gender, smoker, waiver, normalizedPlan);
+    }
+    return null;
+  }
+
+  function getHibahPlanKeys(age, gender, smoker) {
+    const normalizedGender = normalizeValue(gender);
+    const normalizedSmoker = normalizeValue(smoker);
+    const normalizedAge = Number(age);
+    const keys = new Set();
+
+    hibahData.forEach(row => {
+      const rowAge = Number(getCSVField(row, ['age', 'Age', 'AGE']));
+      const rowGender = normalizeValue(getCSVField(row, ['gender', 'Gender', 'GENDER']));
+      const rowSmoker = normalizeValue(getCSVField(row, ['is_smoker', 'isSmoker', 'smoker', 'Smoker', 'SMOKER']));
+      const rowPlan = normalizeValue(getCSVField(row, ['plan', 'Plan', 'PLAN']));
+
+      if (rowAge === normalizedAge && rowGender === normalizedGender && rowSmoker === normalizedSmoker && rowPlan) {
+        keys.add(rowPlan);
+      }
+    });
+
+    const orderedPlans = ['anugerah', 'warisangold'];
+    return [...keys].sort((a, b) => {
+      const ai = orderedPlans.indexOf(a);
+      const bi = orderedPlans.indexOf(b);
+      if (ai === -1 && bi === -1) return a.localeCompare(b);
+      if (ai === -1) return 1;
+      if (bi === -1) return -1;
+      return ai - bi;
+    });
+  }
+
+  function getPlanDisplayInfo(planKey) {
+    const normalizedPlan = normalizeValue(planKey);
+    if (normalizedPlan === 'anumaxstepup') {
+      return {
+        quoteTitle: 'Medical Plan',
+        productName: 'AnugerahMax Step-Up'
+      };
+    }
+    if (normalizedPlan === 'anumax') {
+      return {
+        quoteTitle: 'Medical Plan',
+        productName: 'AnugerahMax Level'
+      };
+    }
+    if (normalizedPlan === 'anugerah') {
+      return {
+        quoteTitle: 'HIBAH ANUGERAH',
+        productName: 'Hibah Anugerah'
+      };
+    }
+    if (normalizedPlan === 'warisangold') {
+      return {
+        quoteTitle: 'HIBAH WARISAN GOLD',
+        productName: 'Hibah Warisan Gold'
+      };
+    }
+    return {
+      quoteTitle: 'Plan',
+      productName: 'Quotation'
+    };
+  }
+
+  function planSupportsWaiver(planKey) {
+    const normalizedPlan = normalizeValue(planKey);
+    // Only anumax and hibah plans (anugerah, warisangold) support waiver
+    // anumaxstepup does NOT support waiver
+    return normalizedPlan === 'anumax' || normalizedPlan === 'anugerah' || normalizedPlan === 'warisangold';
+  }
+
+  function getPlanFeaturesHTML(planKey, index, hasWaiver = false) {
+    const normalizedPlan = normalizeValue(planKey);
+    if (normalizedPlan === 'anumaxstepup') {
+      return `
+        <li>
+          <i class="fa-solid fa-skull"></i>
+          <div class="item-row">
+            <span class="label">Hibah Death/TPD:</span>
+             <span class="value">RM10,000</span>
+          </div>
+        </li>
+        <li>
+          <i class="fa-solid fa-bed"></i>
+          <div class="item-row">
+            <span class="label">Room & Board:</span>
+            <span class="value">RM200 / day</span>
+          </div>
+        </li>
+        <li>
+          <i class="fa-solid fa-calendar"></i>
+          <div class="item-row">
+            <span class="label">Annual Limit:</span>
+            <span class="value">RM200,000</span>
+          </div>
+        </li>
+        <li>
+          <i class="fa-solid fa-infinity"></i>
+          <div class="item-row">
+            <span class="label">Lifetime Limit:</span>
+            <span class="value">Unlimited</span>
+          </div>
+        </li>
+        <li>
+          <i class="fa-solid fa-shield-virus"></i>
+          <div class="item-row">
+            <span class="label">Cancer & Dialysis:</span>
+            <span class="value">(Outpatient)</span>
+          </div>
+        </li>
+        <li>
+          <i class="fa-solid fa-hospital"></i>
+          <div class="item-row">
+            <span class="label">Hospital Allowance:</span>
+            <span class="value">RM100 / day</span>
+          </div>
+        </li>
+        <li>
+          <i class="fa-solid fa-file-contract"></i>
+          <div class="item-row">
+            <span class="label">Deductible:</span>
+            <span class="value">RM300</span>
+          </div>
+        </li>
+        <li>
+          <i class="fa-solid fa-calendar-day"></i>
+          <div class="item-row">
+            <span class="label">Term:</span>
+            <span class="value">Age 70</span>
+          </div>
+        </li>
+        <li class="ci-waiver-card">
+          <div class="ci-waiver-box">
+            <div class="ci-note">Premium Repricing Every 3 Years</div>
+          </div>
+        </li>
+      `;
+    }
+    if (normalizedPlan === 'anumax') {
+      return `
+        <li>
+          <i class="fa-solid fa-skull"></i>
+          <div class="item-row">
+            <span class="label">Hibah Death/TPD:</span>
+            <span class="value" id="hibahDeathValue-${index}">${hasWaiver ? 'RM20,000' : 'RM10,000'}</span>
+          </div>
+        </li>
+        <li>
+          <i class="fa-solid fa-bed"></i>
+          <div class="item-row">
+            <span class="label">Room & Board:</span>
+            <span class="value">RM200 / day</span>
+          </div>
+        </li>
+        <li>
+          <i class="fa-solid fa-calendar"></i>
+          <div class="item-row">
+            <span class="label">Annual Limit:</span>
+            <span class="value">RM200,000</span>
+          </div>
+        </li>
+        <li>
+          <i class="fa-solid fa-infinity"></i>
+          <div class="item-row">
+            <span class="label">Lifetime Limit:</span>
+            <span class="value">Unlimited</span>
+          </div>
+        </li>
+        <li>
+          <i class="fa-solid fa-shield-virus"></i>
+          <div class="item-row">
+            <span class="label">Cancer & Dialysis:</span>
+            <span class="value">(Outpatient)</span>
+          </div>
+        </li>
+        <li>
+          <i class="fa-solid fa-hospital"></i>
+          <div class="item-row">
+            <span class="label">Hospital Allowance:</span>
+            <span class="value">RM100 / day</span>
+          </div>
+        </li>
+        <li>
+          <i class="fa-solid fa-file-contract"></i>
+          <div class="item-row">
+            <span class="label">Deductible:</span>
+            <span class="value">RM300</span>
+          </div>
+        </li>
+        <li>
+          <i class="fa-solid fa-calendar-day"></i>
+          <div class="item-row">
+            <span class="label">Term:</span>
+            <span class="value">Age 70</span>
+          </div>
+        </li>
+        <li class="ci-waiver-card" id="ciWaiverCard-${index}" style="display:${hasWaiver ? 'block' : 'none'};">
+          <div class="ci-waiver-box">
+            <div class="item-row">
+              <span class="label">43 Critical Illness</span>
+              <span class="value">RM10,000</span>
+            </div>
+            <div class="ci-note">Premium waived upon TPD or Critical Illness</div>
+          </div>
+        </li>
+      `;
+    }
+    if (normalizedPlan === 'anugerah') {
+      return `
+        <li>
+          <i class="fa-solid fa-skull"></i>
+          <div class="item-row">
+            <span class="label">Death/TPD:</span>
+            <span class="value">RM200,000</span>
+          </div>
+        </li>
+        <li>
+          <i class="fa-solid fa-car-crash"></i>
+          <div class="item-row">
+            <span class="label">Accidental Death:</span>
+            <span class="value">RM250,000</span>
+          </div>
+        </li>
+        <li>
+          <i class="fa-solid fa-calendar-day"></i>
+          <div class="item-row">
+            <span class="label">Term:</span>
+            <span class="value">20 years</span>
+          </div>
+        </li>
+        <li class="ci-waiver-card" id="ciWaiverCard-${index}" style="display:${hasWaiver ? 'block' : 'none'};">
+          <div class="ci-waiver-box">
+            <div class="item-row">
+              <span class="label">43 Critical Illness</span>
+              <span class="value">RM50,000</span>
+            </div>
+            <div class="ci-note">Premium waived upon TPD or Critical Illness</div>
+          </div>
+        </li>
+      `;
+    }
+    if (normalizedPlan === 'warisangold') {
+      return `
+        <li>
+          <i class="fa-solid fa-skull"></i>
+          <div class="item-row">
+            <span class="label">Death/TPD:</span>
+            <span class="value">RM350,000</span>
+          </div>
+        </li>
+        <li>
+          <i class="fa-solid fa-car-crash"></i>
+          <div class="item-row">
+            <span class="label">Accidental Death:</span>
+            <span class="value">RM700,000</span>
+          </div>
+        </li>
+        <li>
+          <i class="fa-solid fa-plane-departure"></i>
+          <div class="item-row">
+            <span class="label">Accidental Death (Public):</span>
+            <span class="value">RM1,050,000</span>
+          </div>
+        </li>
+        <li>
+          <i class="fa-solid fa-globe"></i>
+          <div class="item-row">
+            <span class="label">Accidental Death (Oversea):</span>
+            <span class="value">RM1,400,000</span>
+          </div>
+        </li>
+        <li>
+          <i class="fa-solid fa-hill-avalanche"></i>
+          <div class="item-row">
+            <span class="label">Accidental Death (Natural Disaster):</span>
+            <span class="value">RM2,100,000</span>
+          </div>
+        </li>
+        <li>
+          <i class="fa-solid fa-sack-dollar"></i>
+          <div class="item-row">
+            <span class="label">Investment Fund:</span>
+            <span class="value">Takafulink</span>
+          </div>
+        </li>
+        <li>
+          <i class="fa-solid fa-calendar-day"></i>
+          <div class="item-row">
+            <span class="label">Term:</span>
+            <span class="value">20 years</span>
+          </div>
+        </li>
+        <li class="ci-waiver-card" id="ciWaiverCard-${index}" style="display:${hasWaiver ? 'block' : 'none'};">
+          <div class="ci-waiver-box">
+            <div class="item-row">
+              <span class="label">43 Critical Illness</span>
+              <span class="value">RM50,000</span>
+            </div>
+            <div class="ci-note">Premium waived upon TPD or Critical Illness</div>
+          </div>
+        </li>
+      `;
+    }
+    return '';
+  }
+
+  function buildQuoteCardHTML(card, index) {
+    const { productName } = getPlanDisplayInfo(card.planKey || card.plan);
+    const supportsWaiver = planSupportsWaiver(card.planKey || card.plan);
+    return `
+      <div class="quotation-card">
+        <div class="plan-product-name">${productName}</div>
+        <div class="quote-price">
+          RM <span id="quotePremium-${index}">${card.price.toFixed(2)}</span>
+        </div>
+        ${supportsWaiver ? `
+        <div class="quote-addon-card">
+          <label class="checkbox-card" for="ciWaiverToggle-${index}">
+            <input type="checkbox" id="ciWaiverToggle-${index}" onchange="refreshQuotePriceForCard(${index})" />
+            <span class="checkbox-custom"></span>
+            <span class="checkbox-label">Add Critical Illness and Waiver</span>
+          </label>
+        </div>
+        ` : ''}
+        <ul class="quote-items" id="quoteItemsList-${index}">
+          ${getPlanFeaturesHTML(card.planKey || card.plan, index)}
+        </ul>
+        <button type="button" class="whatsapp-agent-btn" onclick="openWhatsAppAgent(${index})">
+          <i class="fa-brands fa-whatsapp"></i> WhatsApp Agent
+        </button>
+      </div>
+    `;
+  }
+
+  function refreshQuotePriceForCard(index) {
+    const card = lastGeneratedQuotes[index];
+    if (!card) return;
+
+    const waiver = document.getElementById(`ciWaiverToggle-${index}`)?.checked ? 'Yes' : 'No';
+    const normalizedPlanKey = normalizeValue(card.planKey);
+    const isMedical = normalizedPlanKey === 'anumax' || normalizedPlanKey === 'anumaxstepup';
+    
+    const price = isMedical
+      ? getMedicalValue(card.age, card.gender, card.smoker, waiver, normalizedPlanKey)
+      : getHibahValue(card.age, card.gender, card.smoker, waiver, normalizedPlanKey);
+
+    if (price !== null) {
+      card.price = price;
+      card.waiver = waiver;
+      document.getElementById(`quotePremium-${index}`).textContent = price.toFixed(2);
+    }
+
+    const waiverCard = document.getElementById(`ciWaiverCard-${index}`);
+    if (waiverCard) {
+      waiverCard.style.display = waiver === 'Yes' ? 'block' : 'none';
+    }
+
+    // Re-render the features list to update values based on waiver state
+    const quoteItemsList = document.getElementById(`quoteItemsList-${index}`);
+    if (quoteItemsList) {
+      quoteItemsList.innerHTML = getPlanFeaturesHTML(card.planKey || card.plan, index, waiver === 'Yes');
+    }
+  }
+
+  function getMedicalQuoteCards(name, age, gender, smoker) {
+    const medicalPlans = ['anumaxstepup','anumax'];
+    return medicalPlans.map(planKey => {
+      const price = getMedicalValue(age, gender, smoker, 'No', planKey);
+      return {
+        name,
+        age,
+        gender,
+        smoker,
+        waiver: 'No',
+        plan: planKey,
+        planKey,
+        price: price !== null ? price : 0
+      };
+    }).filter(card => card.price > 0);
+  }
+
+  function getHibahQuoteCards(name, age, gender, smoker) {
+    const keys = getHibahPlanKeys(age, gender, smoker);
+    return keys.map(planKey => {
+      const price = getHibahValue(age, gender, smoker, 'No', planKey);
+      return {
+        name,
+        age,
+        gender,
+        smoker,
+        waiver: 'No',
+        plan: planKey,
+        planKey,
+        price: price !== null ? price : 0
+      };
+    }).filter(card => card.price > 0);
+  }
+
+  function renderQuoteCards(name, age, gender, smoker, plan) {
+    const normalizedPlan = normalizeValue(plan);
+    let cards = [];
+
+    if (normalizedPlan === 'medical') {
+      cards = getMedicalQuoteCards(name, age, gender, smoker);
+    } else if (normalizedPlan === 'hibah') {
+      cards = getHibahQuoteCards(name, age, gender, smoker);
+    } else if (normalizedPlan === 'anugerah' || normalizedPlan === 'warisangold') {
+      const price = getHibahValue(age, gender, smoker, 'No', normalizedPlan);
+      if (price !== null) {
+        cards = [{
+          name,
+          age,
+          gender,
+          smoker,
+          waiver: 'No',
+          plan: normalizedPlan,
+          planKey: normalizedPlan,
+          price
+        }];
+      }
+    }
+
+    if (cards.length === 0) {
+      return null;
+    }
+
+    const sectionTitle = normalizedPlan === 'medical' ? 'Medical Plan' : 'Hibah Plan';
+    document.getElementById('quotePlanTitle').textContent = sectionTitle;
+    document.getElementById('quoteHeader').textContent = `Name: ${name}`;
+    document.getElementById('quoteAge').textContent = `Age: ${age} Years Old`;
+
+    lastGeneratedQuotes = cards;
+    document.getElementById('quoteCardsContainer').innerHTML = cards.map((card, index) => buildQuoteCardHTML(card, index)).join('');
+    document.getElementById('quickQuotationResult').style.display = 'block';
+    return cards;
+  }
+
+  function getPlanDetailsForWhatsApp(planKey, waiver) {
+    const normalizedPlan = normalizeValue(planKey);
+    let details = {};
+
+    if (normalizedPlan === 'medical') {
+      details = {
+        'Death/TPD': 'RM10,000',
+        'Room & Board': 'RM200 / day',
+        'Annual Limit': 'RM200,000',
+        'Lifetime Limit': 'Unlimited'
+      };
+    } else if (normalizedPlan === 'anugerah') {
+      details = {
+        'Death/TPD': 'RM200,000',
+        'Accidental Death': 'RM250,000',
+        'Term': '20 years'
+      };
+      if (waiver === 'Yes') {
+        details['CI Waiver (43 Critical Illness)'] = 'RM50,000';
+        details['Premium Waived'] = 'Upon TPD or Critical Illness';
+      }
+    } else if (normalizedPlan === 'warisangold') {
+      details = {
+        'Death/TPD': 'RM300,000',
+        'Accidental Death': 'RM350,000',
+        'Term': '25 years'
+      };
+      if (waiver === 'Yes') {
+        details['CI Waiver (43 Critical Illness)'] = 'RM75,000';
+        details['Premium Waived'] = 'Upon TPD or Critical Illness';
+      }
+    }
+
+    return details;
+  }
+
+  function openWhatsAppAgent(cardIndex) {
+    if (!currentAgent) {
+      alert('Please select an agent first.');
+      return;
+    }
+    if (!lastGeneratedQuotes || lastGeneratedQuotes.length === 0) {
+      alert('Please generate a quotation first.');
+      return;
+    }
+
+    const lines = [
+      `Hi ${currentAgent.name},`,
+      '',
+      'Saya berminat dengan quotation berikut:',
+      ''
+    ];
+
+    // If cardIndex is provided, only show that card; otherwise show all
+    const quotesList = cardIndex !== undefined ? [lastGeneratedQuotes[cardIndex]] : lastGeneratedQuotes;
+    
+    quotesList.forEach((card, idx) => {
+      const { quoteTitle, productName } = getPlanDisplayInfo(card.planKey || card.plan);
+      lines.push(`${idx + 1}) ${quoteTitle}`);
+      lines.push(`   Produk: ${productName}`);
+      lines.push(`   Premium Bulanan: RM${card.price.toFixed(2)}`);
+      lines.push(`   CI Waiver: ${card.waiver}`);
+      
+      // Add plan details
+      const planDetails = getPlanDetailsForWhatsApp(card.planKey || card.plan, card.waiver);
+      Object.entries(planDetails).forEach(([key, value]) => {
+        lines.push(`   ${key}: ${value}`);
+      });
+      lines.push('');
+    });
+
+    lines.push(`Nama: ${lastGeneratedQuotes[0].name}`);
+    lines.push(`Umur: ${lastGeneratedQuotes[0].age}`);
+    lines.push('');
+    lines.push('Terima kasih!');
+
+    const msg = encodeURIComponent(lines.join('\n'));
+    window.open(`https://wa.me/${currentAgent.whatsapp}?text=${msg}`, '_blank');
+  }
+
+  // Background Music - Auto-start on user interaction
+  const bgMusic = document.getElementById('bgMusic');
+  bgMusic.volume = 0.5; // Set volume to 50%
+
+  function startMusic() {
+    bgMusic.muted = false;
+    bgMusic.play().catch(err => console.log('Music play error:', err));
+    console.log('Music started');
+    // Remove listener after first interaction
+    document.removeEventListener('click', startMusic);
+    document.removeEventListener('scroll', startMusic);
+    document.removeEventListener('touchstart', startMusic);
+  }
+
+  // Start music on first user interaction
+  document.addEventListener('click', startMusic);
+  document.addEventListener('scroll', startMusic);
+  document.addEventListener('touchstart', startMusic);
+
+  // Ensure music continues playing on all screens
+  setInterval(() => {
+    if (bgMusic.paused) {
+      bgMusic.play().catch(err => console.log('Music auto-restart error:', err));
+    }
+  }, 2000);
+
+  // AGENTS DATA - loaded from agents.json
+  let agents = [];
+
+  let currentAgent = null;
+  let isDirectLink = false;
+
+  // Load agents from JSON file
+  async function loadAgents() {
+    try {
+      const response = await fetch('../agents.json');
+      const data = await response.json();
+      // Add scriptURL to each agent
+      agents = data.map(agent => ({
+        ...agent,
+        scriptURL: GOOGLE_SHEET_URL
+      }));
+      initAgents();
+      
+      // Check if agent code is in URL hash
+      const agentCode = window.location.hash.substring(1);
+      
+      if (agentCode) {
+        const agent = agents.find(a => a.code === agentCode);
+        if (agent) {
+          isDirectLink = true;
+          selectAgent(agent);
+        }
+      }
+    } catch (error) {
+      console.error('Error loading agents:', error);
+    }
+  }
+
+  // Initialize agents grid on page load
+  let currentUnit = null;
+
+  function getUnitFromCode(code) {
+    // Extract first 3 characters as unit code
+    return code.substring(0, 3);
+  }
+
+  function initAgents() {
+    // Extract unique units and sort them
+    const units = [...new Set(agents.map(a => getUnitFromCode(a.code)))].sort();
+    
+    // Create unit selector buttons
+    const unitSelectorContainer = document.getElementById('unitSelector');
+    unitSelectorContainer.innerHTML = '';
+    
+    units.forEach(unit => {
+      const btn = document.createElement('button');
+      btn.className = 'unit-btn';
+      btn.textContent = unit;
+      btn.onclick = (e) => {
+        e.preventDefault();
+        filterByUnit(unit);
+        // Update active button
+        document.querySelectorAll('.unit-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+      };
+      unitSelectorContainer.appendChild(btn);
+    });
+
+    // Set first unit as default
+    if (units.length > 0) {
+      currentUnit = units[0];
+      document.querySelector('.unit-btn').classList.add('active');
+    }
+
+    // Display agents for default unit
+    displayAgentsByUnit(currentUnit);
+  }
+
+  function filterByUnit(unit) {
+    currentUnit = unit;
+    displayAgentsByUnit(unit);
+  }
+
+  function displayAgentsByUnit(unit) {
+    const container = document.getElementById('agentsContainer');
+    container.innerHTML = '';
+    
+    // Filter agents by unit and place lead agents first
+    const unitAgents = agents
+      .filter(a => getUnitFromCode(a.code) === unit)
+      .sort((a, b) => {
+        const aLead = a.lead === true || String(a.lead).toLowerCase() === 'true';
+        const bLead = b.lead === true || String(b.lead).toLowerCase() === 'true';
+        if (aLead === bLead) return 0;
+        return aLead ? -1 : 1;
+      });
+
+    // Display agents
+    unitAgents.forEach((agent) => {
+      const box = document.createElement('div');
+      box.className = 'agent-box';
+      if (agent.lead === true || String(agent.lead).toLowerCase() === 'true') {
+        box.classList.add('lead-agent');
+      }
+      box.innerHTML = `
+        <img src="${agent.image}" alt="${agent.name}">
+        <div class="agent-name">${agent.name}<br>${agent.name2 || ''}</div>
+        <div class="agent-title">${agent.title}</div>
+      `;
+      box.onclick = () => selectAgent(agent);
+      container.appendChild(box);
+    });
+  }
+
+  function selectAgent(agent) {
+    currentAgent = agent;
+    document.getElementById('agentDisplayName').textContent = agent.name + ' ' + (agent.name2 || '');
+    document.getElementById('agentDisplayImage').src = agent.image;
+    document.getElementById('agentDisplayTitle').textContent = agent.title;
+    // Set Agent Code for both Request and Generate forms
+    document.getElementById('agentCodeField').value = agent.code;
+    document.getElementById('genAgentCodeField').value = agent.code;
+    
+  // ✅ SOCIAL LINKS (PUT HERE)
+    setSocialLink("igLink", agent.instagram, "https://instagram.com/");
+    setSocialLink("fbLink", agent.facebook, "https://facebook.com/");
+    setSocialLink("waLink", agent.whatsapp, "https://wa.me/");
+    setSocialLink("ttLink", agent.tiktok, "https://www.tiktok.com/@");
+
+    // Update URL hash with agent code
+    if (!isDirectLink) {
+      window.location.hash = agent.code;
+    }
+    
+    // Show or hide back button based on whether this is a direct link
+    const backBtn = document.querySelector('.btn-back');
+    backBtn.style.display = isDirectLink ? 'none' : 'inline-block';
+    
+    showScreen('profileScreen');
+  }
+
+  function setSocialLink(elementId, value, baseUrl) {
+  const el = document.getElementById(elementId);
+
+  if (value) {
+    el.href = baseUrl + value;
+    el.style.display = "inline-flex";
+  } else {
+    el.style.display = "none";
+  }
+}
+
+  function goBack() {
+    window.location.hash = '';
+    showScreen('mainScreen');
+    resetForm();
+  }
+
+  function showScreen(screenId) {
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    document.getElementById(screenId).classList.add('active');
+  }
+
+  function pick(el, value, name) {
+    [...el.parentElement.children].forEach(b => b.classList.remove("active"));
+    el.classList.add("active");
+    
+    // Find the correct form (Request or Generate) and update the matching hidden input
+    const requestForm = document.getElementById("quotationForm");
+    const generateForm = document.getElementById("generateForm");
+    
+    // Check which form contains this button
+    if (el.closest("#quotationForm")) {
+      requestForm.querySelector(`input[name="${name}"]`).value = value;
+    } else if (el.closest("#generateForm")) {
+      generateForm.querySelector(`input[name="${name}"]`).value = value;
+    }
+  }
+ 
+  function showError(msg) {
+    document.getElementById("status").innerText = "❌ " + msg;
+  }
+ 
+  // function resetForm() {
+  //   // Show form, hide success
+  //   document.getElementById("formScreen").style.display = "block";
+  //   document.getElementById("successScreen").style.display = "none";
+
+  //   // Reset forms
+  //   document.getElementById("quotationForm").reset();
+  //   document.getElementById("generateForm").reset();
+
+  //   // Clear hidden input values, but NOT Agent Code
+  //   document.querySelectorAll("input[type='hidden']").forEach(input => {
+  //     if (input.name !== "Agent Code") {
+  //       input.value = "";
+  //     }
+  //   });
+
+  //   // Clear statuses
+  //   document.getElementById("status").innerText = "";
+  //   document.getElementById("generateStatus").innerText = "";
+  //   document.getElementById("quickQuotationResult").style.display = "none";
+
+  //   // Reset option buttons
+  //   document.querySelectorAll(".btn-option").forEach(b => b.classList.remove("active"));
+
+  //   // ✅ Reset tabs
+  //   document.querySelectorAll(".form-mode-tab").forEach(tab => tab.classList.remove("active"));
+  //   document.querySelector(".form-mode-tab").classList.add("active"); // first tab
+
+  //   // ✅ Reset mode contents
+  //   document.getElementById("requestMode").classList.add("active");
+  //   document.getElementById("generateMode").classList.remove("active");
+
+  //   // ✅ Hide disclaimer
+  //   document.getElementById("disclaimer").style.display = "none";
+  // }
+  function resetForm() {
+  // Show form, hide success
+    document.getElementById("formScreen").style.display = "block";
+    document.getElementById("successScreen").style.display = "none";
+
+    // Reset forms
+    document.getElementById("quotationForm").reset();
+    document.getElementById("generateForm").reset();
+
+    // Clear hidden input values, but NOT Agent Code
+    document.querySelectorAll("input[type='hidden']").forEach(input => {
+      if (input.name !== "Agent Code") {
+        input.value = "";
+      }
+    });
+
+    // Clear statuses
+    document.getElementById("status").innerText = "";
+    document.getElementById("generateStatus").innerText = "";
+    document.getElementById("quickQuotationResult").style.display = "none";
+
+    // Reset option buttons
+    document.querySelectorAll(".btn-option").forEach(b => b.classList.remove("active"));
+
+    // ✅ Reset tabs to Quick Quotation
+    document.querySelectorAll(".form-mode-tab").forEach(tab => tab.classList.remove("active"));
+    document.querySelectorAll(".form-mode-tab")[1].classList.add("active");
+
+    // ✅ Reset mode contents to Quick Quotation
+    document.getElementById("requestMode").classList.remove("active");
+    document.getElementById("generateMode").classList.add("active");
+
+    // ✅ Show disclaimer because Quick is active
+    document.getElementById("disclaimer").style.display = "block";
+  }
+
+  function switchFormMode(mode) {
+    const requestMode = document.getElementById("requestMode");
+    const generateMode = document.getElementById("generateMode");
+    const tabs = document.querySelectorAll(".form-mode-tab");
+    const disclaimer = document.getElementById("disclaimer");
+
+    // Update tabs
+    tabs.forEach(tab => tab.classList.remove("active"));
+    if (mode === "request") {
+      tabs[0].classList.add("active");
+      requestMode.classList.add("active");
+      generateMode.classList.remove("active");
+      disclaimer.style.display = "none";
+    } else {
+      tabs[1].classList.add("active");
+      requestMode.classList.remove("active");
+      generateMode.classList.add("active");
+      disclaimer.style.display = "block";
+    }
+    
+    // Reset status messages
+    document.getElementById("status").innerText = "";
+    document.getElementById("generateStatus").innerText = "";
+  }
+
+  // ✅ Calculate Age Next Birthday from DOB
+  function calculateAgeNextBirthday(dobString) {
+    const birthDate = new Date(dobString);
+    const today = new Date();
+    
+    let age = today.getFullYear() - birthDate.getFullYear();
+    const monthDiff = today.getMonth() - birthDate.getMonth();
+    
+    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+      age--;
+    }
+    
+    return age + 1;
+  }
+
+  function handleGenerateSubmit(e) {
+    e.preventDefault();
+    document.getElementById("generateStatus").innerText = "";
+
+    if (!currentAgent) {
+      document.getElementById("generateStatus").innerText = "❌ Please select an agent first.";
+      return;
+    }
+
+    const name = document.getElementById("generateForm")["Name"].value.trim();
+    const dob = document.getElementById("generateForm")["DOB"].value;
+    const job = document.getElementById("generateForm")["Occupation"].value.trim();
+    const plan = document.getElementById("generateForm")["Plan"].value;
+    const sex = document.getElementById("generateForm")["Sex"].value;
+    const smoker = document.getElementById("generateForm")["Smoker"].value;
+    const phoneRaw = document.getElementById("genPhone").value.replace(/\s+/g, "").replace(/^0+/, "");
+
+    if (!plan) {
+      document.getElementById("generateStatus").innerText = "❌ Please choose a plan.";
+      return;
+    }
+    if (!name) {
+      document.getElementById("generateStatus").innerText = "❌ Please fill in your full name.";
+      return;
+    }
+    if (!dob) {
+      document.getElementById("generateStatus").innerText = "❌ Please select your date of birth.";
+      return;
+    }
+    if (!phoneRaw) {
+      document.getElementById("generateStatus").innerText = "❌ Please enter your phone number.";
+      return;
+    }
+    if (phoneRaw.length < 9 || phoneRaw.length > 10) {
+      document.getElementById("generateStatus").innerText = "❌ Please enter a valid phone number (9-10 digits).";
+      return;
+    }
+    if (!job) {
+      document.getElementById("generateStatus").innerText = "❌ Please fill in your occupation.";
+      return;
+    }
+    if (!sex) {
+      document.getElementById("generateStatus").innerText = "❌ Please select your gender.";
+      return;
+    }
+    if (!smoker) {
+      document.getElementById("generateStatus").innerText = "❌ Please choose your smoking status.";
+      return;
+    }
+
+    document.getElementById("generateForm")["Phone Number"].value = "+60" + phoneRaw;
+    const agentCodeFromHash = window.location.hash.substring(1);
+    document.getElementById("generateForm")["Agent Code"].value = agentCodeFromHash || currentAgent.code;
+    document.getElementById("generateStatus").innerText = "⏳ Generating...";
+
+    fetch(currentAgent.scriptURL, { method: "POST", body: new FormData(document.getElementById("generateForm")) })
+      .then(() => {
+        
+      // ✅ TELEGRAM INSERT HERE
+        fetch("https://mgas-telegram-bot.netlify.app/.netlify/functions/send", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            agent_code: currentAgent.code,
+            agent_name: currentAgent.name,
+            customer_name: name,
+            dob: dob,
+            occupation: job,
+            plan: plan,
+            form_type: "Quick",
+            phone: "+60" + phoneRaw,
+            smoking: smoker,
+            gender: sex,
+            remarks: "Generated via Quick Quotation"
+          })
+        });
+
+        const ageNextBirthday = calculateAgeNextBirthday(dob);
+        const normalizedPlan = normalizeValue(plan);
+        const cards = renderQuoteCards(name, ageNextBirthday, sex, smoker, normalizedPlan);
+
+        if (cards && cards.length > 0) {
+          document.getElementById("generateStatus").innerText = "";
+          console.log(`Displaying quotation: ${name}, ANB ${ageNextBirthday}, Plan ${plan}, ${cards.length} quote(s)`);
+        } else {
+          document.getElementById("generateStatus").innerText = "❌ Plan currently not available. Please contact the agent for a custom quotation.";
+          document.getElementById("quickQuotationResult").style.display = "none";
+        }
+
+        setTimeout(() => {
+          document.getElementById("generateStatus").innerText = "";
+        }, 3000);
+      })
+      .catch((error) => {
+        console.error("Generation error:", error);
+        document.getElementById("generateStatus").innerText = "❌ Generation failed. Please try again.";
+      });
+  }
+ 
+  document.getElementById("quotationForm").addEventListener("submit", e => {
+    e.preventDefault();
+ 
+    if (!currentAgent) {
+      showError("Please select an agent first.");
+      return;
+    }
+
+    const dobInput = document.getElementById("quotationForm")["DOB"];
+    const name = document.getElementById("quotationForm")["Name"].value.trim();
+    const dob = dobInput.value;
+    const job = document.getElementById("quotationForm")["Occupation"].value.trim();
+    const plan = document.getElementById("quotationForm")["Plan"].value;
+    const sex = document.getElementById("quotationForm")["Sex"].value;
+    const smoker = document.getElementById("quotationForm")["Smoker"].value;
+ 
+    const phoneRaw = document.getElementById("phone").value.replace(/\s+/g,"").replace(/^0+/,"");
+ 
+    if (!plan) return showError("Please choose a plan.");
+    if (!name) return showError("Please fill in your full name.");
+    if (!dob) return showError("Please select your date of birth.");
+    if (!phoneRaw) return showError("Please enter your phone number.");
+    if (phoneRaw.length < 9 || phoneRaw.length > 10) return showError("Please enter a valid phone number (9-10 digits).");
+    if (!job) return showError("Please fill in your occupation.");
+    if (!sex) return showError("Please select your gender.");
+    if (!smoker) return showError("Please choose your smoking status.");
+ 
+    document.getElementById("quotationForm")["Phone Number"].value = "+60" + phoneRaw;
+    document.getElementById("status").innerText = "⏳ Submitting...";
+ 
+    fetch(currentAgent.scriptURL, { method:"POST", body: new FormData(document.getElementById("quotationForm")) })
+    .then(() => {
+      const remarks = document.getElementById("quotationForm")["Remarks"].value.trim();
+      const agentCode = currentAgent.code; // Save before reset
+    
+    // ✅ SEND TO TELEGRAM (Netlify backend)
+    fetch("https://mgas-telegram-bot.netlify.app/.netlify/functions/send", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        agent_code: currentAgent.code,
+        agent_name: currentAgent.name,
+
+        customer_name: name,
+        dob: dob,
+        occupation: job,
+        plan: plan,
+        form_type: "Custom",
+        phone: "+60" + phoneRaw,
+        smoking: smoker,
+        gender: sex,
+        remarks: remarks || ""
+      })
+    });
+
+      // Clear form data immediately
+      document.getElementById("quotationForm").reset();
+      document.querySelector("input[name='Plan']").value = "";
+      document.querySelector("input[name='Sex']").value = "";
+      document.querySelector("input[name='Smoker']").value = "";
+      document.querySelector("input[name='Phone Number']").value = "";
+      
+      // Restore Agent Code after reset
+      document.getElementById('agentCodeField').value = agentCode;
+      
+      document.querySelectorAll("#requestMode .btn-option").forEach(b => b.classList.remove("active"));
+      
+      // Show success screen
+      document.getElementById("formScreen").style.display = "none";
+      document.getElementById("successScreen").style.display = "block";
+
+      const msg =
+        `Hi ${currentAgent.name},%0A%0A` +
+        `Saya telah menghantar permohonan *Custom Quotation Takaful*.%0A` +
+        `Butiran adalah seperti berikut:%0A%0A` +
+        `👤 Nama: ${name}%0A` +
+        `📋 Pelan: ${plan}%0A` +
+        `🎂 Tarikh Lahir: ${dob}%0A` +
+        `🚬 Status Merokok: ${smoker}%0A` +
+        (remarks ? `%0A📝 Additional Remarks:%0A${remarks}` : ``);
+
+      setTimeout(() => {
+        window.open(`https://wa.me/${currentAgent.whatsapp}?text=${msg}`, "_blank");
+      }, 800);
+    })
+    .catch(() => showError("Submission failed. Sila cuba lagi."));
+  });
+
+  // Set date range: max age at next birthday is 50
+  function setMaxDate() {
+    const dobInput = document.getElementById('dobInput');
+    const genDobInput = document.getElementById('genDobInput');
+    const today = new Date();
+    const maxANB = 50; // Max Age at Next Birthday
+    
+    // Max date: today (can't be born in future)
+    const yyyy = today.getFullYear();
+    const mm = String(today.getMonth() + 1).padStart(2, '0');
+    const dd = String(today.getDate()).padStart(2, '0');
+    const maxDate = `${yyyy}-${mm}-${dd}`;
+    
+    // Min date: today minus (maxANB) years
+    const cutoffDate = new Date(today);
+    cutoffDate.setFullYear(today.getFullYear() - (maxANB));
+    cutoffDate.setDate(cutoffDate.getDate() + 1);
+    const minYyyy = cutoffDate.getFullYear();
+    const minMm = String(cutoffDate.getMonth() + 1).padStart(2, '0');
+    const minDd = String(cutoffDate.getDate()).padStart(2, '0');
+    const minDate = `${minYyyy}-${minMm}-${minDd}`;
+    
+    // Apply constraints to both forms
+    dobInput.max = maxDate;
+    dobInput.min = minDate;
+    if (genDobInput) {
+      genDobInput.max = maxDate;
+      genDobInput.min = minDate;
+    }
+  }
+
+  // ✅ Open WhatsApp with agent and plan details
+
+  // Initialize on page load
+  window.addEventListener('load', () => {
+    loadAgents();
+    loadMedicalCSV();
+    loadHibahCSV();
+    setMaxDate();
+
+    
+    // Restrict phone inputs to numbers only (9-10 digits)
+    const phoneInputs = document.getElementById('phone');
+    const genPhoneInput = document.getElementById('genPhone');
+    
+    [phoneInputs, genPhoneInput].forEach(input => {
+      input.addEventListener('input', (e) => {
+        // Remove any non-digits
+        e.target.value = e.target.value.replace(/[^0-9]/g, '');
+        // Limit to 10 digits
+        if (e.target.value.length > 10) {
+          e.target.value = e.target.value.slice(0, 10);
+        }
+      });
+    });
+    
+    // Try to play music on page load
+    setTimeout(() => {
+      bgMusic.muted = false;
+      bgMusic.play().catch(err => console.log('Auto-start error:', err));
+      console.log('Page load: Music auto-start attempted');
+    }, 500);
+  });
+</script>
+
+  <footer>
+    <div class="footer-bottom">
+      <p class="footer-title">GENERAL DISCLAIMER</p>
+      <p class="footer-text">
+        The information contained on this website is intended for general informational purposes only. 
+        Any protection coverage offered and/or plan recommendations are subject to eligibility criteria, 
+        pre-existing medical conditions, and the final underwriting assessment and approval of 
+        Prudential BSN Takaful Berhad.
+      </p>
+      <p class="footer-copy">
+        © 2026 Muqmeen Group Alor Setar (MGAS). All Rights Reserved.
+      </p>
+    </div>
+  </footer>
+ 
+</body>
+</html>
