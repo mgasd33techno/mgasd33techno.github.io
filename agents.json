@@ -70,7 +70,7 @@
     "facebook": "MadihahAljeerahAZ",
     "tiktok": "madihah_prudential",
     "lead": false,
-    "chat_id": 74413996
+    "chat_id": 754413996
   },
   {
     "code": "D3300090",
@@ -101,7 +101,7 @@
   {
     "code": "D3300184",
     "name": "JULIYA",
-    "name2": "BAHAROM",
+    "name2": " & ZAIRI",
     "title": "WEALTH PLANNER",
     "image": "../Picture/D3300184.jpg",
     "whatsapp": "60192648694",
@@ -136,29 +136,16 @@
     "lead": true
   },
   {
-    "code": "HKA80001",
+    "code": "HKA00001",
     "name": "HAFEZ KAMAZAMAN",
     "name2": "",
     "title": "UNIT MANAGER II",
-    "image": "../Picture/HKA80001.jpg",
+    "image": "../Picture/HKA00001.jpg",
     "whatsapp": "60124845564",
     "instagram": "hafezkamazaman",
     "facebook": "humai.fez",
     "lead": true,
     "chat_id": 220508790
-  },
-  {
-    "code": "HKA00002",
-    "name": "HAFIRULIZHAM",
-    "name2": "HASSIM",
-    "title": "PRUDENTIAL WEALTH PLANNER",
-    "image": "../Picture/HKA00002.jpg",
-    "whatsapp": "601111961715",
-    "instagram": "hafirulizham",
-    "facebook": "mohd.hafirulizham",
-    "tiktok": "hafirulizham",
-    "lead": false,
-    "chat_id": 1096513759
   },
   {
     "code": "HKA00008",
@@ -172,6 +159,19 @@
     "tiktok": "pidottiaw",
     "lead": false,
     "chat_id": 705384071
+  },
+  {
+    "code": "HKA00002",
+    "name": "HAFIRULIZHAM",
+    "name2": "HASSIM",
+    "title": "PRUDENTIAL WEALTH PLANNER",
+    "image": "../Picture/HKA00002.jpg",
+    "whatsapp": "601111961715",
+    "instagram": "hafirulizham",
+    "facebook": "mohd.hafirulizham",
+    "tiktok": "hafirulizham",
+    "lead": false,
+    "chat_id": 1096513759
   },
   {
     "code": "HKA00022",
@@ -326,5 +326,95 @@
     "tiktok": "itsmefaghaaa",
     "lead": false,
     "chat_id": 53738661
+  },
+  {
+    "code": "D3300138",
+    "name": "SYED",
+    "name2": "FAHMI",
+    "title": "WEALTH PLANNER",
+    "image": "../Picture/D3300138.jpg",
+    "whatsapp": "60133438487",
+    "instagram": "pak_syed_takaful",
+    "facebook": "syed.fahmi.965",
+    "tiktok": "pak_syed_takaful",
+    "lead": false,
+    "chat_id": 309515338
+  },
+  {
+    "code": "D3300148",
+    "name": "NUKMAN",
+    "name2": "ZOLKEFLI",
+    "title": "WEALTH PLANNER",
+    "image": "../Picture/D3300148.jpg",
+    "whatsapp": "60134885045",
+    "instagram": "nukmanzoul",
+    "facebook": "muhdnukmanzolkefli",
+    "tiktok": "nukmanzol",
+    "lead": false,
+    "chat_id": 522400546
+  
+  },
+  {
+    "code": "N1M00012",
+    "name": "AZAM",
+    "name2": "RONI",
+    "title": "WEALTH PLANNER",
+    "image": "../Picture/N1M00012.jpg",
+    "whatsapp": "60109643950",
+    "instagram": "azamroni97",
+    "facebook": "MohammadAzamuddin97",
+    "tiktok": "azam_roni",
+    "lead": false,
+    "chat_id": 617642407
+  },
+  {
+    "code": "N1M00036",
+    "name": "SCHA",
+    "name2": "FALIESHA",
+    "title": "WEALTH PLANNER",
+    "image": "../Picture/N1M00036.jpg",
+    "whatsapp": "60163668885",
+    "instagram": "schafaliesha",
+    "facebook": "scha.faliesha",
+    "tiktok": "schafaliesha95",
+    "lead": false,
+    "chat_id": 906650696
+  },
+  {
+    "code": "N1M00054",
+    "name": "ASYIQIN",
+    "name2": "MOHAMAD",
+    "title": "WEALTH PLANNER",
+    "image": "../Picture/N1M00054.jpg",
+    "whatsapp": "601132265741",
+    "instagram": "cqintcomel25",
+    "facebook": "nurul.a.mohamad.3",
+    "tiktok": "cqintcomel25",
+    "lead": false,
+    "chat_id": 1089753473
+  },
+  {
+    "code": "N1M00061",
+    "name": "MUHAMMAD",
+    "name2": "SYAHIZMAN",
+    "title": "WEALTH PLANNER",
+    "image": "../Picture/N1M00061.jpg",
+    "whatsapp": "60149064384",
+    "instagram": "syah.iskandar",
+    "facebook": "profile.php?id=61589205650548",
+    "tiktok": "syahxtg",
+    "lead": false,
+    "chat_id": 168367707
+  },
+  {
+    "code": "HKA00030",
+    "name": "SYAKIRA",
+    "name2": "KYRA",
+    "title": "WEALTH PLANNER",
+    "image": "../Picture/HKA00030.jpg",
+    "whatsapp": "60134416046",
+    "instagram": "lady_pru36",
+    "tiktok": "lady_pru36",
+    "lead": false
   }
 ]
