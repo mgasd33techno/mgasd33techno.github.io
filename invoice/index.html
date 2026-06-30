@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>MGAS Invoice</title>
+
+<style>
+:root {
+  --gold: #d4af37;
+  --text: #222;
+  --muted: #777;
+}
+
+body {
+  margin: 0;
+  background: #000;
+  font-family: Inter, sans-serif;
+}
+
+/* A4 PAGE */
+.page {
+  width: 210mm;
+  height: 297mm; /* ✅ FIXED */
+  margin: auto;
+  background: #fff;
+  display: flex;
+}
+
+
+
+/* LEFT GOLD PANEL */
+.sidebar {
+  width: 42mm;
+  background: linear-gradient(180deg,#d4af37,#8c6b1a);
+  color: #000;
+  padding: 25px 18px;
+  font-size: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.sidebar strong {
+  font-size: 12px;
+  letter-spacing: 1px;
+}
+
+.sidebar p {
+  margin: 4px 0;
+  line-height: 1.5;
+}
+
+/* RIGHT CONTENT */
+.content {
+  flex: 1;
+  padding: 30px;
+
+  display: flex;
+  flex-direction: column;       /* ✅ important */
+  justify-content: space-between; /* ✅ anchors bottom */
+}
+
+.main-content {
+-direction: column; /* ✅ correct */  display: flex;          /* ✅ correct */
+  gap: 10px;
+}
+
+.footer {
+  margin-top: auto;       /* ✅ pushes total to bottom */
+}
+
+
+
+/* HEADER */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+
+
+.header h1 {
+  font-size: 38px;
+  font-weight: 200;
+  letter-spacing: 6px;
+}
+
+
+.invoice-header {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.invoice-header h2 {
+  margin: 0;
+  font-size: 20px;
+  letter-spacing: 2px;
+  color: var(--gold);
+  font-weight: 600;
+}
+
+.invoice-header p {
+  margin-top: 8px;
+  font-size: 12px;
+  color: var(--muted);
+  letter-spacing: 0.5px;
+}
+
+/* 🔥 gold divider */
+.invoice-header .divider {
+  width: 60px;
+  height: 2px;
+  background: var(--gold);
+  margin: 10px auto 0;
+  border-radius: 999px;
+}
+
+.header span {
+  font-size: 13px;
+  color: var(--muted);
+}
+
+/* DESCRIPTION */
+.desc {
+  margin-top: 20px;
+  font-size: 13px;
+  color: var(--muted);
+}
+
+
+
+/* TABLE */
+.table {
+  margin-top: 30px;
+}
+
+.table-header,
+.table-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 14px 0;
+}
+
+.table-header {
+  border-bottom: 2px solid var(--gold);
+  font-weight: bold;
+  color: var(--gold);
+}
+
+.table-row {
+  border-bottom: 1px solid #eee;
+  font-size: 14px;
+}
+
+.table-row span:first-child {
+  max-width: 65%;
+}
+
+/* TOTAL */
+.total {
+  margin-top: 25px;
+  display: flex;
+  justify-content: space-between;
+  font-size: 20px;
+  font-weight: bold;
+  color: var(--gold);
+}
+
+.download-wrapper {
+  display: flex;
+  justify-content: center;
+  margin: 20px 0 40px;
+}
+
+.print-btn {
+  background: var(--gold);
+  color: #000;
+  border: none;
+  padding: 12px 20px;
+  font-weight: 600;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.print-btn:hover {
+  transform: translateY(-2px);
+}
+
+@page {
+  size: A4;
+  margin: 0;
+}
+
+/* PRINT (IMPORTANT) */
+@media print {
+  body {
+    margin: 0;
+    padding: 0;
+    background: #fff;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  .page {
+    margin: 0;
+    box-shadow: none;
+  }
+
+  .download-wrapper {
+    display: none;
+  }
+}
+
+
+</style>
+</head>
+
+<body>
+
+<div class="page">
+
+  <div class="sidebar">
+
+        <div>
+        <strong>BILL TO</strong>
+        <p>
+            Muqmeen Group Alor Setar<br>
+            70-C, Darul Aman Hwy, Taman Tunku Habsah, <br>
+            05050 Alor Setar,<br>
+            Kedah, Malaysia
+        </p>
+        </div>
+
+        <div>
+        <strong>PAYABLE TO</strong>
+        <p>
+            Amzar Irfan Razali<br>
+            Tech Consultant<br>
+            Kuala Lumpur
+        </p>
+        </div>
+
+        <div>
+        <strong>PAYMENT METHOD</strong>
+        <p>
+            Bank Transfer<br>
+            HSBC Bank Berhad<br>
+            359594223888
+        </p>
+        </div>
+
+        <div>
+        <strong>DETAILS</strong>
+        <p>
+            Invoice No: INV-001<br>
+            Issue: 30 June 2026<br>
+            Due: 7 July 2026<br>
+        </p>
+        </div>
+
+
+    </div>
+
+  <div class="content">
+
+    <!-- ✅ HEADER INSIDE PAGE -->
+    <div class="invoice-header">
+      <h2>Muqmeen Group Alor Setar</h2>
+      <div class="divider"></div>
+      <p>Technology & Financial Solutions</p>
+    </div>
+
+    <!-- ✅ MAIN CONTENT -->
+    <div class="content">
+
+        <div class="header">
+        <h1>INVOICE</h1>
+        <span># INV-002</span>
+        </div>
+
+        <div class="desc">
+        This invoice covers professional fees and operational costs for the development, deployment, and ongoing maintenance of the MGAS digital platform, including AI integration and backend infrastructure.
+        </div>
+
+        <!-- <div style="height:2px; background:#d4af37; margin:20px 0;"></div> -->
+
+        <div class="table">
+
+        <div class="table-header">
+            <span>Description</span>
+            <span>Fees</span>
+        </div>
+
+        <div class="table-row">
+            <span>Website Hosting and Deployment</span>
+            <span>RM 159.00</span>
+        </div>
+
+        <div class="table-row">
+            <span>AI Subscription</span>
+            <span>RM 88.00</span>
+        </div>
+
+        <div class="table-row">
+            <span>MGAS LeadBot API Hosting</span>
+            <span>RM 64.00</span>
+        </div>
+
+
+    </div>
+
+    <!-- ✅ FOOTER ANCHORED -->
+    <div class="footer">
+
+      <div style="height:2px; background:#d4af37; margin:20px 0;"></div>
+
+      <div class="total">
+        <span>TOTAL</span>
+        <span>RM 311.00</span>
+      </div>
+
+    </div>
+
+  </div>
+
+
+<div class="download-wrapper">
+  <button class="print-btn" onclick="window.print()">
+    Download PDF
+  </button>
+</div>
+
+
+
+</div>
+
+</body>
+
+</html>
