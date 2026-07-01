@@ -236,6 +236,36 @@
       transform: translateY(-7px) rotate(-45deg);
     }
 
+    #submitFeedbackBtn {
+      position: relative;
+      gap: 8px;
+    }
+
+    #submitFeedbackBtn.loading {
+      opacity: 0.7;
+      pointer-events: none;
+    }
+
+    #submitFeedbackBtn .btn-icon {
+      transition: transform 0.3s ease;
+    }
+
+    #submitFeedbackBtn.loading .btn-icon {
+      animation: fly 1s ease infinite;
+    }
+
+    @keyframes fly {
+      0% {
+        transform: translateX(0) rotate(0deg);
+      }
+      50% {
+        transform: translateX(6px) rotate(10deg);
+      }
+      100% {
+        transform: translateX(0) rotate(0deg);
+      }
+    }
+
     /* =========================
       MOBILE DROPDOWN MENU
     ========================= */
@@ -633,6 +663,326 @@
     }
 
     /* =========================
+  FEEDBACK SECTION
+========================= */
+.feedback-strip {
+  margin-top: 28px;
+  padding: 24px 28px;
+  border-radius: 28px;
+  border: 1px solid rgba(120, 140, 255, 0.25);
+
+  background:
+    linear-gradient(120deg, rgba(255, 90, 180, 0.18), rgba(100, 140, 255, 0.18)),
+    rgba(18, 18, 18, 0.96);
+
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.45);
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+  position: relative;
+  overflow: hidden;
+}
+
+.feedback-strip::after {
+  content: "";
+  position: absolute;
+  width: 260px;
+  height: 260px;
+  right: -80px;
+  top: -100px;
+
+  background: radial-gradient(
+    circle,
+    rgba(255, 90, 180, 0.45),
+    rgba(100, 140, 255, 0.35),
+    transparent 70%
+  );
+
+  filter: blur(22px);
+  opacity: 0.8;
+  pointer-events: none;
+}
+
+.feedback-content {
+  position: relative;
+  z-index: 1;
+}
+
+.feedback-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 10px;
+  color: #caa8ff;
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+
+.feedback-content h3 {
+  margin: 0 0 8px;
+  font-size: 1.25rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+
+  background: linear-gradient(90deg, #ff78c8, #7aa6ff);
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+}
+
+.feedback-content p {
+  margin: 0;
+  color: #dcd6ff;
+  line-height: 1.7;
+  max-width: 720px;
+  font-size: 0.95rem;
+}
+
+.feedback-btn {
+  position: relative;
+  z-index: 1;
+  flex-shrink: 0;
+}
+
+/* =========================
+  FEEDBACK CTA BUTTON (TOP)
+========================= */
+.feedback-cta-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+
+  padding: 14px 20px;
+  border-radius: 999px;
+  border: none;
+
+  font-weight: 800;
+  font-size: 0.95rem;
+  color: #fff;
+
+  background: linear-gradient(90deg, #ff6ec7, #7aa6ff);
+
+  box-shadow: 0 12px 30px rgba(120, 140, 255, 0.35);
+
+  cursor: pointer;
+  transition: all 0.25s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Hover */
+.feedback-cta-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 18px 45px rgba(120, 140, 255, 0.5);
+}
+
+/* Click */
+.feedback-cta-btn:active {
+  transform: scale(0.96);
+}
+
+/* Animated gradient sheen */
+.feedback-cta-btn::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+
+  background: linear-gradient(120deg, #ff6ec7, #7aa6ff, #ff6ec7);
+  background-size: 200% 200%;
+
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.feedback-cta-btn:hover::before {
+  opacity: 0.25;
+  animation: feedbackGradientMove 3s ease infinite;
+}
+
+.feedback-hint {
+  display: block;
+  margin-top: 6px;
+  font-size: 0.75rem;
+  color: #aaa8ff;
+  opacity: 0.8;
+}
+
+@keyframes feedbackGradientMove {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* =========================
+  FEEDBACK MODAL
+========================= */
+.feedback-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.72);
+  backdrop-filter: blur(8px);
+  z-index: 999;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.feedback-modal-overlay.show {
+  display: flex;
+}
+
+.feedback-modal {
+  width: min(560px, 100%);
+  background: rgba(18, 18, 18, 0.98);
+  border: 1px solid rgba(212, 175, 55, 0.24);
+  border-radius: 28px;
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.55);
+  padding: 28px;
+  position: relative;
+  animation: modalPop 0.25s ease;
+}
+
+@keyframes modalPop {
+  from {
+    opacity: 0;
+    transform: translateY(14px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.feedback-close {
+  position: absolute;
+  top: 18px;
+  right: 18px;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  border: 1px solid rgba(212, 175, 55, 0.18);
+  background: rgba(255, 255, 255, 0.03);
+  color: var(--gold);
+  cursor: pointer;
+  font-size: 1.1rem;
+  transition: all 0.2s ease;
+}
+
+.feedback-close:hover {
+  background: rgba(212, 175, 55, 0.1);
+  border-color: var(--gold);
+}
+
+.feedback-modal-icon {
+  width: 54px;
+  height: 54px;
+  border-radius: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, rgba(212, 175, 55, 0.18), rgba(212, 175, 55, 0.04));
+  border: 1px solid rgba(212, 175, 55, 0.22);
+  margin-bottom: 16px;
+}
+
+.feedback-modal-icon i {
+  color: var(--gold);
+  font-size: 1.35rem;
+}
+
+.feedback-modal h3 {
+  margin: 0 44px 10px 0;
+  color: var(--gold);
+  font-size: 1.35rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.feedback-modal p {
+  margin: 0 0 20px;
+  color: var(--muted);
+  line-height: 1.7;
+  font-size: 0.95rem;
+}
+
+.feedback-form {
+  display: grid;
+  gap: 14px;
+}
+
+.form-group {
+  display: grid;
+  gap: 8px;
+}
+
+.form-group label {
+  color: var(--text);
+  font-size: 0.9rem;
+  font-weight: 700;
+}
+
+.form-control {
+  width: 100%;
+  border: 1px solid rgba(212, 175, 55, 0.18);
+  background: rgba(255, 255, 255, 0.035);
+  color: var(--text);
+  border-radius: 16px;
+  padding: 13px 14px;
+  font-family: inherit;
+  font-size: 0.95rem;
+  outline: none;
+  transition: all 0.2s ease;
+}
+
+.form-control:focus {
+  border-color: var(--gold);
+  box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.1);
+}
+
+textarea.form-control {
+  resize: vertical;
+  min-height: 130px;
+}
+
+.anonymous-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.anonymous-row input {
+  accent-color: var(--gold);
+}
+
+.feedback-success {
+  display: none;
+  margin-top: 14px;
+  padding: 14px 16px;
+  border-radius: 16px;
+  background: rgba(34, 139, 34, 0.12);
+  border: 1px solid rgba(34, 139, 34, 0.35);
+  color: #4ee27c;
+  line-height: 1.6;
+  font-size: 0.92rem;
+  font-weight: 600;
+}
+
+.feedback-success.show {
+  display: block;
+}
+
+    /* =========================
       RESPONSIVE
     ========================= */
     @media (min-width: 981px) {
@@ -726,6 +1076,26 @@
       .hero-title {
         font-size: clamp(2rem, 10vw, 2.8rem);
       }
+
+      .feedback-strip {
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 20px;
+        border-radius: 22px;
+      }
+
+      .feedback-btn {
+        width: 100%;
+      }
+
+      .feedback-btn .btn {
+        width: 100%;
+      }
+
+      .feedback-modal {
+        padding: 22px;
+        border-radius: 22px;
+      }
     }
   </style>
 
@@ -779,6 +1149,18 @@
         </div>
       </div>
     </section>
+
+    <section class="bottom-cta">
+      <div>
+        <h3>Ready to Start?</h3>
+        <p>
+          Open the Quotation Generator to prepare a simplified Medical or Hibah quotation template.
+        </p>
+      </div>
+
+      <a href="../agent_quotation/index.html" class="btn btn-primary">Go to Quotation Generator</a>
+    </section>
+
 
     <section class="section" id="tools">
       <h2 class="section-title">Available Tools</h2>
@@ -861,41 +1243,215 @@
 
     </section>
 
-    <section class="bottom-cta">
-      <div>
-        <h3>Ready to Start?</h3>
+    <section class="feedback-strip">
+      <div class="feedback-content">
+        <div class="feedback-label">
+          <i class="fa-solid fa-lightbulb"></i>
+          Help Us Transform
+        </div>
+        <h3>Your Feedback Matters</h3>
         <p>
-          Open the Quotation Generator to prepare a simplified Medical or Hibah quotation template.
+          Share your ideas, suggestions, or improvement requests to help us build better tools
+          that support your daily agent workflow.
         </p>
       </div>
 
-      <a href="../agent_quotation/index.html" class="btn btn-primary">Go to Quotation Generator</a>
+      <div class="feedback-btn">
+        <button class="btn feedback-cta-btn" id="openFeedbackModal">
+          <i class="fa-solid fa-paper-plane"></i>
+          Share Feedback
+        </button>
+        <span class="feedback-hint">Takes less than 10 seconds</span>
+      </div>
     </section>
-
+    
     <footer class="site-footer">
       <p>© 2026 Muqmeen Group Alor Setar (MGAS). All Rights Reserved.</p>
       <p>Designed for internal use by Muqmeen Group Alor Setar agents.</p>
     </footer>
   </main>
 
+  <div class="feedback-modal-overlay" id="feedbackModal">
+    <div class="feedback-modal">
+      <button class="feedback-close" id="closeFeedbackModal" aria-label="Close feedback form">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+
+      <div class="feedback-modal-icon">
+        <i class="fa-solid fa-comments"></i>
+      </div>
+
+      <h3>Share Your Feedback</h3>
+      <p>
+        We are gathering feedback on this tool and ideas on things we can improve
+        to make your working life easier, faster, and more organized.
+      </p>
+
+      <form class="feedback-form" id="feedbackForm">
+        <div class="form-group">
+          <label for="feedbackName">Name</label>
+          <input
+            type="text"
+            id="feedbackName"
+            class="form-control"
+            placeholder="Enter your name"
+          />
+        </div>
+
+        <label class="anonymous-row">
+          <input type="checkbox" id="anonymousCheck" />
+          Stay anonymous
+        </label>
+
+        <div class="form-group">
+          <label for="feedbackText">Feedback / Idea</label>
+          <textarea
+            id="feedbackText"
+            class="form-control"
+            placeholder="Tell us what can be improved or what tool would you need..."
+            required
+          ></textarea>
+        </div>
+
+        <button type="submit" class="btn btn-primary" id="submitFeedbackBtn">
+          <span class="btn-text">Send Feedback</span>
+          <i class="fa-solid fa-paper-plane btn-icon"></i>
+        </button>
+
+        <div class="feedback-success" id="feedbackSuccess">
+          Thank you for your feedback. Your idea has been received and will help us improve the MGAS Agent Tool experience.
+        </div>
+      </form>
+    </div>
+  </div>
   <script>
-    const menuToggle = document.getElementById("menuToggle");
-    const mobileMenu = document.getElementById("mobileMenu");
+  const menuToggle = document.getElementById("menuToggle");
+  const mobileMenu = document.getElementById("mobileMenu");
 
-    menuToggle.addEventListener("click", () => {
-      const isOpen = mobileMenu.classList.toggle("show");
-      menuToggle.classList.toggle("open", isOpen);
-      menuToggle.setAttribute("aria-expanded", isOpen ? "true" : "false");
+  menuToggle.addEventListener("click", () => {
+    const isOpen = mobileMenu.classList.toggle("show");
+    menuToggle.classList.toggle("open", isOpen);
+    menuToggle.setAttribute("aria-expanded", isOpen ? "true" : "false");
+  });
+
+  document.querySelectorAll(".mobile-link").forEach(link => {
+    link.addEventListener("click", () => {
+      mobileMenu.classList.remove("show");
+      menuToggle.classList.remove("open");
+      menuToggle.setAttribute("aria-expanded", "false");
+    });
+  });
+
+  /* =========================
+    FEEDBACK MODAL
+  ========================= */
+  const submitBtn = document.getElementById("submitFeedbackBtn");
+  const btnText = submitBtn.querySelector(".btn-text");
+  const openFeedbackModal = document.getElementById("openFeedbackModal");
+  const closeFeedbackModal = document.getElementById("closeFeedbackModal");
+  const feedbackModal = document.getElementById("feedbackModal");
+  const feedbackForm = document.getElementById("feedbackForm");
+  const feedbackName = document.getElementById("feedbackName");
+  const anonymousCheck = document.getElementById("anonymousCheck");
+  const feedbackText = document.getElementById("feedbackText");
+  const feedbackSuccess = document.getElementById("feedbackSuccess");
+
+  openFeedbackModal.addEventListener("click", () => {
+    feedbackModal.classList.add("show");
+    document.body.style.overflow = "hidden";
+  });
+
+  function closeModal() {
+    feedbackModal.classList.remove("show");
+    document.body.style.overflow = "";
+  }
+
+  closeFeedbackModal.addEventListener("click", closeModal);
+
+  feedbackModal.addEventListener("click", (event) => {
+    if (event.target === feedbackModal) {
+      closeModal();
+    }
+  });
+
+  anonymousCheck.addEventListener("change", () => {
+    if (anonymousCheck.checked) {
+      feedbackName.value = "";
+      feedbackName.disabled = true;
+      feedbackName.placeholder = "Anonymous";
+    } else {
+      feedbackName.disabled = false;
+      feedbackName.placeholder = "Enter your name";
+    }
+  });
+
+  const SCRIPT_URL = "https://script.google.com/macros/s/AKfycby60P_sZYZSgoTrFgz5SLPW-_7CS65pzrpTTCk1OdrgiWPy2MCYbpmNVLOBQYO8zhxC/exec";
+
+  feedbackForm.addEventListener("submit", async (event) => {
+  event.preventDefault();
+
+  const nameValue = anonymousCheck.checked || !feedbackName.value.trim()
+    ? "Anonymous"
+    : feedbackName.value.trim();
+
+  const feedbackValue = feedbackText.value.trim();
+
+  if (!feedbackValue) {
+    feedbackText.focus();
+    return;
+  }
+
+  // 🔒 LOCK BUTTON + SHOW SENDING STATE
+  submitBtn.classList.add("loading");
+  btnText.textContent = "Sending...";
+
+  const formData = new URLSearchParams();
+  formData.append("Name", nameValue);
+  formData.append("Feedback", feedbackValue);
+
+  try {
+    const response = await fetch(SCRIPT_URL, {
+      method: "POST",
+      body: formData
     });
 
-    // Optional: close menu when a mobile link is clicked
-    document.querySelectorAll(".mobile-link").forEach(link => {
-      link.addEventListener("click", () => {
-        mobileMenu.classList.remove("show");
-        menuToggle.classList.remove("open");
-        menuToggle.setAttribute("aria-expanded", "false");
-      });
-    });
-  </script>
+    const result = await response.json();
+
+    if (result.result === "success") {
+      btnText.textContent = "Successfully Sent";
+
+      feedbackSuccess.classList.add("show");
+
+      feedbackForm.reset();
+      feedbackName.disabled = false;
+      feedbackName.placeholder = "Enter your name";
+
+      setTimeout(() => {
+        feedbackSuccess.classList.remove("show");
+
+        // reset button
+        submitBtn.classList.remove("loading");
+        btnText.textContent = "Send Feedback";
+
+        closeModal();
+      }, 2500);
+
+    } else {
+      throw new Error(result.message);
+    }
+
+  } catch (error) {
+    console.error(error);
+
+    btnText.textContent = "Error ❌";
+
+    setTimeout(() => {
+      submitBtn.classList.remove("loading");
+      btnText.textContent = "Send Feedback";
+    }, 2000);
+  }
+});
+</script>
+  
 </body>
 </html>
