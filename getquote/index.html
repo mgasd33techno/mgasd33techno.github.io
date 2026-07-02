@@ -886,6 +886,30 @@
       color: #000;
       box-shadow: 0 0 20px rgba(212,175,55,0.4);
     }
+
+    button .btn-icon {
+      display: inline-flex;
+      width: 18px;
+      height: 18px;
+      margin-right: 10px;
+      transition: transform 0.3s ease;
+    }
+
+    button.loading {
+      opacity: 0.75;
+      pointer-events: none;
+      cursor: not-allowed;
+    }
+
+    button.loading .btn-icon {
+      animation: float 1s ease infinite;
+    }
+
+    @keyframes float {
+      0% { transform: translateX(0) rotate(0deg); }
+      50% { transform: translateX(6px) rotate(10deg); }
+      100% { transform: translateX(0) rotate(0deg); }
+    }
  
     #status {
       margin-top: 16px;
@@ -1162,7 +1186,10 @@
           <input type="hidden" name="Agent Code" id="agentCodeField">
           <input type="hidden" name="Form" value="Custom">
           
-          <button type="submit" id="submitBtn">SUBMIT</button>
+          <button type="submit" id="submitBtn">
+            <span class="btn-text">SUBMIT</span>
+            <i class="fa-solid fa-paper-plane btn-icon"></i>
+          </button>
           <p id="status"></p>
         </form>
       </div>
@@ -1234,7 +1261,10 @@
           <input type="hidden" name="Agent Code" id="genAgentCodeField">
           <input type="hidden" name="Form" value="Quick">
           
-          <button type="submit" id="generateBtn">GENERATE</button>
+          <button type="submit" id="generateBtn">
+            <i class="fa-solid fa-magic-wand-sparkles btn-icon"></i>
+            <span class="btn-text">GENERATE</span>
+          </button>
           <div class="disclaimer" id="disclaimer">
             <p style="font-size: 12px; text-align: center;">
               <strong>*Disclaimer:</strong> Quotation generated is for Class 1/2 only.
@@ -2263,10 +2293,16 @@
       return;
     }
 
+    const generateBtn = document.getElementById("generateBtn");
+    const generateBtnText = generateBtn.querySelector(".btn-text");
+
     document.getElementById("generateForm")["Phone Number"].value = "+60" + phoneRaw;
     const agentCodeFromHash = window.location.hash.substring(1);
     document.getElementById("generateForm")["Agent Code"].value = agentCodeFromHash || currentAgent.code;
-    document.getElementById("generateStatus").innerText = "⏳ Generating...";
+    generateBtn.disabled = true;
+    generateBtn.classList.add("loading");
+    generateBtnText.textContent = "Generating...";
+    // document.getElementById("generateStatus").innerText = "⏳ Generating...";
 
     fetch(currentAgent.scriptURL, { method: "POST", body: new FormData(document.getElementById("generateForm")) })
       .then(() => {
@@ -2311,6 +2347,11 @@
       .catch((error) => {
         console.error("Generation error:", error);
         document.getElementById("generateStatus").innerText = "❌ Generation failed. Please try again.";
+      })
+      .finally(() => {
+        generateBtn.classList.remove("loading");
+        generateBtn.disabled = false;
+        generateBtnText.textContent = "GENERATE";
       });
   }
  
@@ -2341,8 +2382,14 @@
     if (!sex) return showError("Please select your gender.");
     if (!smoker) return showError("Please choose your smoking status.");
  
+    const submitBtn = document.getElementById("submitBtn");
+    const submitBtnText = submitBtn.querySelector(".btn-text");
+
     document.getElementById("quotationForm")["Phone Number"].value = "+60" + phoneRaw;
-    document.getElementById("status").innerText = "⏳ Submitting...";
+    submitBtn.disabled = true;
+    submitBtn.classList.add("loading");
+    submitBtnText.textContent = "Submitting...";
+    // document.getElementById("status").innerText = "⏳ Submitting...";
  
     fetch(currentAgent.scriptURL, { method:"POST", body: new FormData(document.getElementById("quotationForm")) })
     .then(() => {
@@ -2401,7 +2448,12 @@
         window.open(`https://wa.me/${currentAgent.whatsapp}?text=${msg}`, "_blank");
       }, 800);
     })
-    .catch(() => showError("Submission failed. Sila cuba lagi."));
+    .catch(() => showError("Submission failed. Sila cuba lagi."))
+    .finally(() => {
+      submitBtn.classList.remove("loading");
+      submitBtn.disabled = false;
+      submitBtnText.textContent = "SUBMIT";
+    });
   });
 
   // Set date range: max age at next birthday is 50
