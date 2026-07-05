@@ -1,0 +1,1056 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MGAS Performance</title>
+
+<style>
+:root {
+  --bg: #080808;
+  --gold: #d4af37;
+  --text: #f8eed7;
+  --muted: #b9a76f;
+  --border: rgba(212, 175, 55, 0.18);
+  --shadow: 0 20px 50px rgba(0, 0, 0, 0.35);
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: Inter, system-ui, sans-serif;
+}
+
+/* HEADER */
+.site-header {
+  background: rgba(0, 0, 0, 0.85);
+  border-bottom: 1px solid var(--border);
+  position: relative;
+  z-index: 10;
+}
+
+.header-container {
+  width: min(1180px, calc(100% - 32px));
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+  padding: 14px 0;
+}
+
+.header-brand {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  color: inherit;
+  text-decoration: none;
+}
+
+.header-logo {
+  height: 48px;
+  width: auto;
+  object-fit: contain;
+}
+
+.header-title {
+  margin: 0;
+  font-size: 1.05rem;
+  color: var(--gold);
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.desktop-nav {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.nav-link {
+  color: var(--text);
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 0.92rem;
+  padding: 10px 14px;
+  border-radius: 10px;
+  transition: all 0.2s ease;
+}
+
+.nav-link:hover {
+  background: rgba(212, 175, 55, 0.1);
+  color: var(--gold);
+}
+
+.nav-link.active {
+  background: var(--gold);
+  color: #111;
+}
+
+/* MOBILE MENU */
+.menu-toggle {
+  display: none;
+  width: 46px;
+  height: 46px;
+  border-radius: 12px;
+  border: 1px solid rgba(212, 175, 55, 0.22);
+  background: rgba(255, 255, 255, 0.02);
+  cursor: pointer;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 5px;
+}
+
+.menu-toggle span {
+  width: 20px;
+  height: 2px;
+  background: var(--gold);
+}
+
+.mobile-menu {
+  display: none;
+  width: min(1180px, calc(100% - 32px));
+  margin: 10px auto;
+  padding: 12px;
+  flex-direction: column;
+  gap: 8px;
+  background: rgba(18, 18, 18, 0.98);
+  border: 1px solid var(--border);
+  border-radius: 18px;
+}
+
+.mobile-menu.show {
+  display: flex;
+}
+
+.mobile-link {
+  display: block;
+  padding: 12px 16px;
+  border-radius: 14px;
+  text-decoration: none;
+  color: var(--text);
+}
+
+.mobile-link.active {
+  background: var(--gold);
+  color: #111;
+}
+
+/* PAGE HEADER */
+.page-top {
+  width: min(1180px, calc(100% - 32px));
+  margin: 28px auto 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 18px;
+}
+
+.page-top h2 {
+  margin: 0 0 12px;
+  font-size: clamp(1.8rem, 2.5vw, 2.8rem);
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  background: linear-gradient(135deg, #d4af37, #f7d16e);
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+}
+
+.view-tabs {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.view-tab {
+  border: 1px solid rgba(212, 175, 55, 0.25);
+  background: transparent;
+  color: var(--text);
+  padding: 10px 16px;
+  border-radius: 999px;
+  cursor: pointer;
+  font-size: 0.95rem;
+  font-weight: 700;
+  transition: all 0.2s ease;
+}
+
+.view-tab.active,
+.view-tab:hover {
+  background: var(--gold);
+  color: #111;
+  border-color: var(--gold);
+}
+
+.update-date {
+  color: var(--muted);
+  font-size: 0.95rem;
+  text-align: right;
+  min-width: 200px;
+}
+
+.filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  margin-top: 16px;
+  align-items: flex-end;
+}
+
+.filter-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.filter-group label {
+  color: var(--text);
+  font-size: 0.86rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.filter-group select,
+  .filter-group select,
+  .filter-group input {
+    min-width: 150px;
+    padding: 10px 14px;
+    border-radius: 12px;
+    border: 1px solid rgba(212, 175, 55, 0.22);
+    background: rgba(18, 18, 18, 0.95);
+    color: var(--text);
+    transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+  }
+
+  .filter-group select {
+    background: rgba(18, 18, 18, 0.96);
+    border-color: rgba(212, 175, 55, 0.24);
+    padding-right: 34px;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background-image: linear-gradient(45deg, transparent 50%, rgba(212, 175, 55, 0.85) 50%),
+      linear-gradient(135deg, rgba(212, 175, 55, 0.85) 50%, transparent 50%);
+    background-position: calc(100% - 16px) calc(50% - 4px), calc(100% - 10px) calc(50% - 4px);
+    background-size: 6px 6px;
+    background-repeat: no-repeat;
+  }
+
+  .filter-group option {
+    background: #111;
+    color: var(--text);
+  }
+
+  .filter-group input::placeholder {
+    color: rgba(248, 238, 215, 0.55);
+  }
+
+  .filter-group select:focus,
+  .filter-group input:focus {
+    background: rgba(30, 30, 30, 0.98);
+    border-color: rgba(212, 175, 55, 0.55);
+    outline: none;
+  }
+
+  .filter-group select:disabled,
+  .filter-group input:disabled {
+    background: rgba(60, 60, 60, 0.85);
+    border-color: rgba(128, 128, 128, 0.4);
+    color: rgba(200, 200, 200, 0.75);
+    cursor: not-allowed;
+  }
+
+  .filter-group select:disabled option {
+    color: rgba(200, 200, 200, 0.75);
+  }
+
+.filter-search {
+  flex: 1;
+  min-width: 250px;
+  max-width: 360px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+.filter-search::before {
+  content: "";
+  position: absolute;
+  left: 18px;
+  top: 49px;
+  transform: translateY(-50%);
+  width: 18px;
+  height: 18px;
+  z-index: 2;
+
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%23d4af37' stroke-width='2'%3E%3Ccircle cx='11' cy='11' r='7'/%3E%3Cpath d='M20 20l-4-4'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-size: contain;
+}
+
+.filter-search input {
+  width: 100%;
+  height: 52px;
+
+  padding-left: 48px;
+  padding-right: 14px;
+
+  border-radius: 18px;
+
+  background: rgba(18,18,18,.95);
+  border: 1px solid rgba(212,175,55,.16);
+
+  color: #f8eed7;
+  font-size: 0.95rem;
+
+  transition: all .25s ease;
+}
+
+.filter-search input::placeholder {
+  color: rgba(248,238,215,.45);
+}
+
+.filter-search input:focus {
+  outline: none;
+  border-color: rgba(212,175,55,.6);
+
+  box-shadow:
+    0 0 0 1px rgba(212,175,55,.3),
+    0 0 25px rgba(212,175,55,.12);
+
+  transform: translateY(-1px);
+}
+
+  .filter-search label {
+    color: rgba(248, 238, 215, 0.75);
+    font-size: 0.82rem;
+    letter-spacing: 0.14em;
+  }
+
+  .filter-reset {
+    padding: 12px 20px;
+    border-radius: 14px;
+    border: 1px solid rgba(212, 175, 55, 0.25);
+    background: rgba(212, 175, 55, 0.12);
+    color: var(--text);
+    font-weight: 700;
+    cursor: pointer;
+    transition: background 0.2s ease, transform 0.2s ease, border-color 0.2s ease;
+    align-self: flex-end;
+  }
+
+  .filter-reset:hover {
+    background: rgba(212, 175, 55, 0.2);
+    border-color: rgba(212, 175, 55, 0.4);
+  }
+
+  .filter-reset:active {
+    transform: translateY(1px);
+  }
+
+.loading-cell {
+  text-align: center;
+  padding: 40px !important;
+}
+
+.loader {
+  width: 42px;
+  height: 42px;
+  border: 4px solid rgba(212, 175, 55, 0.15);
+  border-top: 4px solid var(--gold);
+  border-radius: 50%;
+  margin: 0 auto 12px;
+  animation: spin 0.8s linear infinite;
+}
+
+.loader-text {
+  color: var(--muted);
+  font-size: 0.9rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.data-table {
+  width: min(1180px, calc(100% - 32px));
+  margin: 24px auto 40px;
+  border-collapse: collapse;
+  overflow: hidden;
+  border-radius: 22px;
+  background: rgba(18, 18, 18, 0.96);
+  box-shadow: 0 30px 90px rgba(0, 0, 0, 0.25);
+}
+
+.data-table th,
+.data-table td {
+  padding: 16px 18px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  text-align: left;
+  font-size: 0.95rem;
+}
+
+.data-table th {
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--gold);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.data-table tbody tr {
+  transition: background 0.2s ease;
+}
+
+.data-table tbody tr:nth-child(even) {
+  background: rgba(255, 255, 255, 0.028);
+}
+
+.data-table tbody tr:hover {
+  background: rgba(212, 175, 55, 0.08);
+}
+
+.subtotal-row {
+  background: rgba(212, 175, 55, 0.08);
+  font-weight: 700;
+}
+
+.subtotal-row td {
+  border-top: 1px solid rgba(212, 175, 55, 0.22);
+}
+
+.data-table td {
+  color: var(--text);
+}
+
+.data-table td:last-child {
+  min-width: 120px;
+}
+
+@media (max-width: 980px) {
+  .page-top {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .update-date {
+    text-align: left;
+  }
+
+  .filters {
+    justify-content: space-between;
+  }
+
+  .data-table {
+    width: calc(100% - 32px);
+  }
+}
+
+/* FOOTER */
+.site-footer {
+  margin-top: 70px;
+  border-top: 1px solid rgba(212, 175, 55, 0.15);
+  padding: 22px 16px;
+  text-align: center;
+  color: #8f8f8f;
+  font-size: 0.86rem;
+  line-height: 1.7;
+}
+
+/* RESPONSIVE */
+@media (max-width: 980px) {
+  .desktop-nav {
+    display: none;
+  }
+
+  .menu-toggle {
+    display: flex;
+  }
+
+  .header-logo {
+    height: 38px;
+  }
+
+  .header-title {
+    font-size: 0.9rem;
+  }
+}
+</style>
+</head>
+<body>
+<header class="site-header">
+  <div class="header-container">
+    <a href="../index.html" class="header-brand">
+      <img src="../Picture/mglogo.png" alt="MGAS Logo" class="header-logo">
+      <div class="header-title-wrap">
+        <h1 class="header-title">MGAS Agent Tool</h1>
+      </div>
+    </a>
+
+    <!-- Desktop nav -->
+    <nav class="header-nav desktop-nav">
+      <a href="../agent_tool/index.html" class="nav-link">Home</a>
+      <a href="../agent_quotation/index.html" class="nav-link">Quotation Generator</a>
+      <a href="#" class="nav-link active">Agency Performance</a>
+    </nav>
+
+    <!-- Mobile menu button -->
+    <button class="menu-toggle" id="menuToggle" aria-label="Open menu" aria-expanded="false">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+  </div>
+
+  <!-- Mobile dropdown menu -->
+  <div class="mobile-menu" id="mobileMenu">
+    <a href="../agent_tool/index.html" class="mobile-link">Home</a>
+    <a href="../agent_quotation/index.html" class="mobile-link">Quotation Generator</a>
+    <a href="#" class="mobile-link active">Agency Performance</a>
+  </div>
+</header>
+
+<div class="page-top">
+  <div>
+    <h2 class="page-title">Agent Performance</h2>
+    <div class="view-tabs">
+      <button type="button" class="view-tab active" data-view="agent" onclick="setView('agent')">Agent Performance</button>
+      <button type="button" class="view-tab" data-view="unit" onclick="setView('unit')">Unit Performance</button>
+    </div>
+    <div class="filters" id="filters">
+      <div class="filter-group">
+        <label for="filterAggregate">Reporting</label>
+        <select id="filterAggregate" onchange="updateFilters()">
+          <option value="all">None</option>
+          <option value="ytd">YTD</option>
+          <option value="mtd">MTD</option>
+          <option value="q1">Quarter 1</option>
+          <option value="q2">Quarter 2</option>
+          <option value="mid">Mid-Year</option>
+          <option value="q3">Quarter 3</option>
+          <option value="q4">Quarter 4</option>
+        </select>
+      </div>
+      <div class="filter-group">
+        <label for="filterYear">Year</label>
+        <select id="filterYear" onchange="updateFilters()">
+          <option value="all">All</option>
+        </select>
+      </div>
+      <div class="filter-group">
+        <label for="filterMonth">Month</label>
+        <select id="filterMonth" onchange="updateFilters()">
+          <option value="all">All</option>
+        </select>
+      </div>
+      <div class="filter-group">
+        <label for="filterProdMin">Production ≥</label>
+        <input type="number" id="filterProdMin" min="0" placeholder="Min" oninput="updateFilters()" />
+      </div>
+      <div class="filter-group">
+        <label for="filterProdMax">Production ≤</label>
+        <input type="number" id="filterProdMax" min="0" placeholder="Max" oninput="updateFilters()" />
+      </div>
+      <div class="filter-group filter-search" id="searchGroup">
+        <label for="searchQuery">Search</label>
+        <input type="search" id="searchQuery" placeholder="Agent code or name" oninput="updateFilters()" />
+      </div>
+      <button type="button" class="filter-reset" onclick="resetFilters()">Reset</button>
+    </div>
+  </div>
+  <div class="update-date" id="updateDate">Loading update date...</div>
+</div>
+
+<table class="data-table">
+    <thead id="tableHead">
+        <tr>
+            <th>Year</th>
+            <th>Month</th>
+            <th>Agent Code</th>
+            <th>Agent Name</th>
+            <th>Production</th>
+            <th>Cases 1800</th>
+            <th>Net Cases</th>
+            <th>Unit</th>
+        </tr>
+    </thead>
+    <tbody id="tableBody">
+        <tr>
+            <td colspan="8" class="loading-cell">
+                <div class="loader"></div>
+                <!-- <div class="loader-text">Loading data...</div> -->
+            </td>
+        </tr>
+    </tbody>
+</table>
+
+
+<script>
+const AGENT_API_URL = "https://script.google.com/macros/s/AKfycbzAPugXzZT4lx7Yfk9A4HQezahkqc80Yw4aZPuAwALeS1ENGLOY9PGaGzfSpWFkwf5y/exec";
+const UNIT_API_URL = "https://script.google.com/macros/s/AKfycbwKF1oWkKvicVz_LJk2XgjsaqZ71yTFuDw0hu6IEbwwXvGslbmYySOu4rZ7Y9GAVcxF/exec";
+
+let agentUpdateDate = "";
+let unitUpdateDate = "";
+let agentData = [];
+let unitData = [];
+let currentView = 'agent';
+const agentFilterState = {
+  aggregate: 'ytd',
+  year: 'all',
+  month: 'all',
+  prodMin: '',
+  prodMax: '',
+  search: ''
+};
+const unitFilterState = {
+  aggregate: 'ytd',
+  year: 'all',
+  month: 'all',
+  prodMin: '',
+  prodMax: ''
+};
+const MONTH_ORDER = [
+  'January', 'February', 'March', 'April', 'May', 'June',
+  'July', 'August', 'September', 'October', 'November', 'December'
+];
+
+function getActiveFilterState() {
+  return currentView === 'unit' ? unitFilterState : agentFilterState;
+}
+
+function setFilterInputs() {
+  const state = getActiveFilterState();
+  document.getElementById('filterAggregate').value = state.aggregate;
+  document.getElementById('filterYear').value = state.year;
+  document.getElementById('filterMonth').value = state.month;
+  document.getElementById('filterProdMin').value = state.prodMin;
+  document.getElementById('filterProdMax').value = state.prodMax;
+  document.getElementById('searchQuery').value = currentView === 'agent' ? state.search : '';
+  document.getElementById('searchGroup').style.display = currentView === 'agent' ? 'block' : 'none';
+  const dateDisabled = state.aggregate !== 'all';
+  document.getElementById('filterYear').disabled = dateDisabled;
+  document.getElementById('filterMonth').disabled = dateDisabled;
+}
+
+function setView(view) {
+  currentView = view;
+  document.querySelectorAll('.view-tab').forEach(button => {
+    button.classList.toggle('active', button.dataset.view === view);
+  });
+  document.querySelector('.page-title').textContent = view === 'unit' ? 'Unit Performance' : 'Agent Performance';
+  document.getElementById('filters').style.display = 'flex';
+  document.getElementById('searchGroup').style.display = view === 'agent' ? 'block' : 'none';
+
+  if (view === 'unit') {
+    if (unitData.length) {
+      populateFilters();
+      setFilterInputs();
+      renderView();
+    } else {
+      renderLoading();
+      loadUnitData();
+    }
+  } else {
+    if (agentData.length) {
+      populateFilters();
+      setFilterInputs();
+      renderView();
+    } else {
+      renderLoading();
+      loadAgentData();
+    }
+  }
+}
+
+function updateFilters() {
+  const state = getActiveFilterState();
+  state.aggregate = document.getElementById('filterAggregate').value;
+  state.year = document.getElementById('filterYear').value;
+  state.month = document.getElementById('filterMonth').value;
+  state.prodMin = document.getElementById('filterProdMin').value;
+  state.prodMax = document.getElementById('filterProdMax').value;
+  if (currentView === 'agent') {
+    state.search = document.getElementById('searchQuery').value.trim().toLowerCase();
+  }
+
+  const dateDisabled = state.aggregate !== 'all';
+  document.getElementById('filterYear').disabled = dateDisabled;
+  document.getElementById('filterMonth').disabled = dateDisabled;
+
+  renderView();
+}
+
+function resetFilters() {
+  const state = getActiveFilterState();
+  state.aggregate = 'all';
+  state.year = 'all';
+  state.month = 'all';
+  state.prodMin = '';
+  state.prodMax = '';
+  if (currentView === 'agent') {
+    state.search = '';
+  }
+  setFilterInputs();
+  renderView();
+}
+
+function getUniqueOptions(data, key) {
+  return Array.from(new Set(data.map(item => item[key] || '').filter(Boolean)));
+}
+
+function populateFilters() {
+  const yearSelect = document.getElementById('filterYear');
+  const monthSelect = document.getElementById('filterMonth');
+  const sourceData = currentView === 'unit' ? unitData : agentData;
+  const years = getUniqueOptions(sourceData, 'Year').sort((a, b) => a.localeCompare(b, undefined, { numeric: true, sensitivity: 'base' }));
+  const months = getUniqueOptions(sourceData, 'Month').sort((a, b) => MONTH_ORDER.indexOf(a) - MONTH_ORDER.indexOf(b));
+
+  yearSelect.innerHTML = '<option value="all">All</option>' + years.map(year => `<option value="${year}">${year}</option>`).join('');
+  monthSelect.innerHTML = '<option value="all">All</option>' + months.map(month => `<option value="${month}">${month}</option>`).join('');
+}
+
+function getDateRank(row) {
+  const year = Number(row.Year) || 0;
+  const monthIndex = MONTH_ORDER.indexOf(row.Month || '');
+  return year * 100 + (monthIndex >= 0 ? monthIndex + 1 : 0);
+}
+
+function normalizeApiResponse(result) {
+  if (Array.isArray(result)) {
+    return result;
+  }
+  if (result && typeof result === 'object') {
+    if (Array.isArray(result.data)) {
+      return result.data;
+    }
+    if (Array.isArray(result.records)) {
+      return result.records;
+    }
+    if (Array.isArray(result.items)) {
+      return result.items;
+    }
+    if (Array.isArray(result.unitData)) {
+      return result.unitData;
+    }
+    if (Array.isArray(result.agentData)) {
+      return result.agentData;
+    }
+  }
+  return [];
+}
+
+function groupByAgentCode(data) {
+  const grouped = {};
+
+  data.forEach(row => {
+    const agentCode = String(row.AgentCode || '').trim();
+    if (!agentCode) return;
+
+    const production = toNumber(row.Production);
+    const cases1800 = toNumber(row.CaseCount1800);
+    const netCases = toNumber(row.NetCases);
+    const rowDate = getDateRank(row);
+
+    if (!grouped[agentCode]) {
+      grouped[agentCode] = {
+        ...row,
+        Production: production,
+        CaseCount1800: cases1800,
+        NetCases: netCases,
+        latestDate: rowDate
+      };
+    } else {
+      grouped[agentCode].Production += production;
+      grouped[agentCode].CaseCount1800 += cases1800;
+      grouped[agentCode].NetCases += netCases;
+
+      if (rowDate >= grouped[agentCode].latestDate) {
+        grouped[agentCode].latestDate = rowDate;
+        grouped[agentCode].AgentName = row.AgentName || grouped[agentCode].AgentName;
+        grouped[agentCode].Unit = row.Unit || grouped[agentCode].Unit;
+        grouped[agentCode].Year = row.Year || grouped[agentCode].Year;
+        grouped[agentCode].Month = row.Month || grouped[agentCode].Month;
+      }
+    }
+  });
+
+  return Object.values(grouped).map(item => {
+    const { latestDate, ...rest } = item;
+    return rest;
+  });
+}
+
+function groupByUnit(data) {
+  const grouped = {};
+
+  data.forEach(row => {
+    const unit = String(row.Unit || '').trim();
+    if (!unit) return;
+
+    const production = toNumber(row.Production);
+    const cases1800 = toNumber(row.CaseCount1800);
+    const netCases = toNumber(row.NetCases);
+    const rowDate = getDateRank(row);
+
+    if (!grouped[unit]) {
+      grouped[unit] = {
+        ...row,
+        Production: production,
+        CaseCount1800: cases1800,
+        NetCases: netCases,
+        latestDate: rowDate
+      };
+    } else {
+      grouped[unit].Production += production;
+      grouped[unit].CaseCount1800 += cases1800;
+      grouped[unit].NetCases += netCases;
+
+      if (rowDate >= grouped[unit].latestDate) {
+        grouped[unit].latestDate = rowDate;
+        grouped[unit].LeaderName = row.LeaderName || grouped[unit].LeaderName;
+        grouped[unit].Year = row.Year || grouped[unit].Year;
+        grouped[unit].Month = row.Month || grouped[unit].Month;
+      }
+    }
+  });
+
+  return Object.values(grouped).map(item => {
+    const { latestDate, ...rest } = item;
+    return rest;
+  });
+}
+
+function applyDataFilters(data, isUnit = false) {
+  const state = currentView === 'unit' ? unitFilterState : agentFilterState;
+  let filtered = [...data];
+  const now = new Date();
+  const currentYear = String(now.getFullYear());
+  const currentMonthName = MONTH_ORDER[now.getMonth()];
+
+  const QUARTER_MAP = {
+    q1: ['January', 'February', 'March'],
+    q2: ['April', 'May', 'June'],
+    mid: ['January', 'February', 'March', 'April', 'May', 'June'],
+    q3: ['July', 'August', 'September'],
+    q4: ['October', 'November', 'December']
+  };
+
+  if (state.aggregate === 'ytd') {
+    filtered = filtered.filter(row => String(row.Year) === currentYear);
+    filtered = isUnit ? groupByUnit(filtered) : groupByAgentCode(filtered);
+    filtered.sort((a, b) => toNumber(b.Production) - toNumber(a.Production));
+  } else if (state.aggregate === 'mtd') {
+    filtered = filtered.filter(row => String(row.Year) === currentYear && String(row.Month) === currentMonthName);
+    filtered = isUnit ? groupByUnit(filtered) : groupByAgentCode(filtered);
+    filtered.sort((a, b) => toNumber(b.Production) - toNumber(a.Production));
+  } else if (QUARTER_MAP[state.aggregate]) {
+    const months = QUARTER_MAP[state.aggregate];
+    filtered = filtered.filter(row => months.includes(String(row.Month)));
+    filtered = isUnit ? groupByUnit(filtered) : groupByAgentCode(filtered);
+    filtered.sort((a, b) => toNumber(b.Production) - toNumber(a.Production));
+  } else {
+    // support multi-select arrays for year/month
+    if (Array.isArray(state.year) && state.year.length > 0) {
+      filtered = filtered.filter(row => state.year.includes(String(row.Year)));
+    }
+    if (Array.isArray(state.month) && state.month.length > 0) {
+      filtered = filtered.filter(row => state.month.includes(String(row.Month)));
+    }
+  }
+
+  const prodMin = toNumber(state.prodMin);
+  const prodMax = toNumber(state.prodMax);
+  if (state.prodMin !== '') {
+    filtered = filtered.filter(row => toNumber(row.Production) >= prodMin);
+  }
+  if (state.prodMax !== '') {
+    filtered = filtered.filter(row => toNumber(row.Production) <= prodMax);
+  }
+
+  if (currentView === 'agent' && state.search) {
+    filtered = filtered.filter(row => {
+      const code = String(row.AgentCode || '').toLowerCase();
+      const name = String(row.AgentName || '').toLowerCase();
+      return code.includes(state.search) || name.includes(state.search);
+    });
+  }
+
+  return filtered;
+}
+
+function renderLoading() {
+  const tableBody = document.getElementById('tableBody');
+  const colspan = currentView === 'agent' ? 6 : 6;
+
+  tableBody.innerHTML = `
+    <tr>
+      <td colspan="${colspan}" class="loading-cell">
+        <div class="loader"></div>
+         <!-- <div class="loader-text">Loading data...</div> -->
+      </td>
+    </tr>
+  `;
+
+  document.getElementById('updateDate').innerText = 'Loading update date...';
+}
+
+function toNumber(value) {
+  const num = Number(String(value || '').replace(/,/g, ''));
+  return Number.isFinite(num) ? num : 0;
+}
+
+function renderView() {
+  const tableHead = document.getElementById('tableHead');
+  const tableBody = document.getElementById('tableBody');
+  const data = currentView === 'agent' ? applyDataFilters(agentData, false) : applyDataFilters(unitData, true);
+
+  if (!data || data.length === 0) {
+    const colspan = currentView === 'agent' ? 6 : 6;
+    tableBody.innerHTML = `<tr><td colspan="${colspan}">No data available</td></tr>`;
+    return;
+  }
+
+  if (currentView === 'agent') {
+    tableHead.innerHTML = `
+      <tr>
+        <th>No</th>
+        <th>Agent Code</th>
+        <th>Agent Name</th>
+        <th>Production</th>
+        <th>Cases Count 1,800</th>
+        <th>Net Cases</th>
+      </tr>
+    `;
+
+    tableBody.innerHTML = data.map((row, index) => `
+      <tr>
+        <td>${index + 1}</td>
+        <td>${row.AgentCode || ''}</td>
+        <td>${row.AgentName || ''}</td>
+        <td>${Number(row.Production || 0).toLocaleString()}</td>
+        <td>${row.CaseCount1800 || ''}</td>
+        <td>${row.NetCases || ''}</td>
+      </tr>
+    `).join('');
+
+    document.getElementById('updateDate').innerText = `Last Updated: ${agentUpdateDate}`;
+  } else {
+    tableHead.innerHTML = `
+      <tr>
+        <th>No</th>
+        <th>Unit</th>
+        <th>Leader Name</th>
+        <th>Production</th>
+        <th>Cases 1800</th>
+        <th>Net Cases</th>
+      </tr>
+    `;
+
+    const subtotal = data.reduce((totals, row) => {
+      totals.production += toNumber(row.Production);
+      totals.cases1800 += toNumber(row.CaseCount1800);
+      totals.netCases += toNumber(row.NetCases);
+      return totals;
+    }, { production: 0, cases1800: 0, netCases: 0 });
+
+    tableBody.innerHTML = data.map((row, index) => `
+      <tr>
+        <td>${index + 1}</td>
+        <td>${row.Unit || ''}</td>
+        <td>${row.LeaderName || ''}</td>
+        <td>${Number(row.Production || 0).toLocaleString()}</td>
+        <td>${row.CaseCount1800 || ''}</td>
+        <td>${row.NetCases || ''}</td>
+      </tr>
+    `).join('') + `
+      <tr class="subtotal-row">
+        <td colspan="3">Subtotal</td>
+        <td>${subtotal.production.toLocaleString()}</td>
+        <td>${subtotal.cases1800.toLocaleString()}</td>
+        <td>${subtotal.netCases.toLocaleString()}</td>
+      </tr>
+    `;
+
+    document.getElementById('updateDate').innerText = `Last Updated: ${agentUpdateDate}`;
+  }
+}
+
+async function loadAgentData() {
+  const updateDateEl = document.getElementById("updateDate");
+
+  try {
+    const response = await fetch(AGENT_API_URL);
+    const result = await response.json();
+
+    if (result.result === "error") {
+      throw new Error(result.message);
+    }
+
+    agentUpdateDate = result.updateDate || result.updatedDate || "No update date found";
+    agentData = normalizeApiResponse(result);
+    populateFilters();
+    setFilterInputs();
+    renderView();
+    console.log("Agent update date:", agentUpdateDate);
+    console.log("Agent data length:", agentData.length);
+  } catch (error) {
+    updateDateEl.innerHTML = "Failed to load agent data";
+    document.getElementById('tableBody').innerHTML = `
+      <tr>
+        <td colspan="8">${error.message}</td>
+      </tr>
+    `;
+    console.error(error);
+  }
+}
+
+async function loadUnitData() {
+  const updateDateEl = document.getElementById("updateDate");
+
+  try {
+    const response = await fetch(UNIT_API_URL);
+    const result = await response.json();
+
+    if (result.result === "error") {
+      throw new Error(result.message);
+    }
+
+    unitUpdateDate = result.updateDate || result.updatedDate || "No update date found";
+    unitData = normalizeApiResponse(result);
+
+    if (currentView === 'unit') {
+      populateFilters();
+      setFilterInputs();
+    }
+    renderView();
+    console.log("Unit update date:", unitUpdateDate);
+    console.log("Unit data length:", unitData.length);
+  } catch (error) {
+    updateDateEl.innerHTML = "Failed to load unit data";
+    document.getElementById('tableBody').innerHTML = `
+      <tr>
+        <td colspan="7">${error.message}</td>
+      </tr>
+    `;
+    console.error(error);
+  }
+}
+
+loadAgentData();
+</script>
+<footer class="site-footer">
+  <p>© 2026 Muqmeen Group Alor Setar (MGAS). All Rights Reserved.</p>
+  <p>Designed for internal use by Muqmeen Group Alor Setar agents.</p>
+</footer>
+</body>
+</html>
