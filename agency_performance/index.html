@@ -585,6 +585,131 @@ body {
   }
 }
 
+/* Trend chart */
+.chart-panel {
+  width: min(1180px, calc(100% - 32px));
+  margin: 24px auto 0;
+  padding: 24px;
+  background: rgba(18, 18, 18, 0.96);
+  border: 1px solid var(--border);
+  border-radius: 22px;
+  box-shadow: var(--shadow);
+}
+
+.chart-panel-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 18px;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+}
+
+.chart-panel-header h3 {
+  margin: 0;
+  font-size: 1.15rem;
+  color: var(--gold);
+}
+
+.chart-panel-header p {
+  margin: 6px 0 0;
+  color: var(--muted);
+  font-size: 0.95rem;
+}
+
+.chart-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.chart-legend-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--text);
+  font-size: 0.82rem;
+}
+
+.chart-legend-color {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.chart-wrapper {
+  overflow-x: auto;
+}
+
+.trend-chart {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  gap: 12px;
+  align-items: stretch;
+  min-height: 280px;
+}
+
+.trend-column {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  gap: 10px;
+  min-width: 56px;
+}
+
+.trend-column-total {
+  color: var(--muted);
+  font-size: 0.75rem;
+  text-align: center;
+  min-height: 20px;
+}
+
+.trend-stack {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  gap: 2px;
+  min-height: 220px;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.03);
+  overflow: hidden;
+  position: relative;
+}
+
+.trend-segment {
+  width: 100%;
+  transition: height 0.25s ease;
+}
+
+.trend-column-label {
+  text-align: center;
+  font-size: 0.78rem;
+  color: var(--text);
+  letter-spacing: 0.03em;
+}
+
+.trend-chart-empty {
+  width: 100%;
+  min-height: 220px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--muted);
+  font-size: 0.95rem;
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 18px;
+}
+
+.chart-wrapper canvas {
+  width: 100%;
+  height: 360px;
+  display: block;
+}
+
 /* FOOTER */
 .site-footer {
   margin-top: 70px;
@@ -682,6 +807,12 @@ body {
           <option value="all">All</option>
         </select>
       </div>
+      <div class="filter-group" id="filterUnitGroup" style="display:none">
+        <label for="filterUnit">Unit</label>
+        <select id="filterUnit" onchange="updateFilters()">
+          <option value="all">All</option>
+        </select>
+      </div>
       <div class="filter-group">
         <label for="filterProdMin">Production ≥</label>
         <input type="number" id="filterProdMin" min="0" placeholder="Min" oninput="updateFilters()" />
@@ -698,6 +829,19 @@ body {
     </div>
   </div>
   <div class="update-date" id="updateDate">Loading update date...</div>
+</div>
+
+<div class="chart-panel">
+  <div class="chart-panel-header">
+    <div>
+      <h3>Monthly Trend</h3>
+      <p id="chartSubtitle">Agent performance stacked by agent code</p>
+    </div>
+    <div class="chart-legend" id="chartLegend"></div>
+  </div>
+  <div class="chart-wrapper">
+    <canvas id="trendChartCanvas"></canvas>
+  </div>
 </div>
 
 <table class="data-table">
@@ -724,6 +868,7 @@ body {
 </table>
 
 
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
 const AGENT_API_URL = "https://script.google.com/macros/s/AKfycbzAPugXzZT4lx7Yfk9A4HQezahkqc80Yw4aZPuAwALeS1ENGLOY9PGaGzfSpWFkwf5y/exec";
 const UNIT_API_URL = "https://script.google.com/macros/s/AKfycbwKF1oWkKvicVz_LJk2XgjsaqZ71yTFuDw0hu6IEbwwXvGslbmYySOu4rZ7Y9GAVcxF/exec";
@@ -732,6 +877,7 @@ let agentUpdateDate = "";
 let unitUpdateDate = "";
 let agentData = [];
 let unitData = [];
+let trendChartInstance = null;
 let currentView = 'agent';
 const agentFilterState = {
   aggregate: 'ytd',
@@ -746,7 +892,8 @@ const unitFilterState = {
   year: 'all',
   month: 'all',
   prodMin: '',
-  prodMax: ''
+  prodMax: '',
+  code: 'all'
 };
 const MONTH_ORDER = [
   'January', 'February', 'March', 'April', 'May', 'June',
@@ -765,6 +912,8 @@ function setFilterInputs() {
   document.getElementById('filterProdMin').value = state.prodMin;
   document.getElementById('filterProdMax').value = state.prodMax;
   document.getElementById('searchQuery').value = currentView === 'agent' ? state.search : '';
+  const unitSelect = document.getElementById('filterUnit');
+  if (unitSelect) unitSelect.value = currentView === 'unit' ? state.code : 'all';
   document.getElementById('searchGroup').style.display = currentView === 'agent' ? 'block' : 'none';
   const dateDisabled = state.aggregate !== 'all';
   document.getElementById('filterYear').disabled = dateDisabled;
@@ -779,6 +928,8 @@ function setView(view) {
   document.querySelector('.page-title').textContent = view === 'unit' ? 'Unit Performance' : 'Agent Performance';
   document.getElementById('filters').style.display = 'flex';
   document.getElementById('searchGroup').style.display = view === 'agent' ? 'block' : 'none';
+  const unitGroup = document.getElementById('filterUnitGroup');
+  if (unitGroup) unitGroup.style.display = view === 'unit' ? 'block' : 'none';
 
   if (view === 'unit') {
     if (unitData.length) {
@@ -810,6 +961,9 @@ function updateFilters() {
   state.prodMax = document.getElementById('filterProdMax').value;
   if (currentView === 'agent') {
     state.search = document.getElementById('searchQuery').value.trim().toLowerCase();
+  } else if (currentView === 'unit') {
+    const unitVal = document.getElementById('filterUnit');
+    if (unitVal) state.code = unitVal.value;
   }
 
   const dateDisabled = state.aggregate !== 'all';
@@ -829,6 +983,9 @@ function resetFilters() {
   if (currentView === 'agent') {
     state.search = '';
   }
+  if (currentView === 'unit') {
+    state.code = 'all';
+  }
   setFilterInputs();
   renderView();
 }
@@ -843,9 +1000,15 @@ function populateFilters() {
   const sourceData = currentView === 'unit' ? unitData : agentData;
   const years = getUniqueOptions(sourceData, 'Year').sort((a, b) => a.localeCompare(b, undefined, { numeric: true, sensitivity: 'base' }));
   const months = getUniqueOptions(sourceData, 'Month').sort((a, b) => MONTH_ORDER.indexOf(a) - MONTH_ORDER.indexOf(b));
+  const codeKey = currentView === 'unit' ? 'Unit' : 'AgentCode';
+  const codes = getUniqueOptions(sourceData, codeKey).sort((a, b) => a.localeCompare(b, undefined, { numeric: true, sensitivity: 'base' }));
 
   yearSelect.innerHTML = '<option value="all">All</option>' + years.map(year => `<option value="${year}">${year}</option>`).join('');
   monthSelect.innerHTML = '<option value="all">All</option>' + months.map(month => `<option value="${month}">${month}</option>`).join('');
+  const unitSelect = document.getElementById('filterUnit');
+  if (unitSelect && currentView === 'unit') {
+    unitSelect.innerHTML = '<option value="all">All</option>' + codes.map(code => `<option value="${code}">${code}</option>`).join('');
+  }
 }
 
 function getDateRank(row) {
@@ -974,6 +1137,11 @@ function applyDataFilters(data, isUnit = false) {
     q4: ['October', 'November', 'December']
   };
 
+  // apply unit code filter when in unit view
+  if (currentView === 'unit' && state.code && state.code !== 'all') {
+    filtered = filtered.filter(row => String(row.Unit || '').trim() === state.code);
+  }
+
   if (state.aggregate === 'ytd') {
     filtered = filtered.filter(row => String(row.Year) === currentYear);
     filtered = isUnit ? groupByUnit(filtered) : groupByAgentCode(filtered);
@@ -984,16 +1152,15 @@ function applyDataFilters(data, isUnit = false) {
     filtered.sort((a, b) => toNumber(b.Production) - toNumber(a.Production));
   } else if (QUARTER_MAP[state.aggregate]) {
     const months = QUARTER_MAP[state.aggregate];
-    filtered = filtered.filter(row => months.includes(String(row.Month)));
+    filtered = filtered.filter(row => String(row.Year) === currentYear && months.includes(String(row.Month)));
     filtered = isUnit ? groupByUnit(filtered) : groupByAgentCode(filtered);
     filtered.sort((a, b) => toNumber(b.Production) - toNumber(a.Production));
   } else {
-    // support multi-select arrays for year/month
-    if (Array.isArray(state.year) && state.year.length > 0) {
-      filtered = filtered.filter(row => state.year.includes(String(row.Year)));
+    if (state.year !== 'all') {
+      filtered = filtered.filter(row => String(row.Year) === state.year);
     }
-    if (Array.isArray(state.month) && state.month.length > 0) {
-      filtered = filtered.filter(row => state.month.includes(String(row.Month)));
+    if (state.month !== 'all') {
+      filtered = filtered.filter(row => String(row.Month) === state.month);
     }
   }
 
@@ -1015,6 +1182,171 @@ function applyDataFilters(data, isUnit = false) {
   }
 
   return filtered;
+}
+
+function getMonthlyTrendData(rows, key) {
+  const months = [...MONTH_ORDER];
+  const categoryMap = {};
+  const categories = new Set();
+
+  months.forEach(month => {
+    categoryMap[month] = {};
+  });
+
+  rows.forEach(row => {
+    const month = String(row.Month || '').trim();
+    if (!month || !categoryMap[month]) return;
+
+    const category = String(row[key] || '').trim() || 'Unknown';
+    categories.add(category);
+    categoryMap[month][category] = (categoryMap[month][category] || 0) + toNumber(row.Production);
+  });
+
+  return {
+    months,
+    categories: Array.from(categories).sort((a, b) => a.localeCompare(b, undefined, { numeric: true, sensitivity: 'base' })),
+    categoryMap
+  };
+}
+
+function getCategoryColor(index) {
+  const hue = (index * 55) % 360;
+  return `hsl(${hue}, 80%, 55%)`;
+}
+
+function formatNumber(value) {
+  return Number(value || 0).toLocaleString();
+}
+
+function renderTrendChart(rows) {
+  const canvas = document.getElementById('trendChartCanvas');
+  const chartLegend = document.getElementById('chartLegend');
+  const chartSubtitle = document.getElementById('chartSubtitle');
+  if (!canvas || !chartLegend || !chartSubtitle) return;
+
+  const trendKey = currentView === 'unit' ? 'Unit' : 'AgentCode';
+  chartSubtitle.textContent = `${currentView === 'unit' ? 'Unit' : 'Agent'} performance stacked by ${currentView === 'unit' ? 'unit code' : 'agent code'}`;
+
+  if (!rows || rows.length === 0) {
+    if (trendChartInstance) { trendChartInstance.destroy(); trendChartInstance = null; }
+    chartLegend.innerHTML = '<div class="trend-chart-empty">No trend data available</div>';
+    return;
+  }
+
+  const { months, categories, categoryMap } = getMonthlyTrendData(rows, trendKey);
+  const monthsFixed = MONTH_ORDER.slice(); // ensure Jan-Dec
+
+  const datasets = categories.map((category, index) => ({
+    label: category,
+    data: monthsFixed.map(m => (categoryMap[m] && categoryMap[m][category]) ? categoryMap[m][category] : 0),
+    backgroundColor: getCategoryColor(index),
+    stack: 'stack1'
+  }));
+
+  const monthSums = monthsFixed.map((m, i) => datasets.reduce((s, d) => s + (d.data[i] || 0), 0));
+  const minSum = Math.min(...monthSums);
+  const maxSum = Math.max(...monthSums, 0);
+
+  // dynamic nice rounding for axis limits with padding
+  function niceStep(val) {
+    const a = Math.abs(val) || 1;
+    if (a >= 1e6) return 100000;
+    if (a >= 1e5) return 10000;
+    if (a >= 1e4) return 1000;
+    if (a >= 1e3) return 100;
+    if (a >= 100) return 10;
+    return 1;
+  }
+
+  const range = Math.max(maxSum - Math.min(minSum, 0), 1);
+  const padding = range * 0.06; // 6% padding
+  const upper = maxSum + padding;
+  const lower = Math.min(minSum, 0) - padding;
+  const step = niceStep(Math.max(Math.abs(upper), Math.abs(lower)));
+  const yMin = Math.floor(lower / step) * step;
+  const yMax = Math.ceil(upper / step) * step;
+
+  if (trendChartInstance) trendChartInstance.destroy();
+  const ctx = canvas.getContext('2d');
+  trendChartInstance = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: monthsFixed.map(m => m.slice(0, 3)),
+      datasets
+    },
+    plugins: [
+      {
+        id: 'zeroLine',
+        afterDraw: (chart) => {
+          const yScale = chart.scales.y;
+          if (!yScale) return;
+          const ctx2 = chart.ctx;
+          const yZero = yScale.getPixelForValue(0);
+          if (yZero < chart.chartArea.top || yZero > chart.chartArea.bottom) return;
+          ctx2.save();
+          ctx2.beginPath();
+          ctx2.moveTo(chart.chartArea.left, yZero + 0.5);
+          ctx2.lineTo(chart.chartArea.right, yZero + 0.5);
+          ctx2.lineWidth = 1;
+          ctx2.strokeStyle = 'silver';
+          ctx2.stroke();
+          ctx2.restore();
+        }
+      },
+      {
+        id: 'totalLabel',
+        afterDatasetsDraw: (chart) => {
+          const {ctx: ctx2, data, scales} = chart;
+          const xScale = scales.x;
+          const yScale = scales.y;
+          if (!xScale || !yScale) return;
+          const labels = data.labels || [];
+          const datasets = data.datasets || [];
+          const gold = (getComputedStyle && getComputedStyle(document.documentElement).getPropertyValue('--gold')) || 'rgba(212,175,55,0.95)';
+          ctx2.save();
+          ctx2.font = '12px sans-serif';
+          ctx2.textAlign = 'center';
+          ctx2.textBaseline = 'bottom';
+          ctx2.fillStyle = gold.trim() || 'rgba(212,175,55,0.95)';
+          for (let i = 0; i < labels.length; i++) {
+            const total = datasets.reduce((s, ds) => s + (Number(ds.data && ds.data[i]) || 0), 0);
+            if (!total) continue;
+            const x = xScale.getPixelForValue(labels[i]);
+            const y = yScale.getPixelForValue(total) - 6;
+            ctx2.fillText(formatNumber(total), x, y);
+          }
+          ctx2.restore();
+        }
+      }
+    ],
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
+      scales: {
+        x: { stacked: true, title: { display: true, text: 'Month' } },
+        y: {
+          stacked: true,
+          min: yMin,
+          max: yMax,
+          title: { display: true, text: 'Production' },
+          ticks: {
+            callback: function(value) {
+              if (Math.abs(value) >= 1000000) return (value / 1000000).toFixed(1).replace('.0', '') + 'M';
+              return formatNumber(value);
+            }
+          }
+        }
+      }
+    }
+  });
+
+  chartLegend.innerHTML = categories.map((category, index) => `
+    <div class="chart-legend-item">
+      <span class="chart-legend-color" style="background:${getCategoryColor(index)}"></span>
+      ${category}
+    </div>
+  `).join('');
 }
 
 function renderLoading() {
@@ -1042,6 +1374,19 @@ function renderView() {
   const tableHead = document.getElementById('tableHead');
   const tableBody = document.getElementById('tableBody');
   const data = currentView === 'agent' ? applyDataFilters(agentData, false) : applyDataFilters(unitData, true);
+
+  // Show chart only when Reporting = None (aggregate === 'all')
+  const chartPanel = document.querySelector('.chart-panel');
+  const showChart = getActiveFilterState().aggregate === 'all';
+  if (chartPanel) chartPanel.style.display = showChart ? 'block' : 'none';
+
+  // Chart should reflect current filters/search — use `data` (the filtered rows)
+  if (showChart) {
+    renderTrendChart(data);
+  } else {
+    // clear chart when hidden
+    renderTrendChart([]);
+  }
 
   if (!data || data.length === 0) {
     const colspan = currentView === 'agent' ? 6 : 6;
