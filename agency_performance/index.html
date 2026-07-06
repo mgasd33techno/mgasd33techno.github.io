@@ -48,6 +48,12 @@ body {
   text-decoration: none;
 }
 
+.header-title-wrap {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
 .header-logo {
   height: 48px;
   width: auto;
@@ -98,28 +104,35 @@ body {
   border: 1px solid rgba(212, 175, 55, 0.22);
   background: rgba(255, 255, 255, 0.02);
   cursor: pointer;
-  flex-direction: column;
-  justify-content: center;
+  padding: 0;
   align-items: center;
+  justify-content: center;
+  flex-direction: column;
   gap: 5px;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
 }
 
 .menu-toggle span {
+  display: block;
   width: 20px;
   height: 2px;
   background: var(--gold);
+  border-radius: 999px;
+  transition: all 0.25s ease;
 }
 
 .mobile-menu {
   display: none;
   width: min(1180px, calc(100% - 32px));
-  margin: 10px auto;
+  margin: 10px auto 0;
   padding: 12px;
   flex-direction: column;
   gap: 8px;
   background: rgba(18, 18, 18, 0.98);
   border: 1px solid var(--border);
   border-radius: 18px;
+  box-shadow: var(--shadow);
 }
 
 .mobile-menu.show {
@@ -132,11 +145,39 @@ body {
   border-radius: 14px;
   text-decoration: none;
   color: var(--text);
+  font-weight: 600;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(212, 175, 55, 0.1);
+  transition: all 0.2s ease;
+}
+
+.mobile-link:hover {
+  background: rgba(212, 175, 55, 0.08);
+  color: var(--gold);
+  border-color: rgba(212, 175, 55, 0.25);
 }
 
 .mobile-link.active {
   background: var(--gold);
   color: #111;
+  border-color: var(--gold);
+}
+
+.menu-toggle:hover {
+  background: rgba(212, 175, 55, 0.08);
+  border-color: var(--gold);
+}
+
+.menu-toggle.open span:nth-child(1) {
+  transform: translateY(7px) rotate(45deg);
+}
+
+.menu-toggle.open span:nth-child(2) {
+  opacity: 0;
+}
+
+.menu-toggle.open span:nth-child(3) {
+  transform: translateY(-7px) rotate(-45deg);
 }
 
 /* PAGE HEADER */
@@ -443,7 +484,7 @@ body {
   }
 
   .menu-toggle {
-    display: flex;
+    display: inline-flex;
   }
 
   .header-logo {
@@ -454,11 +495,11 @@ body {
     font-size: 0.95rem;
   }
 
-  /* header matches agent_tool mobile layout */
   .header-container {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 16px;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
   }
 
   .desktop-nav {
@@ -1064,6 +1105,26 @@ function renderView() {
     document.getElementById('updateDate').innerText = `Last Updated: ${agentUpdateDate}`;
   }
 }
+
+  // Mobile menu toggle (mirrors agent_tool behavior)
+  const menuToggle = document.getElementById("menuToggle");
+  const mobileMenu = document.getElementById("mobileMenu");
+
+  if (menuToggle && mobileMenu) {
+    menuToggle.addEventListener("click", () => {
+      const isOpen = mobileMenu.classList.toggle("show");
+      menuToggle.classList.toggle("open", isOpen);
+      menuToggle.setAttribute("aria-expanded", isOpen ? "true" : "false");
+    });
+
+    document.querySelectorAll(".mobile-link").forEach(link => {
+      link.addEventListener("click", () => {
+        mobileMenu.classList.remove("show");
+        menuToggle.classList.remove("open");
+        menuToggle.setAttribute("aria-expanded", "false");
+      });
+    });
+  }
 
 async function loadAgentData() {
   const updateDateEl = document.getElementById("updateDate");
