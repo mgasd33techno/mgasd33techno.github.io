@@ -807,12 +807,6 @@ body {
           <option value="all">All</option>
         </select>
       </div>
-      <div class="filter-group" id="filterUnitGroup" style="display:none">
-        <label for="filterUnit">Unit</label>
-        <select id="filterUnit" onchange="updateFilters()">
-          <option value="all">All</option>
-        </select>
-      </div>
       <div class="filter-group">
         <label for="filterProdMin">Production ≥</label>
         <input type="number" id="filterProdMin" min="0" placeholder="Min" oninput="updateFilters()" />
@@ -824,6 +818,12 @@ body {
       <div class="filter-group filter-search" id="searchGroup">
         <label for="searchQuery">Search</label>
         <input type="search" id="searchQuery" placeholder="Agent code or name" oninput="updateFilters()" />
+      </div>
+      <div class="filter-group" id="filterUnitGroup" style="display:none">
+        <label for="filterUnit">Unit</label>
+        <select id="filterUnit" onchange="updateFilters()">
+          <option value="all">All</option>
+        </select>
       </div>
       <button type="button" class="filter-reset" onclick="resetFilters()">Reset</button>
     </div>
