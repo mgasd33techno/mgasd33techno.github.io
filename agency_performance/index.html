@@ -602,7 +602,7 @@ body {
   justify-content: space-between;
   gap: 18px;
   flex-wrap: wrap;
-  margin-bottom: 20px;
+  margin-bottom: 10px;
 }
 
 .chart-panel-header h3 {
@@ -632,6 +632,11 @@ body {
   background: rgba(255, 255, 255, 0.04);
   color: var(--text);
   font-size: 0.82rem;
+}
+
+.chart-title {
+  font-weight: 700;
+  margin: 0.15rem 0 0.45rem;
 }
 
 .chart-legend-color {
@@ -835,13 +840,14 @@ body {
   <div class="chart-panel-header">
     <div>
       <h3>Monthly Trend</h3>
+      <p id="chartTitle" class="chart-title">Total Production (without repricing), TPC : 0</p>
       <p id="chartSubtitle">Agent performance stacked by agent code</p>
     </div>
-    <div class="chart-legend" id="chartLegend"></div>
   </div>
   <div class="chart-wrapper">
     <canvas id="trendChartCanvas"></canvas>
   </div>
+  <div class="chart-legend" id="chartLegend"></div>
 </div>
 
 <table class="data-table">
@@ -1231,6 +1237,12 @@ function renderTrendChart(rows) {
     if (trendChartInstance) { trendChartInstance.destroy(); trendChartInstance = null; }
     chartLegend.innerHTML = '<div class="trend-chart-empty">No trend data available</div>';
     return;
+  }
+
+  const totalProduction = rows.reduce((sum, row) => sum + toNumber(row.Production), 0);
+  const titleEl = document.getElementById('chartTitle');
+  if (titleEl) {
+    titleEl.textContent = `Total Production (without repricing) : ${formatNumber(totalProduction)}`;
   }
 
   const { months, categories, categoryMap } = getMonthlyTrendData(rows, trendKey);
