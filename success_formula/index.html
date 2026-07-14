@@ -1,0 +1,1314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+  />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MGAS Agent Tool</title>
+
+  <style>
+    :root {
+      --bg: #080808;
+      --surface: #111111;
+      --surface-soft: #181818;
+      --surface-hover: #1f1f1f;
+      --gold: #d4af37;
+      --gold-soft: #f2d47a;
+      --text: #f8eed7;
+      --muted: #b9a76f;
+      --border: rgba(212, 175, 55, 0.18);
+      --shadow: 0 20px 50px rgba(0, 0, 0, 0.35);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    #tools {
+      scroll-margin-top: 100px;
+    }
+
+    html,
+    body {
+      margin: 0;
+      padding: 0;
+      min-height: 100%;
+      font-family: Inter, system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+    }
+
+    body {
+      background:
+        radial-gradient(circle at top left, rgba(212, 175, 55, 0.12), transparent 20%),
+        radial-gradient(circle at 85% 10%, rgba(212, 175, 55, 0.08), transparent 15%),
+        #080808;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background:
+        radial-gradient(circle at 20% 10%, rgba(212, 175, 55, 0.08), transparent 13%),
+        radial-gradient(circle at 80% 15%, rgba(212, 175, 55, 0.05), transparent 12%);
+      z-index: 0;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .info-card {
+      padding: 22px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .info-icon {
+      width: 52px;
+      height: 52px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 16px;
+      margin-bottom: 14px;
+      background: linear-gradient(135deg, rgba(212, 175, 55, 0.18), rgba(212, 175, 55, 0.05));
+      border: 1px solid rgba(212, 175, 55, 0.2);
+      box-shadow: 0 10px 24px rgba(0, 0, 0, 0.25);
+    }
+
+    .info-icon i {
+      font-size: 1.2rem;
+      color: var(--gold);
+    }
+
+    .info-card h4 {
+      margin: 0 0 10px;
+      color: var(--gold);
+      font-size: 1rem;
+      letter-spacing: 0.04em;
+    }
+
+    .info-card p {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.7;
+      font-size: 0.94rem;
+    }
+    /* =========================
+      HEADER
+    ========================= */
+    .site-header {
+      background: rgba(0, 0, 0, 0.85);
+      border-bottom: 1px solid var(--border);
+      position: relative;
+      z-index: 10;
+    }
+
+    .header-container {
+      width: min(1180px, calc(100% - 32px));
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 20px;
+      padding: 14px 0;
+    }
+
+    .header-brand {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      flex-shrink: 0;
+      min-width: 0;
+    }
+
+    .header-logo {
+      height: 48px;
+      width: auto;
+      object-fit: contain;
+      display: block;
+    }
+
+    .header-title-wrap {
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+    }
+
+    .header-title {
+      margin: 0;
+      font-size: 1.05rem;
+      color: var(--gold);
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .header-subtitle {
+      margin: 2px 0 0;
+      font-size: 0.78rem;
+      color: var(--muted);
+      letter-spacing: 0.03em;
+    }
+
+    /* Desktop nav */
+    .desktop-nav {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .nav-link {
+      color: var(--text);
+      font-weight: 600;
+      font-size: 0.92rem;
+      padding: 10px 14px;
+      border-radius: 10px;
+      transition: all 0.2s ease;
+      white-space: nowrap;
+    }
+
+    .nav-link:hover {
+      background: rgba(212, 175, 55, 0.1);
+      color: var(--gold);
+    }
+
+    .nav-link.active {
+      background: var(--gold);
+      color: #111111;
+    }
+
+    /* =========================
+      MOBILE MENU BUTTON
+    ========================= */
+    .menu-toggle {
+      display: none;
+      width: 46px;
+      height: 46px;
+      border-radius: 12px;
+      border: 1px solid rgba(212, 175, 55, 0.22);
+      background: rgba(255, 255, 255, 0.02);
+      cursor: pointer;
+      padding: 0;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      gap: 5px;
+      transition: all 0.2s ease;
+      flex-shrink: 0;
+    }
+
+    .menu-toggle:hover {
+      background: rgba(212, 175, 55, 0.08);
+      border-color: var(--gold);
+    }
+
+    .menu-toggle span {
+      display: block;
+      width: 20px;
+      height: 2px;
+      background: var(--gold);
+      border-radius: 999px;
+      transition: all 0.25s ease;
+    }
+
+    .menu-toggle.open span:nth-child(1) {
+      transform: translateY(7px) rotate(45deg);
+    }
+
+    .menu-toggle.open span:nth-child(2) {
+      opacity: 0;
+    }
+
+    .menu-toggle.open span:nth-child(3) {
+      transform: translateY(-7px) rotate(-45deg);
+    }
+
+    #submitFeedbackBtn {
+      position: relative;
+      gap: 8px;
+    }
+
+    #submitFeedbackBtn.loading {
+      opacity: 0.7;
+      pointer-events: none;
+    }
+
+    #submitFeedbackBtn .btn-icon {
+      transition: transform 0.3s ease;
+    }
+
+    #submitFeedbackBtn.loading .btn-icon {
+      animation: fly 1s ease infinite;
+    }
+
+    @keyframes fly {
+      0% {
+        transform: translateX(0) rotate(0deg);
+      }
+      50% {
+        transform: translateX(6px) rotate(10deg);
+      }
+      100% {
+        transform: translateX(0) rotate(0deg);
+      }
+    }
+
+    /* =========================
+      MOBILE DROPDOWN MENU
+    ========================= */
+    .mobile-menu {
+      display: none;
+      width: min(1180px, calc(100% - 32px));
+      margin: 10px auto 0;
+      padding: 12px;
+      flex-direction: column;
+      gap: 8px;
+      background: rgba(18, 18, 18, 0.98);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      box-shadow: var(--shadow);
+    }
+
+    .mobile-menu.show {
+      display: flex;
+    }
+
+    .mobile-link {
+      display: block;
+      padding: 12px 16px;
+      border-radius: 14px;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(212, 175, 55, 0.1);
+      color: var(--text);
+      font-weight: 600;
+      transition: all 0.2s ease;
+    }
+
+    .mobile-link:hover {
+      background: rgba(212, 175, 55, 0.08);
+      color: var(--gold);
+      border-color: rgba(212, 175, 55, 0.25);
+    }
+
+    .mobile-link.active {
+      background: var(--gold);
+      color: #111111;
+      border-color: var(--gold);
+    }
+
+    /* =========================
+      PAGE
+    ========================= */
+    .page {
+      position: relative;
+      z-index: 1;
+      width: min(1180px, calc(100% - 32px));
+      margin: 0 auto;
+      padding: 38px 0 70px;
+    }
+
+    .hero {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 28px;
+      margin-bottom: 28px;
+    }
+
+    .hero-card,
+    .panel,
+    .tool-card,
+    .info-card {
+      background: rgba(18, 18, 18, 0.96);
+      border: 1px solid var(--border);
+      border-radius: 28px;
+      box-shadow: var(--shadow);
+    }
+
+    .hero-card {
+      padding: 36px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .hero-card::after {
+      content: "";
+      position: absolute;
+      width: 280px;
+      height: 280px;
+      right: -80px;
+      top: -80px;
+      background: radial-gradient(circle, rgba(212, 175, 55, 0.18), transparent 70%);
+      pointer-events: none;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      border: 1px solid rgba(212, 175, 55, 0.25);
+      padding: 8px 14px;
+      border-radius: 999px;
+      color: var(--gold-soft);
+      font-size: 0.82rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      font-weight: 700;
+      margin-bottom: 18px;
+      background: rgba(212, 175, 55, 0.06);
+    }
+
+    .hero-title {
+      margin: 0 0 14px;
+      font-size: clamp(2.4rem, 5vw, 4rem);
+      line-height: 1.02;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      font-weight: 900;
+      color: #d4af37;
+      background: linear-gradient(135deg, #d4af37, #f5d27a);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-shadow: 0 2px 10px rgba(212, 175, 55, 0.12);
+    }
+
+    .hero-text {
+      margin: 0;
+      max-width: 760px;
+      color: #e7dbc0;
+      line-height: 1.8;
+      font-size: 1rem;
+    }
+
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 24px;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 170px;
+      padding: 14px 20px;
+      border-radius: 999px;
+      border: 1px solid transparent;
+      font-weight: 800;
+      font-size: 0.95rem;
+      transition: all 0.2s ease;
+      cursor: pointer;
+    }
+
+    .btn-primary {
+      background: var(--gold);
+      color: #111111;
+      box-shadow: 0 14px 28px rgba(212, 175, 55, 0.22);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-1px);
+      filter: brightness(1.03);
+    }
+
+    .btn-secondary {
+      background: transparent;
+      color: var(--text);
+      border-color: rgba(212, 175, 55, 0.24);
+    }
+
+    .btn-secondary:hover {
+      background: rgba(212, 175, 55, 0.1);
+      color: var(--gold);
+      border-color: var(--gold);
+    }
+
+    .panel {
+      padding: 28px;
+      display: grid;
+      gap: 18px;
+      align-content: start;
+    }
+
+    .panel h3 {
+      margin: 0;
+      color: var(--gold);
+      font-size: 1.1rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .panel p {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.7;
+      font-size: 0.95rem;
+    }
+
+    .quick-list {
+      display: grid;
+      gap: 12px;
+      margin-top: 4px;
+    }
+
+    .quick-item {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(212, 175, 55, 0.08);
+      border-radius: 18px;
+      padding: 14px 16px;
+    }
+
+    .quick-item strong {
+      display: block;
+      color: var(--text);
+      margin-bottom: 4px;
+      font-size: 0.95rem;
+    }
+
+    .quick-item span {
+      color: var(--muted);
+      font-size: 0.88rem;
+      line-height: 1.5;
+    }
+
+    .section {
+      margin-top: 34px;
+    }
+
+    .section-title {
+      margin: 0 0 18px;
+      color: var(--gold);
+      font-size: 1.1rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .bottom-cta {
+      margin-top: 34px;
+      padding: 28px;
+      border-radius: 28px;
+      border: 1px solid var(--border);
+      background: linear-gradient(135deg, rgba(212, 175, 55, 0.08), rgba(255, 255, 255, 0.02));
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+      box-shadow: var(--shadow);
+    }
+
+    .bottom-cta h3 {
+      margin: 0 0 6px;
+      color: var(--gold);
+      font-size: 1.2rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .bottom-cta p {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.7;
+      max-width: 760px;
+    }
+
+    .site-footer {
+      margin-top: 70px;
+      border-top: 1px solid rgba(212, 175, 55, 0.15);
+      padding-top: 22px;
+      text-align: center;
+      color: #8f8f8f;
+      font-size: 0.86rem;
+      line-height: 1.7;
+    }
+
+    .formula-shell {
+      display: grid;
+      gap: 20px;
+    }
+
+    .formula-card {
+      background: rgba(18, 18, 18, 0.96);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: 24px;
+      box-shadow: var(--shadow);
+    }
+
+    .formula-card h2,
+    .formula-card h3 {
+      margin: 0 0 10px;
+      color: var(--gold);
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    .formula-description {
+      margin: 0 0 20px;
+      color: var(--muted);
+      line-height: 1.7;
+    }
+
+    .formula-highlight {
+      display: grid;
+      gap: 6px;
+      padding: 14px 16px;
+      margin-bottom: 18px;
+      border-radius: 16px;
+      background: linear-gradient(135deg, rgba(212, 175, 55, 0.12), rgba(255, 255, 255, 0.03));
+      border: 1px solid rgba(212, 175, 55, 0.16);
+    }
+
+    .formula-highlight span {
+      color: var(--gold-soft);
+      font-size: 0.8rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      font-weight: 700;
+    }
+
+    .formula-highlight strong {
+      color: var(--text);
+      line-height: 1.6;
+      font-size: 0.98rem;
+    }
+
+    .formula-tiles {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(88px, 1fr));
+      gap: 4px;
+      margin-top: 6px;
+      align-items: center;
+    }
+
+    .formula-tile {
+      border: 1px solid rgba(212, 175, 55, 0.2);
+      border-radius: 10px;
+      background: rgba(255, 255, 255, 0.04);
+      padding: 6px 4px;
+      text-align: center;
+      min-height: 52px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 1px;
+    }
+
+    .formula-tile .tile-label {
+      font-size: 0.64rem;
+      color: var(--gold-soft);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      font-weight: 700;
+    }
+
+    .formula-tile .tile-value {
+      font-size: 0.82rem;
+      color: var(--text);
+      font-weight: 700;
+      line-height: 1.2;
+    }
+
+    .formula-operator {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--gold);
+      font-size: 0.9rem;
+      font-weight: 800;
+      line-height: 1;
+      margin: 0 1px;
+    }
+
+    .formula-grid {
+      display: grid;
+      gap: 14px;
+    }
+
+    .formula-field {
+      display: grid;
+      gap: 2px;
+    }
+
+    .formula-field label {
+      color: var(--text);
+      font-weight: 600;
+      font-size: 0.95rem;
+    }
+
+    .field-hint {
+      margin: 0;
+      color: var(--muted);
+      font-size: 0.8rem;
+      line-height: 1.5;
+    }
+
+    .formula-input {
+      width: 100%;
+      padding: 12px 14px;
+      border: 1px solid rgba(212, 175, 55, 0.2);
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.03);
+      color: var(--text);
+      font-size: 0.95rem;
+    }
+
+    .formula-input:focus {
+      outline: none;
+      border-color: var(--gold);
+      box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.12);
+    }
+
+    .formula-input[readonly] {
+      background: rgba(255, 255, 255, 0.05);
+      color: var(--gold-soft);
+      cursor: not-allowed;
+    }
+
+    .formula-target-block {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      margin: 20px auto 0;
+      max-width: 360px;
+      text-align: center;
+    }
+
+    .formula-target-block label {
+      color: var(--gold-soft);
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      font-size: 0.82rem;
+    }
+
+    .reference-btn,
+    .icon-btn {
+      border: 1px solid rgba(212, 175, 55, 0.24);
+      background: rgba(212, 175, 55, 0.08);
+      color: var(--gold-soft);
+      border-radius: 999px;
+      padding: 7px 10px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      line-height: 1;
+    }
+
+    .field-label-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 2px;
+    }
+
+    .reference-btn:hover,
+    .icon-btn:hover {
+      background: rgba(212, 175, 55, 0.16);
+      color: var(--gold);
+    }
+
+    .section-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .benchmark-modal {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.72);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      z-index: 50;
+    }
+
+    .benchmark-modal.show {
+      display: flex;
+    }
+
+    .benchmark-modal-dialog {
+      width: min(560px, 100%);
+      background: rgba(12, 12, 12, 0.98);
+      border: 1px solid var(--border);
+      border-radius: 22px;
+      box-shadow: var(--shadow);
+      padding: 20px;
+    }
+
+    .benchmark-modal-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 12px;
+    }
+
+    .benchmark-modal-header h3 {
+      margin: 0;
+      color: var(--gold);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      font-size: 1rem;
+    }
+
+    .result-box {
+      background: linear-gradient(135deg, rgba(212, 175, 55, 0.12), rgba(255, 255, 255, 0.03));
+      border: 1px solid rgba(212, 175, 55, 0.14);
+      border-radius: 18px;
+      padding: 16px;
+      display: grid;
+      gap: 12px;
+    }
+
+    .result-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      color: var(--text);
+      font-size: 0.95rem;
+    }
+
+    .result-row strong {
+      color: var(--gold-soft);
+      font-size: 1rem;
+    }
+
+    .result-row .big {
+      font-size: 1.2rem;
+      color: var(--gold);
+      font-weight: 800;
+    }
+
+    .progress-track {
+      height: 12px;
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: 999px;
+      overflow: hidden;
+      margin-top: 4px;
+    }
+
+    .progress-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, var(--gold), #f5d27a);
+      border-radius: inherit;
+      transition: width 0.4s ease;
+    }
+
+    .level-badge {
+      text-align: center;
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--gold-soft);
+      padding-top: 4px;
+    }
+
+    .benchmark-table {
+      width: 100%;
+      border-collapse: collapse;
+      overflow: hidden;
+      border-radius: 12px;
+    }
+
+    .benchmark-table th,
+    .benchmark-table td {
+      padding: 12px 10px;
+      text-align: left;
+      border-bottom: 1px solid rgba(212, 175, 55, 0.14);
+      color: var(--text);
+    }
+
+    .benchmark-table th {
+      background: rgba(212, 175, 55, 0.12);
+      color: var(--gold-soft);
+      font-size: 0.9rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+
+    .tip-list {
+      display: grid;
+      gap: 10px;
+    }
+
+    .tip-item {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(212, 175, 55, 0.12);
+      border-radius: 14px;
+      padding: 12px 14px;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    @media (min-width: 780px) {
+      .formula-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    /* =========================
+      RESPONSIVE
+    ========================= */
+    @media (min-width: 981px) {
+      .desktop-nav {
+        display: flex;
+      }
+
+      .menu-toggle {
+        display: none;
+      }
+
+      .mobile-menu {
+        display: none !important;
+      }
+    }
+
+    @media (max-width: 980px) {
+      .tools-grid,
+      .info-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .header-container {
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+      }
+
+      .desktop-nav {
+        display: none;
+      }
+
+      .menu-toggle {
+        display: inline-flex;
+      }
+
+      .header-brand {
+        gap: 10px;
+      }
+
+      .header-title {
+        font-size: 0.95rem;
+        letter-spacing: 0.04em;
+      }
+
+    }
+  </style>
+
+</head>
+<body>
+
+  <header class="site-header">
+    <div class="header-container">
+      <a href="./index.html" class="header-brand">
+        <img src="../Picture/mglogo.png" alt="MGAS Logo" class="header-logo">
+        <div class="header-title-wrap">
+          <h1 class="header-title">MGAS Agent Tool</h1>
+          <!-- <p class="header-subtitle">Internal productivity tools for agents</p> -->
+        </div>
+      </a>
+
+      <!-- Desktop nav -->
+      <nav class="header-nav desktop-nav">
+        <a href="./index.html" class="nav-link">Home</a>
+        <a href="../agent_quotation/index.html" class="nav-link">Quotation Generator</a>
+        <a href="../agency_performance/index.html" class="nav-link">Agency Performance</a>
+        <a href="#" class="nav-link active">Success Formula</a>
+      </nav>
+
+      <!-- Mobile menu button -->
+      <button class="menu-toggle" id="menuToggle" aria-label="Open menu" aria-expanded="false">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+
+    <!-- Mobile dropdown menu -->
+    <div class="mobile-menu" id="mobileMenu">
+      <a href="../agent_tool/index.html" class="mobile-link">Home</a>
+      <a href="../agent_quotation/index.html" class="mobile-link">Quotation Generator</a>
+      <a href="../agency_performance/index.html" class="mobile-link">Agency Performance</a>
+      <a href="#" class="mobile-link active">Success Formula</a>
+    </div>
+  </header>
+
+  <main class="page">
+    <section class="formula-shell">
+      <div class="formula-card">
+        <div class="eyebrow"><i class="fa-solid fa-chart-line"></i> Sales performance calculator</div>
+        <div class="formula-highlight">
+          <span>Formula</span>
+          <div class="formula-tiles">
+            <div class="formula-tile">
+              <span class="tile-label">Production</span>
+            </div>
+            <div class="formula-operator">=</div>
+            <div class="formula-tile">
+              <span class="tile-label">Presentations</span>
+              <span class="tile-value">per Day</span>
+            </div>
+            <div class="formula-operator">×</div>
+            <div class="formula-tile">
+              <span class="tile-label">Work Days</span>
+              <span class="tile-value">per Week</span>
+            </div>
+            <div class="formula-operator">×</div>
+            <div class="formula-tile">
+              <span class="tile-label">Work Weeks</span>
+              <span class="tile-value">per Year</span>
+            </div>
+            <div class="formula-operator">×</div>
+            <div class="formula-tile">
+              <span class="tile-label">Closing</span>
+              <span class="tile-value">Ratio</span>
+            </div>
+            <div class="formula-operator">×</div>
+            <div class="formula-tile">
+              <span class="tile-label">Average</span>
+              <span class="tile-value">Case Size</span>
+            </div>
+          </div>
+        </div>
+        <div class="formula-target-block">
+          <label for="target" id="targetLabel">Please enter your target production (TPC) for the remaining weeks of </label>
+          <!-- <p class="field-hint">Set your target production for the balanced weeks so the calculator can show your achievement.</p> -->
+          <input class="formula-input" type="text" inputmode="numeric" id="target" value="300,000">
+        </div>
+        <br>
+        <h2>Success Formula for Personal Sales</h2>
+        <!-- <p class="formula-description">Adjust your daily activity to see your projected production and closing performance.</p> -->
+
+
+        <div class="formula-grid">
+          <div class="formula-field">
+            <label for="presentation">Presentation per Day</label>
+            <p class="field-hint">How many new presentations you aim to make each working day.</p>
+            <input class="formula-input" type="number" id="presentation" value="4" min="0" max="7">
+          </div>
+          <div class="formula-field">
+            <label for="workday">Work Days per Week</label>
+            <p class="field-hint">How many days you actually work in a typical week.</p>
+            <input class="formula-input" type="number" id="workday" value="6" min="0" max="7">
+          </div>
+          <div class="formula-field">
+            <label for="workweek">Work Weeks per Year</label>
+            <p class="field-hint">Balanced remaining weeks in the year.</p>
+            <input class="formula-input" type="number" id="workweek" value="40" min="0" readonly>
+          </div>
+          <div class="formula-field">
+            <div class="field-label-row">
+              <label for="closing">Closing Ratio (%)</label>
+              <button class="reference-btn" type="button">Open calculator</button>
+            </div>
+            <p class="field-hint">Your expected conversion rate from presentations to closed cases.</p>
+            <input class="formula-input" type="number" id="closing" value="12.5" min="0" step="0.1">
+          </div>
+          <div class="formula-field">
+            <label for="case">Average Case Size</label>
+            <p class="field-hint">Average contribution per case for the production you are targeting.</p>
+            <input class="formula-input" type="text" inputmode="numeric" id="case" value="1,800">
+          </div>
+        </div>
+      </div>
+
+      <div class="formula-card">
+        <div class="section-head">
+          <h3>Projected outcome</h3>
+        </div>
+        <div class="result-box">
+          <div class="result-row"><span>Presentations</span><strong id="annualPresentation">960</strong></div>
+          <div class="result-row"><span>Closed Cases</span><strong id="closedCases">120</strong></div>
+          <div class="result-row"><span>Formulated Production</span><strong class="big" id="annualTPC">216,000 TPC</strong></div>
+          <div class="result-row"><span>Achievement</span><strong id="achievement">72%</strong></div>
+          <div class="progress-track"><div class="progress-fill" id="bar"></div></div>
+          <!-- <div class="level-badge" id="level">🥈 Intermediate</div> -->
+        </div>
+      </div>
+
+      <div class="formula-card" id="closing-ratio-card">
+        <div class="section-head">
+          <h3>Closing ratio calculator</h3>
+          <button class="icon-btn" type="button" id="benchmarkOpenBtn" aria-label="Open benchmark guide">?</button>
+        </div>
+        <div class="formula-grid">
+          <div class="formula-field">
+            <label for="totalPresentation">Total Presentations</label>
+            <input class="formula-input" type="text" inputmode="numeric" id="totalPresentation" value="20">
+          </div>
+          <div class="formula-field">
+            <label for="closedCase">Closed Cases</label>
+            <input class="formula-input" type="text" inputmode="numeric" id="closedCase" value="3">
+          </div>
+        </div>
+        <div class="result-box" style="margin-top: 16px;">
+          <div class="result-row"><span>Closing Ratio</span><strong id="closingResult">15%</strong></div>
+          <div class="level-badge" id="closingLevel">🟡 New Agent</div>
+        </div>
+      </div>
+
+      <div class="formula-card">
+        <h3>Tips to improve closing ratio</h3>
+        <div class="tip-list">
+          <div class="tip-item">🎯 Ask the right questions instead of selling immediately.</div>
+          <div class="tip-item">❤️ Focus on solving the client’s problems.</div>
+          <div class="tip-item">⭐ Use testimonials and social proof.</div>
+          <div class="tip-item">📞 Follow up consistently.</div>
+          <div class="tip-item">📝 Use a structured closing script.</div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <p>© 2026 Muqmeen Group Alor Setar (MGAS). All Rights Reserved.</p>
+    <p>Designed for internal use by Muqmeen Group Alor Setar agents.</p>
+  </footer>
+
+  <div class="benchmark-modal" id="benchmarkModal" aria-hidden="true">
+    <div class="benchmark-modal-dialog" role="dialog" aria-modal="true" aria-labelledby="benchmarkModalTitle">
+      <div class="benchmark-modal-header">
+        <h3 id="benchmarkModalTitle">Benchmark guide</h3>
+        <button class="icon-btn" type="button" id="benchmarkCloseBtn" aria-label="Close benchmark guide">×</button>
+      </div>
+      <table class="benchmark-table">
+        <thead>
+          <tr><th>Ratio</th><th>Level</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>10% - 15%</td><td>🟡 New Agent</td></tr>
+          <tr><td>20% - 30%</td><td>🔵 Intermediate</td></tr>
+          <tr><td>40%+</td><td>🟢 High Performer</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <script>
+  const menuToggle = document.getElementById("menuToggle");
+  const mobileMenu = document.getElementById("mobileMenu");
+
+  menuToggle.addEventListener("click", () => {
+    const isOpen = mobileMenu.classList.toggle("show");
+    menuToggle.classList.toggle("open", isOpen);
+    menuToggle.setAttribute("aria-expanded", isOpen ? "true" : "false");
+  });
+
+  document.querySelectorAll(".mobile-link").forEach(link => {
+    link.addEventListener("click", () => {
+      mobileMenu.classList.remove("show");
+      menuToggle.classList.remove("open");
+      menuToggle.setAttribute("aria-expanded", "false");
+    });
+  });
+
+  function clampValue(value, min, max) {
+    const parsed = Number(value);
+    if (!Number.isFinite(parsed)) return min;
+    return Math.min(max, Math.max(min, parsed));
+  }
+
+  function getWeeksRemainingInYear() {
+    const today = new Date();
+    const year = today.getFullYear();
+
+    const endOfYear = new Date(year, 11, 31);
+    const startOfToday = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+
+    const remainingDays = (endOfYear - startOfToday) / 86400000 + 1;
+    const weeksRemaining = remainingDays / 7;
+
+    return Math.max(1, weeksRemaining);
+  }
+
+  function formatTPC(x) {
+    return Number(x).toLocaleString(undefined, { maximumFractionDigits: 0 }) + " TPC";
+  }
+
+  function parseNumericValue(value) {
+    return Number(String(value).replace(/,/g, "")) || 0;
+  }
+
+  function formatNumericInput(inputId) {
+    const input = document.getElementById(inputId);
+    if (!input) return;
+
+    const value = input.value.replace(/,/g, "");
+    if (value === "") return;
+
+    const numericValue = Number(value);
+    if (!Number.isFinite(numericValue)) return;
+
+    input.value = numericValue.toLocaleString(undefined, { maximumFractionDigits: 0 });
+  }
+
+  function calculate() {
+    const presentation = Number(document.getElementById("presentation").value) || 0;
+    const workday = Number(document.getElementById("workday").value) || 0;
+    const workweek = Number(document.getElementById("workweek").value) || 0;
+    const closing = (Number(document.getElementById("closing").value) || 0) / 100;
+    const avgCase = parseNumericValue(document.getElementById("case").value);
+    const target = parseNumericValue(document.getElementById("target").value);
+
+    const annualPresentation = presentation * workday * workweek;
+    const closed = annualPresentation * closing;
+    const tpc = closed * avgCase;
+    const achievement = target > 0 ? (tpc / target) * 100 : 0;
+
+    document.getElementById("annualPresentation").textContent = annualPresentation.toLocaleString();
+    document.getElementById("closedCases").textContent = Math.round(closed).toLocaleString();
+    document.getElementById("annualTPC").textContent = formatTPC(tpc);
+    document.getElementById("achievement").textContent = achievement.toFixed(1) + "%";
+    document.getElementById("bar").style.width = `${Math.min(achievement, 100)}%`;
+
+    let level = "🥉 Beginner";
+    if (tpc >= 300000) level = "🥈 MDRT Potential";
+    if (tpc >= 500000) level = "🏆 Elite Producer";
+    const levelEl = document.getElementById("level");
+    if (levelEl) levelEl.textContent = level;
+  }
+
+  function closingCalculator() {
+    const totalInput = document.getElementById("totalPresentation");
+    const closedInput = document.getElementById("closedCase");
+    const closingInput = document.getElementById("closing");
+    const total = parseNumericValue(totalInput.value);
+    let closed = parseNumericValue(closedInput.value);
+
+    if (closed > total) {
+      closed = total;
+      closedInput.value = total.toLocaleString(undefined, { maximumFractionDigits: 0 });
+    }
+
+    let ratio = total > 0 ? (closed / total) * 100 : 0;
+    if (!isFinite(ratio)) ratio = 0;
+
+    document.getElementById("closingResult").textContent = ratio.toFixed(1) + "%";
+
+    if (closingInput) {
+      closingInput.value = ratio.toFixed(1);
+    }
+
+    let status = "🔴 Needs Improvement";
+    if (ratio >= 10) status = "🟡 New Agent";
+    if (ratio >= 20) status = "🔵 Intermediate";
+    if (ratio >= 40) status = "🟢 High Performer";
+    document.getElementById("closingLevel").textContent = status;
+
+    calculate();
+  }
+
+  const benchmarkOpenBtn = document.getElementById("benchmarkOpenBtn");
+  const benchmarkModal = document.getElementById("benchmarkModal");
+  const benchmarkCloseBtn = document.getElementById("benchmarkCloseBtn");
+
+  benchmarkOpenBtn.addEventListener("click", () => {
+    benchmarkModal.classList.add("show");
+    benchmarkModal.setAttribute("aria-hidden", "false");
+  });
+
+  function closeBenchmarkModal() {
+    benchmarkModal.classList.remove("show");
+    benchmarkModal.setAttribute("aria-hidden", "true");
+  }
+
+  benchmarkCloseBtn.addEventListener("click", closeBenchmarkModal);
+  benchmarkModal.addEventListener("click", (event) => {
+    if (event.target === benchmarkModal) closeBenchmarkModal();
+  });
+
+  document.querySelectorAll(".reference-btn").forEach(button => {
+    button.addEventListener("click", () => {
+      document.getElementById("closing-ratio-card").scrollIntoView({ behavior: "smooth", block: "start" });
+    });
+  });
+
+  document.getElementById("presentation").addEventListener("input", () => {
+    document.getElementById("presentation").value = clampValue(document.getElementById("presentation").value, 0, 7);
+    calculate();
+  });
+
+  document.getElementById("workday").addEventListener("input", () => {
+    document.getElementById("workday").value = clampValue(document.getElementById("workday").value, 0, 7);
+    calculate();
+  });
+
+  document.querySelectorAll(".formula-input").forEach(input => {
+    if (input.id === "target" || input.id === "case" || input.id === "totalPresentation" || input.id === "closedCase") {
+      input.addEventListener("input", () => {
+        formatNumericInput(input.id);
+        calculate();
+        closingCalculator();
+      });
+      input.addEventListener("change", () => {
+        formatNumericInput(input.id);
+        calculate();
+        closingCalculator();
+      });
+    } else if (input.id !== "presentation" && input.id !== "workday") {
+      input.addEventListener("input", () => {
+        calculate();
+        closingCalculator();
+      });
+      input.addEventListener("change", () => {
+        calculate();
+        closingCalculator();
+      });
+    }
+  });
+
+  ["totalPresentation", "closedCase"].forEach(inputId => {
+    const input = document.getElementById(inputId);
+    if (input) {
+      input.addEventListener("input", () => {
+        formatNumericInput(inputId);
+        closingCalculator();
+      });
+      input.addEventListener("change", () => {
+        formatNumericInput(inputId);
+        closingCalculator();
+      });
+    }
+  });
+
+  const currentYear = new Date().getFullYear();
+  const targetLabel = document.getElementById("targetLabel");
+  if (targetLabel) {
+    targetLabel.textContent = `Please enter your target production (TPC) for the remaining weeks of ${currentYear}`;
+  }
+
+  const weeksRemaining = getWeeksRemainingInYear();
+  document.getElementById("workweek").value = weeksRemaining.toFixed(1);
+  formatNumericInput("target");
+  formatNumericInput("case");
+  formatNumericInput("totalPresentation");
+  formatNumericInput("closedCase");
+  calculate();
+  closingCalculator();
+</script>
+  
+</body>
+</html>
