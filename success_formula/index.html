@@ -590,27 +590,27 @@
 
     .formula-tiles {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(88px, 1fr));
-      gap: 4px;
+      grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+      gap: 2px;
       margin-top: 6px;
       align-items: center;
     }
 
     .formula-tile {
-      border: 1px solid rgba(212, 175, 55, 0.2);
-      border-radius: 10px;
+      border: 1px solid rgba(212, 175, 55, 0.18);
+      border-radius: 8px;
       background: rgba(255, 255, 255, 0.04);
-      padding: 6px 4px;
+      padding: 4px 6px;
       text-align: center;
-      min-height: 52px;
+      min-height: 44px;
       display: flex;
       flex-direction: column;
       justify-content: center;
-      gap: 1px;
+      gap: 2px;
     }
 
     .formula-tile .tile-label {
-      font-size: 0.64rem;
+      font-size: 0.62rem;
       color: var(--gold-soft);
       text-transform: uppercase;
       letter-spacing: 0.08em;
@@ -618,7 +618,7 @@
     }
 
     .formula-tile .tile-value {
-      font-size: 0.82rem;
+      font-size: 0.78rem;
       color: var(--text);
       font-weight: 700;
       line-height: 1.2;
@@ -629,10 +629,10 @@
       align-items: center;
       justify-content: center;
       color: var(--gold);
-      font-size: 0.9rem;
+      font-size: 0.88rem;
       font-weight: 800;
       line-height: 1;
-      margin: 0 1px;
+      margin: 0 0.5px;
     }
 
     .formula-grid {
@@ -733,7 +733,7 @@
       gap: 10px;
     }
 
-    .benchmark-modal {
+    .modal-overlay {
       position: fixed;
       inset: 0;
       background: rgba(0, 0, 0, 0.72);
@@ -744,32 +744,46 @@
       z-index: 50;
     }
 
-    .benchmark-modal.show {
+    .modal-overlay.show {
       display: flex;
     }
 
-    .benchmark-modal-dialog {
-      width: min(560px, 100%);
+    .modal-dialog {
+      width: min(620px, 100%);
       background: rgba(12, 12, 12, 0.98);
       border: 1px solid var(--border);
       border-radius: 22px;
       box-shadow: var(--shadow);
-      padding: 20px;
+      padding: 22px;
+      position: relative;
+      z-index: 60;
     }
 
-    .benchmark-modal-header {
+    .modal-header,
+    .modal-footer {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      margin-bottom: 12px;
+      gap: 10px;
+      margin-bottom: 16px;
     }
 
-    .benchmark-modal-header h3 {
+    .modal-header h3 {
       margin: 0;
       color: var(--gold);
       text-transform: uppercase;
       letter-spacing: 0.06em;
       font-size: 1rem;
+    }
+
+    .modal-footer {
+      margin-top: 16px;
+    }
+
+    .modal-footer .icon-btn {
+      width: auto;
+      padding: 10px 16px;
+      min-width: 110px;
     }
 
     .result-box {
@@ -961,12 +975,12 @@
       <div class="formula-card">
         <div class="eyebrow"><i class="fa-solid fa-chart-line"></i> Sales performance calculator</div>
         <div class="formula-highlight">
-          <span>Formula</span>
+          <span>Success Formula</span>
           <div class="formula-tiles">
-            <div class="formula-tile">
+            <!-- <div class="formula-tile">
               <span class="tile-label">Production</span>
             </div>
-            <div class="formula-operator">=</div>
+            <div class="formula-operator">=</div> -->
             <div class="formula-tile">
               <span class="tile-label">Presentations</span>
               <span class="tile-value">per Day</span>
@@ -996,81 +1010,116 @@
         <div class="formula-target-block">
           <label for="target" id="targetLabel">Please enter your target production (TPC) for the remaining weeks of </label>
           <!-- <p class="field-hint">Set your target production for the balanced weeks so the calculator can show your achievement.</p> -->
-          <input class="formula-input" type="text" inputmode="numeric" id="target" value="300,000">
-        </div>
-        <br>
-        <h2>Success Formula for Personal Sales</h2>
-        <!-- <p class="formula-description">Adjust your daily activity to see your projected production and closing performance.</p> -->
-
-
-        <div class="formula-grid">
-          <div class="formula-field">
-            <label for="presentation">Presentation per Day</label>
-            <p class="field-hint">How many new presentations you aim to make each working day.</p>
-            <input class="formula-input" type="number" id="presentation" value="4" min="0" max="7">
-          </div>
-          <div class="formula-field">
-            <label for="workday">Work Days per Week</label>
-            <p class="field-hint">How many days you actually work in a typical week.</p>
-            <input class="formula-input" type="number" id="workday" value="6" min="0" max="7">
-          </div>
-          <div class="formula-field">
-            <label for="workweek">Work Weeks per Year</label>
-            <p class="field-hint">Balanced remaining weeks in the year.</p>
-            <input class="formula-input" type="number" id="workweek" value="40" min="0" readonly>
-          </div>
-          <div class="formula-field">
-            <div class="field-label-row">
-              <label for="closing">Closing Ratio (%)</label>
-              <button class="reference-btn" type="button">Open calculator</button>
-            </div>
-            <p class="field-hint">Your expected conversion rate from presentations to closed cases.</p>
-            <input class="formula-input" type="number" id="closing" value="12.5" min="0" step="0.1">
-          </div>
-          <div class="formula-field">
-            <label for="case">Average Case Size</label>
-            <p class="field-hint">Average contribution per case for the production you are targeting.</p>
-            <input class="formula-input" type="text" inputmode="numeric" id="case" value="1,800">
-          </div>
+          <input class="formula-input" type="text" inputmode="numeric" id="target" value="125,000">
         </div>
       </div>
+
+        <div class="formula-card">
+          <br>
+          <h2>Success Formula for Personal Sales</h2>
+          <!-- <p class="formula-description">Adjust your daily activity to see your projected production and closing performance.</p> -->
+
+
+          <div class="formula-grid">
+            <div class="formula-field">
+              <label for="presentation">Presentations per Day</label>
+              <p class="field-hint">How many new presentations you aim to make each working day.</p>
+              <input class="formula-input" type="number" id="presentation" value="3" min="0" max="7">
+            </div>
+            <div class="formula-field">
+              <label for="workday">Work Days per Week</label>
+              <p class="field-hint">How many days you actually work in a typical week.</p>
+              <input class="formula-input" type="number" id="workday" value="5" min="0" max="7">
+            </div>
+            <div class="formula-field">
+              <label for="workweek">Work Weeks per Year</label>
+              <p class="field-hint">Balanced remaining weeks in the year.</p>
+              <input class="formula-input" type="number" id="workweek" value="40" min="0" readonly>
+            </div>
+            <div class="formula-field">
+              <div class="field-label-row">
+                <label for="closing">Closing Ratio (%)</label>
+                <button class="reference-btn" type="button" id="openClosingCalculatorBtn">Open calculator</button>
+              </div>
+              <p class="field-hint">Your expected conversion rate from presentations to closed cases.</p>
+              <input class="formula-input" type="number" id="closing" value="30" min="0" step="0.1">
+            </div>
+            <div class="formula-field">
+              <label for="case">Average Case Size</label>
+              <p class="field-hint">Average contribution per case for the production you are targeting.</p>
+              <input class="formula-input" type="text" inputmode="numeric" id="case" value="1,800">
+            </div>
+          </div>
+        </div>
+
 
       <div class="formula-card">
         <div class="section-head">
           <h3>Projected outcome</h3>
         </div>
         <div class="result-box">
+          <div class="result-row"><span>Formulated Production</span><strong class="big" id="annualTPC">216,000TPC</strong></div>
           <div class="result-row"><span>Presentations</span><strong id="annualPresentation">960</strong></div>
           <div class="result-row"><span>Closed Cases</span><strong id="closedCases">120</strong></div>
-          <div class="result-row"><span>Formulated Production</span><strong class="big" id="annualTPC">216,000 TPC</strong></div>
           <div class="result-row"><span>Achievement</span><strong id="achievement">72%</strong></div>
           <div class="progress-track"><div class="progress-fill" id="bar"></div></div>
           <!-- <div class="level-badge" id="level">🥈 Intermediate</div> -->
         </div>
       </div>
 
-      <div class="formula-card" id="closing-ratio-card">
+      <!-- <div class="formula-card" id="closing-ratio-card">
         <div class="section-head">
           <h3>Closing ratio calculator</h3>
-          <button class="icon-btn" type="button" id="benchmarkOpenBtn" aria-label="Open benchmark guide">?</button>
-        </div>
-        <div class="formula-grid">
-          <div class="formula-field">
-            <label for="totalPresentation">Total Presentations</label>
-            <input class="formula-input" type="text" inputmode="numeric" id="totalPresentation" value="20">
-          </div>
-          <div class="formula-field">
-            <label for="closedCase">Closed Cases</label>
-            <input class="formula-input" type="text" inputmode="numeric" id="closedCase" value="3">
-          </div>
         </div>
         <div class="result-box" style="margin-top: 16px;">
           <div class="result-row"><span>Closing Ratio</span><strong id="closingResult">15%</strong></div>
           <div class="level-badge" id="closingLevel">🟡 New Agent</div>
         </div>
+      </div> -->
+
+      <div class="modal-overlay" id="closingModal" aria-hidden="true">
+        <div class="modal-dialog" role="dialog" aria-modal="true" aria-labelledby="closingModalTitle">
+          <div class="modal-header">
+            <h3 id="closingModalTitle">Closing ratio calculator</h3>
+            <button class="icon-btn" type="button" id="closeClosingModalBtn" aria-label="Close calculator">×</button>
+          </div>
+          <div class="modal-body">
+            <div class="formula-grid">
+              <div class="formula-field">
+                <label for="totalPresentation">Total Presentations</label>
+                <input class="formula-input" type="text" inputmode="numeric" id="totalPresentation" value="20">
+              </div>
+              <div class="formula-field">
+                <label for="closedCase">Closed Cases</label>
+                <input class="formula-input" type="text" inputmode="numeric" id="closedCase" value="3">
+              </div>
+            </div>
+            <div class="result-box" style="margin-top: 16px;">
+              <div class="result-row"><span>Closing Ratio</span><strong id="modalClosingResult">15%</strong></div>
+              <div class="level-badge" id="modalClosingLevel">🟡 New Agent</div>
+            </div>
+            <div class="benchmark-inline" style="margin-top: 20px;">
+              <h4>Benchmark guide</h4>
+              <table class="benchmark-table">
+                <thead>
+                  <tr><th>Ratio</th><th>Level</th></tr>
+                </thead>
+                <tbody>
+                  <tr><td>10% - 15%</td><td>🟡 New Agent</td></tr>
+                  <tr><td>20% - 30%</td><td>🔵 Intermediate</td></tr>
+                  <tr><td>40%+</td><td>🟢 High Performer</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button class="icon-btn" type="button" id="cancelClosingBtn">Cancel</button>
+            <button class="icon-btn" type="button" id="applyClosingBtn">Apply ratio</button>
+          </div>
+        </div>
       </div>
 
-      <div class="formula-card">
+      <!-- <div class="formula-card">
         <h3>Tips to improve closing ratio</h3>
         <div class="tip-list">
           <div class="tip-item">🎯 Ask the right questions instead of selling immediately.</div>
@@ -1079,7 +1128,7 @@
           <div class="tip-item">📞 Follow up consistently.</div>
           <div class="tip-item">📝 Use a structured closing script.</div>
         </div>
-      </div>
+      </div> -->
     </section>
   </main>
 
@@ -1088,24 +1137,6 @@
     <p>Designed for internal use by Muqmeen Group Alor Setar agents.</p>
   </footer>
 
-  <div class="benchmark-modal" id="benchmarkModal" aria-hidden="true">
-    <div class="benchmark-modal-dialog" role="dialog" aria-modal="true" aria-labelledby="benchmarkModalTitle">
-      <div class="benchmark-modal-header">
-        <h3 id="benchmarkModalTitle">Benchmark guide</h3>
-        <button class="icon-btn" type="button" id="benchmarkCloseBtn" aria-label="Close benchmark guide">×</button>
-      </div>
-      <table class="benchmark-table">
-        <thead>
-          <tr><th>Ratio</th><th>Level</th></tr>
-        </thead>
-        <tbody>
-          <tr><td>10% - 15%</td><td>🟡 New Agent</td></tr>
-          <tr><td>20% - 30%</td><td>🔵 Intermediate</td></tr>
-          <tr><td>40%+</td><td>🟢 High Performer</td></tr>
-        </tbody>
-      </table>
-    </div>
-  </div>
 
   <script>
   const menuToggle = document.getElementById("menuToggle");
@@ -1195,6 +1226,9 @@
     const totalInput = document.getElementById("totalPresentation");
     const closedInput = document.getElementById("closedCase");
     const closingInput = document.getElementById("closing");
+
+    if (!totalInput || !closedInput || !closingInput) return;
+
     const total = parseNumericValue(totalInput.value);
     let closed = parseNumericValue(closedInput.value);
 
@@ -1206,44 +1240,100 @@
     let ratio = total > 0 ? (closed / total) * 100 : 0;
     if (!isFinite(ratio)) ratio = 0;
 
-    document.getElementById("closingResult").textContent = ratio.toFixed(1) + "%";
+    closingInput.value = ratio.toFixed(1);
 
-    if (closingInput) {
-      closingInput.value = ratio.toFixed(1);
-    }
+    calculate();
+  }
+  
+  // function closingCalculator() {
+  //   const totalInput = document.getElementById("totalPresentation");
+  //   const closedInput = document.getElementById("closedCase");
+  //   const closingInput = document.getElementById("closing");
+  //   const total = parseNumericValue(totalInput.value);
+  //   let closed = parseNumericValue(closedInput.value);
 
+  //   if (closed > total) {
+  //     closed = total;
+  //     closedInput.value = total.toLocaleString(undefined, { maximumFractionDigits: 0 });
+  //   }
+
+  //   let ratio = total > 0 ? (closed / total) * 100 : 0;
+  //   if (!isFinite(ratio)) ratio = 0;
+
+  //   document.getElementById("closingResult").textContent = ratio.toFixed(1) + "%";
+
+  //   if (closingInput) {
+  //     closingInput.value = ratio.toFixed(1);
+  //   }
+
+  //   let status = "🔴 Needs Improvement";
+  //   if (ratio >= 10) status = "🟡 New Agent";
+  //   if (ratio >= 20) status = "🔵 Intermediate";
+  //   if (ratio >= 40) status = "🟢 High Performer";
+  //   document.getElementById("closingLevel").textContent = status;
+
+  //   calculate();
+  // }
+
+  const openClosingCalculatorBtn = document.getElementById("openClosingCalculatorBtn");
+  const closingModal = document.getElementById("closingModal");
+  const closeClosingModalBtn = document.getElementById("closeClosingModalBtn");
+  const cancelClosingBtn = document.getElementById("cancelClosingBtn");
+  const applyClosingBtn = document.getElementById("applyClosingBtn");
+
+  function getRatioAndStatus(total, closed) {
+    const ratio = total > 0 ? (closed / total) * 100 : 0;
     let status = "🔴 Needs Improvement";
     if (ratio >= 10) status = "🟡 New Agent";
     if (ratio >= 20) status = "🔵 Intermediate";
     if (ratio >= 40) status = "🟢 High Performer";
-    document.getElementById("closingLevel").textContent = status;
+    return { ratio, status };
+  }
+
+  function updateModalPreview() {
+    const total = parseNumericValue(document.getElementById("totalPresentation").value);
+    let closed = parseNumericValue(document.getElementById("closedCase").value);
+    if (closed > total) closed = total;
+
+    const closedCaseInput = document.getElementById("closedCase");
+    if (closedCaseInput && closed !== parseNumericValue(closedCaseInput.value)) {
+      closedCaseInput.value = closed.toLocaleString(undefined, { maximumFractionDigits: 0 });
+    }
+
+    const { ratio, status } = getRatioAndStatus(total, closed);
+    document.getElementById("modalClosingResult").textContent = ratio.toFixed(1) + "%";
+    document.getElementById("modalClosingLevel").textContent = status;
+    return { ratio, status, closed };
+  }
+
+  function openClosingModal() {
+    closingModal.classList.add("show");
+    closingModal.setAttribute("aria-hidden", "false");
+    updateModalPreview();
+    document.getElementById("totalPresentation").focus();
+  }
+
+  function closeClosingModal() {
+    closingModal.classList.remove("show");
+    closingModal.setAttribute("aria-hidden", "true");
+  }
+
+  function applyClosingRatio() {
+    const { ratio } = updateModalPreview();
+
+    const closingInput = document.getElementById("closing");
+    closingInput.value = ratio.toFixed(1);
 
     calculate();
+    closeClosingModal();
   }
 
-  const benchmarkOpenBtn = document.getElementById("benchmarkOpenBtn");
-  const benchmarkModal = document.getElementById("benchmarkModal");
-  const benchmarkCloseBtn = document.getElementById("benchmarkCloseBtn");
-
-  benchmarkOpenBtn.addEventListener("click", () => {
-    benchmarkModal.classList.add("show");
-    benchmarkModal.setAttribute("aria-hidden", "false");
-  });
-
-  function closeBenchmarkModal() {
-    benchmarkModal.classList.remove("show");
-    benchmarkModal.setAttribute("aria-hidden", "true");
-  }
-
-  benchmarkCloseBtn.addEventListener("click", closeBenchmarkModal);
-  benchmarkModal.addEventListener("click", (event) => {
-    if (event.target === benchmarkModal) closeBenchmarkModal();
-  });
-
-  document.querySelectorAll(".reference-btn").forEach(button => {
-    button.addEventListener("click", () => {
-      document.getElementById("closing-ratio-card").scrollIntoView({ behavior: "smooth", block: "start" });
-    });
+  openClosingCalculatorBtn.addEventListener("click", openClosingModal);
+  closeClosingModalBtn.addEventListener("click", closeClosingModal);
+  cancelClosingBtn.addEventListener("click", closeClosingModal);
+  applyClosingBtn.addEventListener("click", applyClosingRatio);
+  closingModal.addEventListener("click", event => {
+    if (event.target === closingModal) closeClosingModal();
   });
 
   document.getElementById("presentation").addEventListener("input", () => {
@@ -1257,16 +1347,37 @@
   });
 
   document.querySelectorAll(".formula-input").forEach(input => {
-    if (input.id === "target" || input.id === "case" || input.id === "totalPresentation" || input.id === "closedCase") {
+    if (input.id === "target" || input.id === "case") {
       input.addEventListener("input", () => {
         formatNumericInput(input.id);
         calculate();
-        closingCalculator();
       });
+
       input.addEventListener("change", () => {
         formatNumericInput(input.id);
         calculate();
-        closingCalculator();
+      });
+    }
+    // if (input.id === "target" || input.id === "case") {
+    //   input.addEventListener("input", () => {
+    //     formatNumericInput(input.id);
+    //     calculate();
+    //     closingCalculator();
+    //   });
+    //   input.addEventListener("change", () => {
+    //     formatNumericInput(input.id);
+    //     calculate();
+    //     closingCalculator();
+    //   });
+    // } 
+    else if (input.id === "totalPresentation" || input.id === "closedCase") {
+      input.addEventListener("input", () => {
+        formatNumericInput(input.id);
+        updateModalPreview();
+      });
+      input.addEventListener("change", () => {
+        formatNumericInput(input.id);
+        updateModalPreview();
       });
     } else if (input.id !== "presentation" && input.id !== "workday") {
       input.addEventListener("input", () => {
@@ -1284,12 +1395,10 @@
     const input = document.getElementById(inputId);
     if (input) {
       input.addEventListener("input", () => {
-        formatNumericInput(inputId);
-        closingCalculator();
+        updateModalPreview();
       });
       input.addEventListener("change", () => {
-        formatNumericInput(inputId);
-        closingCalculator();
+        updateModalPreview();
       });
     }
   });
@@ -1307,7 +1416,7 @@
   formatNumericInput("totalPresentation");
   formatNumericInput("closedCase");
   calculate();
-  closingCalculator();
+  // closingCalculator();
 </script>
   
 </body>
