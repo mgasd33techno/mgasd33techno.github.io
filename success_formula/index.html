@@ -947,7 +947,7 @@
 
       <!-- Desktop nav -->
       <nav class="header-nav desktop-nav">
-        <a href="../agent_tool/index.html" class="nav-link">Home</a>
+        <a href="./index.html" class="nav-link">Home</a>
         <a href="../agent_quotation/index.html" class="nav-link">Quotation Generator</a>
         <a href="../agency_performance/index.html" class="nav-link">Agency Performance</a>
         <a href="#" class="nav-link active">Success Formula</a>
@@ -1010,7 +1010,7 @@
         <div class="formula-target-block">
           <label for="target" id="targetLabel">Please enter your target production (TPC) for the remaining weeks of </label>
           <!-- <p class="field-hint">Set your target production for the balanced weeks so the calculator can show your achievement.</p> -->
-          <input class="formula-input" type="text" inputmode="numeric" id="target" value="125,000">
+          <input class="formula-input" type="text" inputmode="numeric" id="target" value="0">
         </div>
       </div>
 
@@ -1024,17 +1024,17 @@
             <div class="formula-field">
               <label for="presentation">Presentations per Day</label>
               <p class="field-hint">How many new presentations you aim to make each working day.</p>
-              <input class="formula-input" type="number" id="presentation" value="3" min="0" max="7">
+              <input class="formula-input" type="number" id="presentation" value="0" min="0" max="7">
             </div>
             <div class="formula-field">
               <label for="workday">Work Days per Week</label>
               <p class="field-hint">How many days you actually work in a typical week.</p>
-              <input class="formula-input" type="number" id="workday" value="5" min="0" max="7">
+              <input class="formula-input" type="number" id="workday" value="0" min="0" max="7">
             </div>
             <div class="formula-field">
               <label for="workweek">Work Weeks per Year</label>
               <p class="field-hint">Balanced remaining weeks in the year.</p>
-              <input class="formula-input" type="number" id="workweek" value="40" min="0" readonly>
+              <input class="formula-input" type="number" id="workweek" value="0" min="0" readonly>
             </div>
             <div class="formula-field">
               <div class="field-label-row">
@@ -1042,12 +1042,12 @@
                 <button class="reference-btn" type="button" id="openClosingCalculatorBtn">Open calculator</button>
               </div>
               <p class="field-hint">Your expected conversion rate from presentations to closed cases.</p>
-              <input class="formula-input" type="number" id="closing" value="30" min="0" step="0.1">
+              <input class="formula-input" type="number" id="closing" value="0" min="0" step="0.1">
             </div>
             <div class="formula-field">
               <label for="case">Average Case Size</label>
               <p class="field-hint">Average contribution per case for the production you are targeting.</p>
-              <input class="formula-input" type="text" inputmode="numeric" id="case" value="1,800">
+              <input class="formula-input" type="text" inputmode="numeric" id="case" value="0">
             </div>
           </div>
         </div>
@@ -1058,10 +1058,10 @@
           <h3>Projected outcome</h3>
         </div>
         <div class="result-box">
-          <div class="result-row"><span>Formulated Production</span><strong class="big" id="annualTPC">216,000TPC</strong></div>
-          <div class="result-row"><span>Presentations</span><strong id="annualPresentation">960</strong></div>
-          <div class="result-row"><span>Closed Cases</span><strong id="closedCases">120</strong></div>
-          <div class="result-row"><span>Achievement</span><strong id="achievement">72%</strong></div>
+          <div class="result-row"><span>Formulated Production</span><strong class="big" id="annualTPC">0TPC</strong></div>
+          <div class="result-row"><span>Presentations</span><strong id="annualPresentation">0</strong></div>
+          <div class="result-row"><span>Closed Cases</span><strong id="closedCases">0</strong></div>
+          <div class="result-row"><span>Achievement</span><strong id="achievement">0%</strong></div>
           <div class="progress-track"><div class="progress-fill" id="bar"></div></div>
           <!-- <div class="level-badge" id="level">🥈 Intermediate</div> -->
         </div>
