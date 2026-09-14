@@ -26,11 +26,15 @@ exports.handler = async function (event) {
       occupation,
       plan,
       form_type,
+      form,
+      formType,
       smoking,
       gender,
       phone,
       remarks
     } = data;
+
+    const normalizedFormType = String(form_type ?? form ?? formType ?? '').trim();
 
     // ✅ Load agents.json
     const res = await fetch("https://mgasofficial.com/agents.json");
@@ -47,9 +51,11 @@ exports.handler = async function (event) {
       };
     }
 
-    const formLabel = form_type === "Quick"
-      ? "Quick Quotation"
-      : "Custom Quotation";
+    const formLabel = /live/i.test(normalizedFormType)
+      ? "Live Quotation"
+      : /quick/i.test(normalizedFormType)
+        ? "Quick Quotation"
+        : "Custom Quotation";
 
     // ✅ CLEAN Telegram message
     const text = `
@@ -61,13 +67,13 @@ You have received a new enquiry from your *${formLabel} Form*.
 
 ━━━━━━━━━━━━━━━
 👤 *Customer Name:* ${customer_name}
-🎂 *Date of Birth:* ${dob}
-💼 *Occupation:* ${occupation}
+🎂 *Date of Birth / Age:* ${dob}
+💼 *Occupation / Class:* ${occupation}
 
 📋 *Plan Interested:* ${plan}
 🚬 *Smoking Status:* ${smoking}
 ⚧ *Gender:* ${gender}
-📞 *Phone Number:* ${phone}
+📞 *Phone Number / Social Media:* ${phone}
 ━━━━━━━━━━━━━━━
 
 📝 *Remarks:*
