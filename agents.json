@@ -409,6 +409,45 @@
     "chat_id": 1089753473
   },
   {
+    "code": "N1M00024",
+    "name": "AZZIM",
+    "name2": "AZME",
+    "title": "WEALTH PLANNER",
+    "image": "../Picture/N1M00024.jpg",
+    "whatsapp": "60103987106",
+    "instagram": "azzimazme",
+    "facebook": "muhammadazzimazme",
+    "tiktok": "ajimajimprubsn",
+    "lead": false,
+    "chat_id": 888350507
+  },
+  {
+    "code": "N1M00037",
+    "name": "IKRAM",
+    "name2": "ZULKAFLI",
+    "title": "WEALTH PLANNER",
+    "image": "../Picture/N1M00037.jpg",
+    "whatsapp": "60126966025",
+    "instagram": "ikramzulkafli",
+    "facebook": "ikram.zulkafli",
+    "tiktok": "ikram890419",
+    "lead": false,
+    "chat_id": 6216337602
+  },
+  {
+    "code": "N1M00040",
+    "name": "AHMAD",
+    "name2": "ZUL'IFWAT",
+    "title": "WEALTH PLANNER",
+    "image": "../Picture/N1M00040.jpg",
+    "whatsapp": "60134126124",
+    "instagram": "ifwatbest",
+    "facebook": "ifwatbest",
+    "tiktok": "ifwatbest",
+    "lead": false,
+    "chat_id": 703463358
+  },
+  {
     "code": "N1M00061",
     "name": "MUHAMMAD",
     "name2": "SYAHIZMAN",
