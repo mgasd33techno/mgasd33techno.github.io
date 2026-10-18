@@ -28,7 +28,7 @@
   {
     "code": "D3300024",
     "name": "DIANA",
-    "name2": "",
+    "name2": "GHAZALI",
     "title": "EXECUTIVE WEALTH PLANNER",
     "image": "../Picture/D3300024.jpg",
     "whatsapp": "60125753793",
@@ -471,5 +471,18 @@
     "tiktok": "lady_pru36",
     "lead": false,
     "chat_id": 1099184912
+  },
+  {
+    "code": "D3300196",
+    "name": "NOR",
+    "name2": "AZWANI",
+    "title": "WEALTH PLANNER",
+    "image": "../Picture/D3300196.jpg",
+    "whatsapp": "601127662724",
+    "facebook": "nor.azwani.96",
+    "instagram": "juzfit.waniazril",
+    "tiktok": "waniazril83",
+    "lead": false,
+    "chat_id": 7092894120
   }
 ]
